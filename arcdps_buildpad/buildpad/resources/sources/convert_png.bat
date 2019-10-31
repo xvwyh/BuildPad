@@ -1,0 +1,1 @@
+for /f %%f in ('dir /b *.png') do bin2c %%f ../%%~nf.h tex%%~nf

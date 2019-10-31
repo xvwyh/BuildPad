@@ -1,0 +1,472 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DLL|Win32">
+      <Configuration>DLL</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DLL|x64">
+      <Configuration>DLL</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ArcdpsDefines.h" />
+    <ClInclude Include="buildpad\API.h" />
+    <ClInclude Include="buildpad\Build.h" />
+    <ClInclude Include="buildpad\BuildStorage.h" />
+    <ClInclude Include="buildpad\ChatLink.h" />
+    <ClInclude Include="buildpad\GW2.h" />
+    <ClInclude Include="buildpad\MumbleLink.h" />
+    <ClInclude Include="buildpad\resources\1128567.h" />
+    <ClInclude Include="buildpad\resources\1128569.h" />
+    <ClInclude Include="buildpad\resources\1128571.h" />
+    <ClInclude Include="buildpad\resources\1128573.h" />
+    <ClInclude Include="buildpad\resources\1128575.h" />
+    <ClInclude Include="buildpad\resources\1128577.h" />
+    <ClInclude Include="buildpad\resources\1128579.h" />
+    <ClInclude Include="buildpad\resources\1128581.h" />
+    <ClInclude Include="buildpad\resources\1128583.h" />
+    <ClInclude Include="buildpad\resources\1293677.h" />
+    <ClInclude Include="buildpad\resources\1424219.h" />
+    <ClInclude Include="buildpad\resources\1441449.h" />
+    <ClInclude Include="buildpad\resources\1444520.h" />
+    <ClInclude Include="buildpad\resources\1444524.h" />
+    <ClInclude Include="buildpad\resources\1535141.h" />
+    <ClInclude Include="buildpad\resources\1535145.h" />
+    <ClInclude Include="buildpad\resources\155143.h" />
+    <ClInclude Include="buildpad\resources\156058.h" />
+    <ClInclude Include="buildpad\resources\156293.h" />
+    <ClInclude Include="buildpad\resources\156297.h" />
+    <ClInclude Include="buildpad\resources\156298.h" />
+    <ClInclude Include="buildpad\resources\156299.h" />
+    <ClInclude Include="buildpad\resources\156300.h" />
+    <ClInclude Include="buildpad\resources\156301.h" />
+    <ClInclude Include="buildpad\resources\156302.h" />
+    <ClInclude Include="buildpad\resources\156306.h" />
+    <ClInclude Include="buildpad\resources\156307.h" />
+    <ClInclude Include="buildpad\resources\156308.h" />
+    <ClInclude Include="buildpad\resources\156309.h" />
+    <ClInclude Include="buildpad\resources\156310.h" />
+    <ClInclude Include="buildpad\resources\156311.h" />
+    <ClInclude Include="buildpad\resources\156313.h" />
+    <ClInclude Include="buildpad\resources\156316.h" />
+    <ClInclude Include="buildpad\resources\156320.h" />
+    <ClInclude Include="buildpad\resources\156361.h" />
+    <ClInclude Include="buildpad\resources\156599.h" />
+    <ClInclude Include="buildpad\resources\156600.h" />
+    <ClInclude Include="buildpad\resources\156630.h" />
+    <ClInclude Include="buildpad\resources\156632.h" />
+    <ClInclude Include="buildpad\resources\156634.h" />
+    <ClInclude Include="buildpad\resources\156636.h" />
+    <ClInclude Include="buildpad\resources\156638.h" />
+    <ClInclude Include="buildpad\resources\156640.h" />
+    <ClInclude Include="buildpad\resources\156641.h" />
+    <ClInclude Include="buildpad\resources\156643.h" />
+    <ClInclude Include="buildpad\resources\156665g.h" />
+    <ClInclude Include="buildpad\resources\156675.h" />
+    <ClInclude Include="buildpad\resources\156721.h" />
+    <ClInclude Include="buildpad\resources\156723.h" />
+    <ClInclude Include="buildpad\resources\156794.h" />
+    <ClInclude Include="buildpad\resources\157086.h" />
+    <ClInclude Include="buildpad\resources\157121.h" />
+    <ClInclude Include="buildpad\resources\157262.h" />
+    <ClInclude Include="buildpad\resources\157325.h" />
+    <ClInclude Include="buildpad\resources\1670506.h" />
+    <ClInclude Include="buildpad\resources\1770211.h" />
+    <ClInclude Include="buildpad\resources\1770213.h" />
+    <ClInclude Include="buildpad\resources\1770215.h" />
+    <ClInclude Include="buildpad\resources\1770217.h" />
+    <ClInclude Include="buildpad\resources\1770219.h" />
+    <ClInclude Include="buildpad\resources\1770221.h" />
+    <ClInclude Include="buildpad\resources\1770223.h" />
+    <ClInclude Include="buildpad\resources\1770225.h" />
+    <ClInclude Include="buildpad\resources\1988170.h" />
+    <ClInclude Include="buildpad\resources\1988171.h" />
+    <ClInclude Include="buildpad\resources\2030307.h" />
+    <ClInclude Include="buildpad\resources\255305.h" />
+    <ClInclude Include="buildpad\resources\255430.h" />
+    <ClInclude Include="buildpad\resources\523389.h" />
+    <ClInclude Include="buildpad\resources\536048.h" />
+    <ClInclude Include="buildpad\resources\536052.h" />
+    <ClInclude Include="buildpad\resources\961390.h" />
+    <ClInclude Include="buildpad\Defines.h" />
+    <ClInclude Include="buildpad\Handler.h" />
+    <ClInclude Include="buildpad\resources\993598.h" />
+    <ClInclude Include="buildpad\resources\993687.h" />
+    <ClInclude Include="buildpad\resources\Cancel_grey_16x.h" />
+    <ClInclude Include="buildpad\resources\Edit_grey_16x.h" />
+    <ClInclude Include="buildpad\resources\ErrorItem.h" />
+    <ClInclude Include="buildpad\resources\ErrorPet.h" />
+    <ClInclude Include="buildpad\resources\ErrorSkill.h" />
+    <ClInclude Include="buildpad\resources\ErrorSpecialization.h" />
+    <ClInclude Include="buildpad\resources\ErrorTrait.h" />
+    <ClInclude Include="buildpad\resources\ErrorTraitMinor.h" />
+    <ClInclude Include="buildpad\resources\LoadingItem.h" />
+    <ClInclude Include="buildpad\resources\LoadingPet.h" />
+    <ClInclude Include="buildpad\resources\LoadingSkill.h" />
+    <ClInclude Include="buildpad\resources\LoadingSpecialization.h" />
+    <ClInclude Include="buildpad\resources\LoadingTrait.h" />
+    <ClInclude Include="buildpad\resources\LoadingTraitMinor.h" />
+    <ClInclude Include="buildpad\resources\Save_16x.h" />
+    <ClInclude Include="buildpad\Web.h" />
+    <ClInclude Include="Common.h" />
+    <ClInclude Include="dep\base64\base64.h" />
+    <ClInclude Include="dep\curlpp\cURLpp.hpp" />
+    <ClInclude Include="dep\curlpp\Easy.hpp" />
+    <ClInclude Include="dep\curlpp\Exception.hpp" />
+    <ClInclude Include="dep\curlpp\Form.hpp" />
+    <ClInclude Include="dep\curlpp\Info.hpp" />
+    <ClInclude Include="dep\curlpp\Infos.hpp" />
+    <ClInclude Include="dep\curlpp\internal\CurlHandle.hpp" />
+    <ClInclude Include="dep\curlpp\internal\OptionContainer.hpp" />
+    <ClInclude Include="dep\curlpp\internal\OptionContainerType.hpp" />
+    <ClInclude Include="dep\curlpp\internal\OptionList.hpp" />
+    <ClInclude Include="dep\curlpp\internal\OptionSetter.hpp" />
+    <ClInclude Include="dep\curlpp\internal\SList.hpp" />
+    <ClInclude Include="dep\curlpp\Multi.hpp" />
+    <ClInclude Include="dep\curlpp\Option.hpp" />
+    <ClInclude Include="dep\curlpp\OptionBase.hpp" />
+    <ClInclude Include="dep\curlpp\Options.hpp" />
+    <ClInclude Include="dep\curlpp\Types.hpp" />
+    <ClInclude Include="dep\curl\curl.h" />
+    <ClInclude Include="dep\curl\curlver.h" />
+    <ClInclude Include="dep\curl\easy.h" />
+    <ClInclude Include="dep\curl\mprintf.h" />
+    <ClInclude Include="dep\curl\multi.h" />
+    <ClInclude Include="dep\curl\stdcheaders.h" />
+    <ClInclude Include="dep\curl\system.h" />
+    <ClInclude Include="dep\curl\typecheck-gcc.h" />
+    <ClInclude Include="dep\curl\urlapi.h" />
+    <ClInclude Include="dep\fmt\container.h" />
+    <ClInclude Include="dep\fmt\format.h" />
+    <ClInclude Include="dep\fmt\ostream.h" />
+    <ClInclude Include="dep\fmt\posix.h" />
+    <ClInclude Include="dep\fmt\printf.h" />
+    <ClInclude Include="dep\fmt\string.h" />
+    <ClInclude Include="dep\fmt\time.h" />
+    <ClInclude Include="dep\imgui\imconfig.h" />
+    <ClInclude Include="dep\imgui\imgui.h" />
+    <ClInclude Include="dep\imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="dep\imgui\imgui_internal.h" />
+    <ClInclude Include="dep\imgui\stb_rect_pack.h" />
+    <ClInclude Include="dep\imgui\stb_textedit.h" />
+    <ClInclude Include="dep\imgui\stb_truetype.h" />
+    <ClInclude Include="auras\SetupWindow.h" />
+    <ClInclude Include="dep\inih\INIReader.h" />
+    <ClInclude Include="dep\json\json.hpp" />
+    <ClInclude Include="dep\spng\spng.h" />
+    <ClInclude Include="dep\utilspp\clone_ptr.hpp" />
+    <ClInclude Include="dep\utilspp\EmptyType.hpp" />
+    <ClInclude Include="dep\utilspp\NonCopyable.hpp" />
+    <ClInclude Include="dep\utilspp\NullType.hpp" />
+    <ClInclude Include="dep\utilspp\SmartPtr.hpp" />
+    <ClInclude Include="dep\utilspp\ThreadingFactoryMutex.hpp" />
+    <ClInclude Include="dep\utilspp\ThreadingSingle.hpp" />
+    <ClInclude Include="dep\utilspp\TypeList.hpp" />
+    <ClInclude Include="dep\utilspp\TypeTrait.hpp" />
+    <ClInclude Include="dep\zlib\crc32.h" />
+    <ClInclude Include="dep\zlib\deflate.h" />
+    <ClInclude Include="dep\zlib\gzguts.h" />
+    <ClInclude Include="dep\zlib\inffast.h" />
+    <ClInclude Include="dep\zlib\inffixed.h" />
+    <ClInclude Include="dep\zlib\inflate.h" />
+    <ClInclude Include="dep\zlib\inftrees.h" />
+    <ClInclude Include="dep\zlib\trees.h" />
+    <ClInclude Include="dep\zlib\zconf.h" />
+    <ClInclude Include="dep\zlib\zlib.h" />
+    <ClInclude Include="dep\zlib\zutil.h" />
+    <ClInclude Include="ImGuiExtensions.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="buildpad\API.cpp" />
+    <ClCompile Include="buildpad\Build.cpp" />
+    <ClCompile Include="buildpad\BuildStorage.cpp" />
+    <ClCompile Include="buildpad\ChatLink.cpp" />
+    <ClCompile Include="buildpad\Handler.cpp" />
+    <ClCompile Include="buildpad\MumbleLink.cpp" />
+    <ClCompile Include="buildpad\Web.cpp" />
+    <ClCompile Include="dep\base64\base64.cpp" />
+    <ClCompile Include="dep\fmt\format.cc" />
+    <ClCompile Include="dep\fmt\ostream.cc" />
+    <ClCompile Include="dep\fmt\posix.cc" />
+    <ClCompile Include="dep\fmt\printf.cc" />
+    <ClCompile Include="dep\imgui\imgui.cpp" />
+    <ClCompile Include="dep\imgui\imgui_demo.cpp" />
+    <ClCompile Include="dep\imgui\imgui_draw.cpp" />
+    <ClCompile Include="dep\imgui\imgui_impl_dx9.cpp" />
+    <ClCompile Include="dep\spng\spng.c" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="main_imgui.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dep\curlpp\Easy.inl" />
+    <None Include="dep\curlpp\Info.inl" />
+    <None Include="dep\curlpp\internal\CurlHandle.inl" />
+    <None Include="dep\curlpp\internal\OptionContainer.inl" />
+    <None Include="dep\curlpp\internal\OptionSetter.inl" />
+    <None Include="dep\curlpp\Option.inl" />
+    <None Include="dep\gsl\gsl" />
+    <None Include="dep\gsl\gsl_algorithm" />
+    <None Include="dep\gsl\gsl_assert" />
+    <None Include="dep\gsl\gsl_byte" />
+    <None Include="dep\gsl\gsl_util" />
+    <None Include="dep\gsl\multi_span" />
+    <None Include="dep\gsl\pointers" />
+    <None Include="dep\gsl\span" />
+    <None Include="dep\gsl\string_span" />
+    <None Include="dep\utilspp\ThreadingFactoryMutex.inl" />
+    <None Include="dep\utilspp\ThreadingSingle.inl" />
+    <None Include="version.json" />
+    <None Include="version.schema.json" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{94EBE7C2-1B5C-471E-9F39-C08A21EA9AFD}</ProjectGuid>
+    <RootNamespace>arcdpsbuildpad</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DLL|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DLL|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DLL|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DLL|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DLL|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>d3d9_$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DLL|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>d3d9_$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>./dep;%DXSDK_DIR%/Include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./lib;%DXSDK_DIR%/Lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;Shell32.lib;WS2_32.lib;Wldap32.lib;Crypt32.lib;Advapi32.lib;zlibd.lib;libcurl-d.lib;libcurlppd.lib</AdditionalDependencies>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>./dep;%DXSDK_DIR%/Include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./lib;%DXSDK_DIR%/Lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;Shell32.lib;WS2_32.lib;Wldap32.lib;Crypt32.lib;Advapi32.lib;zlibd.lib;libcurl-d.lib;libcurlppd.lib</AdditionalDependencies>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>./dep;%DXSDK_DIR%/Include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./lib;%DXSDK_DIR%/Lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;Shell32.lib;WS2_32.lib;Wldap32.lib;Crypt32.lib;Advapi32.lib;zlib.lib;libcurl.lib;libcurlpp.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DLL|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>DLL;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <AdditionalIncludeDirectories>./dep;%DXSDK_DIR%/Include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./lib;%DXSDK_DIR%/Lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;Shell32.lib;WS2_32.lib;Wldap32.lib;Crypt32.lib;Advapi32.lib;zlib.lib;libcurl.lib;libcurlpp.lib</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>./dep;%DXSDK_DIR%/Include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./lib;%DXSDK_DIR%/Lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;Shell32.lib;WS2_32.lib;Wldap32.lib;Crypt32.lib;Advapi32.lib;zlib.lib;libcurl.lib;libcurlpp.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DLL|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>DLL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>./dep;%DXSDK_DIR%/Include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./lib;%DXSDK_DIR%/Lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;Shell32.lib;WS2_32.lib;Wldap32.lib;Crypt32.lib;Advapi32.lib;zlib.lib;libcurl.lib;libcurlpp.lib</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties version_1json__JSONSchema="version.schema.json" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

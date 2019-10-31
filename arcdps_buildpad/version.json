@@ -1,0 +1,18 @@
+{
+  "latest": "2019-10-31",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-10-31.dll",
+  "history": [
+    {
+      "version": "2019-10-31",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-10-31.dll",
+      "changes": [
+        { "type": "feature", "text": "First public release" }
+      ]
+    }
+  ],
+  "colors": {
+    "feature": "#00FF00FF",
+    "bug": "#FFFFFFFF",
+    "misc": "#808080FF"
+  }
+}

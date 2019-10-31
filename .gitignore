@@ -1,32 +1,8 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+.hgignore
+.hg/
+.vs/
+x64/
+arcdps_buildpad.sln.*
+arcdps_buildpad/arcdps_buildpad.vcxproj.*
+arcdps_buildpad/addons/
+arcdps_buildpad/imgui.ini
