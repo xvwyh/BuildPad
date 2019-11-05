@@ -4,6 +4,7 @@
 #include "Build.h"
 #include "MumbleLink.h"
 #include "ChatLink.h"
+#include "KeyBind.h"
 #include <d3d9.h>
 
 namespace buildpad
@@ -91,24 +92,13 @@ public:
 
     [[nodiscard]] std::vector<uint32_t> const& GetPets() const { return m_petIDs; }
 
+    [[nodiscard]] float GetUIScale() const { return m_config.UIScale / 100.0f; }
+    [[nodiscard]] bool IsLessTransparentButtonsEnabled() const { return m_config.LessTransparentButtons; }
+
 private:
     bool m_loaded = false;
     IDirect3DDevice9* m_d3dDevice = nullptr;
-    struct KeyBind
-    {
-        using key_t = uint8_t;
-
-        bool Control = false;
-        bool Alt = false;
-        bool Shift = false;
-        key_t Key { };
-
-        bool IsPressed() const;
-        bool FromString(std::string_view str);
-        std::optional<std::string> ToString() const;
-        static std::optional<std::string> KeyToString(key_t key);
-        static std::map<key_t, std::string_view> const& GetKeyMap();
-    } m_keyBindToggleBuilds, m_keyBindEdited;
+    KeyBind m_keyBindToggleBuilds;
     using Clock = std::chrono::high_resolution_clock;
     Clock::time_point m_previousUpdate { };
 
@@ -163,6 +153,13 @@ private:
 
     void RenderSettings(bool menu);
     bool m_detachSettings = false;
+
+    using KeyBindCallback = std::function<void(KeyBind const&)>;
+    void EditKeyBind(KeyBind const& keyBind, KeyBindCallback&& callback);
+    void RenderKeyBindEditor();
+    bool m_keyBindEditing = false;
+    KeyBind m_keyBindEdited;
+    KeyBindCallback m_keyBindCallback;
 
     void BeginRenderBuildList(GW2::Profession profession, bool& firstVisible, bool& firstSorted, bool singleProfession, GW2::Profession professionColor, float colorMultiplier = 1.0f) const;
     void EndRenderBuildList(bool singleProfession) const;
@@ -234,6 +231,8 @@ private:
         bool ShowNameFilter = true;
         bool ShowFlagsFilter = true;
         bool ShowSettingsButton = true;
+        bool ClearFiltersOnWindowClose = false;
+        bool LessTransparentButtons = false;
         uint32_t HideFlagsMask = 0;
         bool HiddenFiltersHintHidden = false;
         bool UseProfessionColors = true;
@@ -261,6 +260,7 @@ private:
         bool SortBuildsAlphabetically = false;
         bool AllowBuildReordering = true;
         uint32_t TooltipDelay = 500;
+        uint32_t UIScale = 100;
         bool LockWindowPosition = false;
         int32_t WindowPositionX = 0;
         int32_t WindowPositionY = 0;
@@ -268,7 +268,9 @@ private:
         uint32_t WindowSizeW = 0;
         uint32_t WindowSizeH = 0;
         bool AutoWindowHeight = false;
+        bool HideWindowHeader = false;
         bool KeepWindowInBounds = true;
+        std::string GearIconSet;
 
         using field_t = std::variant<bool(Config::*), uint32_t(Config::*), int32_t(Config::*), std::string(Config::*), std::array<uint32_t, 10>(Config::*)>;
         [[nodiscard]] static std::vector<std::pair<std::string, field_t>> const& GetFields()
@@ -285,6 +287,8 @@ private:
                 FIELD(ShowNameFilter),
                 FIELD(ShowFlagsFilter),
                 FIELD(ShowSettingsButton),
+                FIELD(ClearFiltersOnWindowClose),
+                FIELD(LessTransparentButtons),
                 FIELD(HideFlagsMask),
                 FIELD(HiddenFiltersHintHidden),
                 FIELD(UseProfessionColors),
@@ -298,6 +302,7 @@ private:
                 FIELD(SortBuildsAlphabetically),
                 FIELD(AllowBuildReordering),
                 FIELD(TooltipDelay),
+                FIELD(UIScale),
                 FIELD(LockWindowPosition),
                 FIELD(WindowPositionX),
                 FIELD(WindowPositionY),
@@ -305,7 +310,9 @@ private:
                 FIELD(WindowSizeW),
                 FIELD(WindowSizeH),
                 FIELD(AutoWindowHeight),
+                FIELD(HideWindowHeader),
                 FIELD(KeepWindowInBounds),
+                FIELD(GearIconSet),
             };
 #undef FIELD
             return instance;

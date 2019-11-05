@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Defines.h"
 #include "GW2.h"
+#include "KeyBind.h"
 
 namespace buildpad
 {
@@ -82,6 +83,7 @@ public:
     [[nodiscard]] std::string_view GetSecondaryLink() const { return m_secondaryLink; }
     [[nodiscard]] Flags GetFlags() const { return m_flags; }
     [[nodiscard]] bool HasFlag(Flags flag) const { return ((std::underlying_type_t<Flags>)m_flags & (std::underlying_type_t<Flags>)flag) != 0; }
+    [[nodiscard]] KeyBind const& GetKeyBind() const { return m_keyBind; }
     [[nodiscard]] std::string_view GetNormalizedName() const { return m_normalizedName; }
     [[nodiscard]] ParsedInfo const& GetParsedInfo() const { return m_parsedInfo; }
 
@@ -136,6 +138,15 @@ public:
             : (std::underlying_type_t<Flags>)m_flags & ~(std::underlying_type_t<Flags>)flag);
         m_needsSave = true;
     }
+    void SetKeyBind(std::string_view keyBind) { SetKeyBind(KeyBind { keyBind }); }
+    void SetKeyBind(KeyBind const keyBind)
+    {
+        if (m_keyBind == keyBind)
+            return;
+
+        m_keyBind = keyBind;
+        m_needsSave = true;
+    }
 
     [[nodiscard]] bool IsSaveNeeded() const { return m_needsSave; }
     void SetSaved() { m_needsSave = false; }
@@ -146,6 +157,7 @@ private:
     std::string m_link;
     std::string m_secondaryLink;
     Flags m_flags = Flags::None;
+    KeyBind m_keyBind;
     ParsedInfo m_parsedInfo;
     std::string m_normalizedName;
     bool m_needsSave = false;

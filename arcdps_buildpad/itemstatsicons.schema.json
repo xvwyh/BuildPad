@@ -1,0 +1,31 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": { "type": "string" },
+      "items": { "type": "boolean" },
+      "atlas": { "type": "string" },
+      "width": { "type": "integer" },
+      "height": { "type": "integer" },
+      "stats": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "icon": { "type": "string" },
+            "x": { "type": "integer" },
+            "y": { "type": "integer" },
+            "ids": {
+              "type": "array",
+              "items": { "type": "integer" }
+            }
+          },
+          "required": [ "ids" ]
+        }
+      }
+    },
+    "required": [ "name", "items", "width", "height", "stats" ]
+  }
+}

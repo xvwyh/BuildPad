@@ -1,7 +1,24 @@
 {
-  "latest": "2019-10-31",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-10-31.dll",
+  "latest": "2019-11-06",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-11-06.dll",
   "history": [
+    {
+      "version": "2019-11-06",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-11-06.dll",
+      "changes": [
+        { "type": "feature", "text": "Builds can now be assigned a keybind to instantly copy them to clipboard. Keybinds only work for current profession's builds, so it's possible to have multiple builds of different professions sharing the same keybinds" },
+        { "type": "feature", "text": "Keybinds can now be optionally set up to be passed-through to Guild Wars 2, allowing the game client to execute its own actions in reaction to pressed keys" },
+        { "type": "feature", "text": "ArcDPS gear templates preview window can now display gw2skills.net icons to represent item stat combos" },
+        { "type": "feature", "text": "Added a setting to change UI scaling of BuildPad windows" },
+        { "type": "feature", "text": "Added a setting to hide the main window's header" },
+        { "type": "feature", "text": "Added a setting to clear filters when hiding the main window" },
+        { "type": "feature", "text": "Added a setting to make filter buttons more opaque when using highly transparent window background color" },
+        { "type": "bug", "text": "Fixed BuildPad not using ArcDPS font if SCT plugin is also installed" },
+        { "type": "bug", "text": "Fixed \"Dismiss\" buttons not being clickable if both \"ArcDPS migration\" and \"New version available\" messages were visible at the same time" },
+        { "type": "bug", "text": "Fixed tooltip for currently edited build incorrectly representing the original build's data instead of the edited one's" },
+        { "type": "misc", "text": "Main window can no longer be collapsed into the header due to the very unreliable nature of double-clicking in ArcDPS" }
+      ]
+    },
     {
       "version": "2019-10-31",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-10-31.dll",

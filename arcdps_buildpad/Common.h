@@ -130,4 +130,9 @@ void transform_if(InputIt first, InputIt last, OutputIt dest, Predicate predicat
     }
 }
 
+template<typename T>
+T lerp(T a, T b, float t)
+{
+    return a + (b - a) * t;
+}
 }

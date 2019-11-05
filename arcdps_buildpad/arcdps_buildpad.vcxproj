@@ -33,6 +33,7 @@
     <ClInclude Include="buildpad\BuildStorage.h" />
     <ClInclude Include="buildpad\ChatLink.h" />
     <ClInclude Include="buildpad\GW2.h" />
+    <ClInclude Include="buildpad\KeyBind.h" />
     <ClInclude Include="buildpad\MumbleLink.h" />
     <ClInclude Include="buildpad\resources\1128567.h" />
     <ClInclude Include="buildpad\resources\1128569.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="buildpad\BuildStorage.cpp" />
     <ClCompile Include="buildpad\ChatLink.cpp" />
     <ClCompile Include="buildpad\Handler.cpp" />
+    <ClCompile Include="buildpad\KeyBind.cpp" />
     <ClCompile Include="buildpad\MumbleLink.cpp" />
     <ClCompile Include="buildpad\Web.cpp" />
     <ClCompile Include="dep\base64\base64.cpp" />
@@ -233,6 +235,8 @@
     <None Include="dep\gsl\string_span" />
     <None Include="dep\utilspp\ThreadingFactoryMutex.inl" />
     <None Include="dep\utilspp\ThreadingSingle.inl" />
+    <None Include="itemstatsicons.json" />
+    <None Include="itemstatsicons.schema.json" />
     <None Include="version.json" />
     <None Include="version.schema.json" />
   </ItemGroup>
@@ -466,7 +470,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties version_1json__JSONSchema="version.schema.json" />
+      <UserProperties itemstatsicons_1json__JSONSchema="itemstatsicons.schema.json" version_1json__JSONSchema="version.schema.json" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

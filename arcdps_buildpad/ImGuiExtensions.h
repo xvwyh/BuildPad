@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "Handler.h"
 #include "imgui/imgui_internal.h"
 
 namespace ImGui
@@ -14,7 +15,8 @@ bool ImageButtonWithText(ImTextureID texId,
                          int frame_padding = 0, // -1
                          ImVec4 const& bg_col = { 0, 0, 0, 0 },
                          ImVec4 const& tint_col = { 1, 1, 1, 1 },
-                         bool borders = false)
+                         bool borders = false,
+                         char const* rightSideLabel = nullptr)
 {
     ImGuiWindow* window = GetCurrentWindow();
     if (window->SkipItems)
@@ -86,6 +88,19 @@ bool ImageButtonWithText(ImTextureID texId,
     if (textSize.x > 0)
     {
         ImRect clip { bb.Min, bb.Max };
+        if (rightSideLabel)
+        {
+            size = CalcTextSize(rightSideLabel);
+            ImRect const rbb { { std::max<float>(start.x, bb.Max.x - style.ItemInnerSpacing.x - size.x - style.ItemInnerSpacing.x), bb.Min.y }, bb.Max };
+            ImVec4 color = ColorConvertU32ToFloat4(GetColorU32(ImGuiCol_Text));
+            color.w /= 2;
+            PushStyleColor(ImGuiCol_Text, color);
+            RenderTextClipped({ rbb.Min.x + style.ItemInnerSpacing.x, rbb.Min.y + (rbb.GetHeight() - size.y) / 2 }, rbb.Max, rightSideLabel, nullptr, &size, { 0, 0 }, &rbb);
+            PopStyleColor();
+
+            clip.Max.x = rbb.Min.x;
+        }
+
         RenderTextClipped(start, bb.Max, label, nullptr, &textSize, { 0, 0 }, &clip);
     }
 
@@ -195,7 +210,9 @@ bool CheckboxImage(ImTextureID texId,
     if (pressed)
         *v = !(*v);
 
-    auto const floatToVec = [](float v) { return ImVec4 { v, v, v, v }; };
+    float a = buildpad::Handler::Instance().IsLessTransparentButtonsEnabled() ? ColorConvertU32ToFloat4(GetColorU32(ImGuiCol_WindowBg)).w / 0.75f : 1.0f;
+
+    auto const floatToVec = [a](float v) { return ImVec4 { v, v, v, util::lerp(1.0f, v, std::clamp(a, 0.0f, 1.0f)) }; };
 
     window->DrawList->AddImage(texId, check_bb.Min, check_bb.Max, uv0, uv1, GetColorU32(held && hovered
         ? floatToVec(*v ? opacity_on_active : opacity_off_active)
@@ -370,9 +387,71 @@ bool Hyperlink(char const* text, wchar_t const* url)
     return false;
 }
 
+template<typename... T>
+void Tooltip(char const* text, T&&... args)
+{
+    BeginTooltip();
+    SetWindowFontScale(buildpad::Handler::Instance().GetUIScale());
+    Text("%s", fmt::format(text, args...).c_str());
+    EndTooltip();
+}
+
+template<typename... T>
+void TooltipWithHeader(char const* header, char const* sub, T&&... args)
+{
+    BeginTooltip();
+    SetWindowFontScale(buildpad::Handler::Instance().GetUIScale());
+    if (header)
+        Text("%s", fmt::format(header, args...).c_str());
+    if (sub)
+    {
+        ImVec4 color = ColorConvertU32ToFloat4(GetColorU32(ImGuiCol_Text));
+        color.w /= 2;
+        TextColored(color, "%s", fmt::format(sub, args...).c_str());
+    }
+    EndTooltip();
+}
+
 bool IsPopupOpenPublic(char const* str_id)
 {
     ImGuiContext& g = *GImGui;
     return g.OpenPopupStack.Size > g.CurrentPopupStack.Size && g.OpenPopupStack[g.CurrentPopupStack.Size].PopupId == g.CurrentWindow->GetID(str_id);
+}
+
+static struct
+{
+    ImVec2 CursorPosPrevLine;
+    ImVec2 CursorPos;
+    ImVec2 CursorMaxPos;
+    float PrevLineHeight;
+    float PrevLineTextBaseOffset;
+    float CurrentLineHeight;
+    float CurrentLineTextBaseOffset;
+} storedCursor;
+
+ImVec2 StoreCursor()
+{
+    ImGuiWindow* window = GetCurrentWindow();
+    storedCursor.CursorPosPrevLine = window->DC.CursorPosPrevLine;
+    storedCursor.CursorPos = window->DC.CursorPos;
+    storedCursor.CursorMaxPos = window->DC.CursorMaxPos;
+    storedCursor.PrevLineHeight = window->DC.PrevLineHeight;
+    storedCursor.PrevLineTextBaseOffset = window->DC.PrevLineTextBaseOffset;
+    storedCursor.CurrentLineHeight = window->DC.CurrentLineHeight;
+    storedCursor.CurrentLineTextBaseOffset = window->DC.CurrentLineTextBaseOffset;
+    return GetCursorPos();
+}
+
+ImVec2 RestoreCursor()
+{
+    ImGuiWindow* window = GetCurrentWindow();
+    window->DC.CursorPosPrevLine = storedCursor.CursorPosPrevLine;
+    window->DC.CursorPos = storedCursor.CursorPos;
+    window->DC.CursorMaxPos = storedCursor.CursorMaxPos;
+    window->DC.PrevLineHeight = storedCursor.PrevLineHeight;
+    window->DC.PrevLineTextBaseOffset = storedCursor.PrevLineTextBaseOffset;
+    window->DC.CurrentLineHeight = storedCursor.CurrentLineHeight;
+    window->DC.CurrentLineTextBaseOffset = storedCursor.CurrentLineTextBaseOffset;
+    return GetCursorPos();
 }
 }

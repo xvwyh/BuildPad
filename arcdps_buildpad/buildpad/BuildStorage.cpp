@@ -130,7 +130,7 @@ void BuildStorage::Save(std::ofstream& file)
 {
     file << "[Builds]\n";
     for (Build const& build : GetBuilds())
-        file << fmt::format("={}|{}|{}|{}\n", 1, build.GetLink(), (uint32_t)build.GetFlags(), build.GetName());
+        file << fmt::format("={}|{}|{}|{}|{}\n", 2, build.GetLink(), (uint32_t)build.GetFlags(), build.GetKeyBind().ToString().value_or(""), build.GetName());
     file << "\n[Filter]\n";
     file << fmt::format("Profession = {}\n", (uint32_t)m_professionFilter);
     file << fmt::format("Flags = {}\n", (uint32_t)m_flagsFilter);
@@ -165,6 +165,19 @@ bool BuildStorage::Load(std::string_view section, std::string_view name, std::st
                     build.SetLink(buffer.data());
                 if (str.getline(buffer.data(), buffer.size(), '|'))
                     build.ToggleFlag((Build::Flags)std::strtoul(buffer.data(), nullptr, 0), true);
+                if (str.getline(buffer.data(), buffer.size()))
+                    build.SetName(buffer.data());
+                build.SetSaved();
+                return true;
+            }
+            case 2:
+            {
+                if (str.getline(buffer.data(), buffer.size(), '|'))
+                    build.SetLink(buffer.data());
+                if (str.getline(buffer.data(), buffer.size(), '|'))
+                    build.ToggleFlag((Build::Flags)std::strtoul(buffer.data(), nullptr, 0), true);
+                if (str.getline(buffer.data(), buffer.size(), '|'))
+                    build.SetKeyBind(buffer.data());
                 if (str.getline(buffer.data(), buffer.size()))
                     build.SetName(buffer.data());
                 build.SetSaved();
