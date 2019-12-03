@@ -224,14 +224,16 @@ private:
         TextureData APIType::*APIIcon;
         std::function<TextureData const&(DataType const& selection, bool palette)> IconGetter;
         std::function<DataType(InfoType const& info)> InfoToDataTransform;
-        std::function<uint32_t(DataType const& selection, bool water)> DataToAPITransform;
+        std::function<uint32_t(DataType const& selection, bool water, uint8_t index)> DataToAPITransform;
 
         bool Water;
-        bool DarkenFirst = false;
+        bool DarkenFirstHalf = false;
+        bool DarkenSecondHalf = false;
         ImVec2 TypeSize;
         bool BarVertical;
         float BarSpacing;
         uint8_t BarButtonCount;
+        uint8_t BarButtonPerRow = 0;
         ImVec2 ButtonSize;
         float ButtonSpacing;
         ImVec2 PaletteSize;

@@ -26,7 +26,7 @@ public:
         Support     = BITMASK(11),
         Heal        = BITMASK(12),
     };
-    DEFINE_BITMASK_OPERATORS(buildpad::Build::Flags)
+    DEFINE_BITMASK_OPERATORS(Flags)
     struct FlagInfo
     {
         Flags Flag;
@@ -68,6 +68,8 @@ public:
         std::optional<std::array<TraitLine, 3>> TraitLines;
         std::array<GW2::RevenantLegend, 2> RevenantLegendsLand { GW2::RevenantLegend::None, GW2::RevenantLegend::None };
         std::array<GW2::RevenantLegend, 2> RevenantLegendsWater { GW2::RevenantLegend::None, GW2::RevenantLegend::None };
+        std::array<uint32_t, 3> RevenantInactiveSkillsLand { 0, 0, 0 };
+        std::array<uint32_t, 3> RevenantInactiveSkillsWater { 0, 0, 0 };
         std::array<uint8_t, 2> RangerPetsLand { 0, 0 };
         std::array<uint8_t, 2> RangerPetsWater { 0, 0 };
         std::string Error;
@@ -161,6 +163,8 @@ public:
 
     [[nodiscard]] bool IsSaveNeeded() const { return m_needsSave; }
     void SetSaved() { m_needsSave = false; }
+
+    void PostLoad();
 
 private:
     id_t m_id;

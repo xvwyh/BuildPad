@@ -176,7 +176,7 @@ bool BuildStorage::Load(std::string_view section, std::string_view name, std::st
         else
         {
             build.SetName("<MALFORMED BUILD>");
-            build.SetSaved();
+            build.PostLoad();
             return false;
         }
 
@@ -190,7 +190,7 @@ bool BuildStorage::Load(std::string_view section, std::string_view name, std::st
                     build.ToggleFlag((Build::Flags)std::strtoul(buffer.data(), nullptr, 0), true);
                 if (str.getline(buffer.data(), buffer.size()))
                     build.SetName(buffer.data());
-                build.SetSaved();
+                build.PostLoad();
                 return true;
             }
             case 2:
@@ -203,7 +203,7 @@ bool BuildStorage::Load(std::string_view section, std::string_view name, std::st
                     build.SetKeyBind(buffer.data());
                 if (str.getline(buffer.data(), buffer.size()))
                     build.SetName(buffer.data());
-                build.SetSaved();
+                build.PostLoad();
                 return true;
             }
             case 3:
@@ -218,13 +218,13 @@ bool BuildStorage::Load(std::string_view section, std::string_view name, std::st
                     build.SetKeyBind(buffer.data());
                 if (str.getline(buffer.data(), buffer.size()))
                     build.SetName(buffer.data());
-                build.SetSaved();
+                build.PostLoad();
                 return true;
             }
             default:
             {
                 build.SetName(fmt::format("<INVALID BUILD #{} VERSION: {}>", build.GetID(), version));
-                build.SetSaved();
+                build.PostLoad();
                 return false;
             }
         }

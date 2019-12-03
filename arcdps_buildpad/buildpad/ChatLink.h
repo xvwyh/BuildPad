@@ -133,7 +133,11 @@ public:
         {
             std::array<uint8_t, 16> Raw { };
             LandWaterData<std::array<uint8_t, 2>> RangerPets;
-            LandWaterData<std::array<GW2::RevenantLegend, 2>> RevenantLegends;
+            struct
+            {
+                LandWaterData<std::array<GW2::RevenantLegend, 2>> Legends;
+                LandWaterData<std::array<uint16_t, 3>> InactiveSkills { };
+            } Revenant;
         } ProfessionSpecific { };
 
         BuildTemplate() = default;
@@ -159,7 +163,7 @@ public:
                     ProfessionSpecific.RangerPets = { };
                     break;
                 case GW2::Profession::Revenant:
-                    ProfessionSpecific.RevenantLegends = { };
+                    ProfessionSpecific.Revenant = { };
                     break;
                 default:
                     ProfessionSpecific.Raw = { };

@@ -66,7 +66,6 @@ void API::PreloadAllProfessionSpecializations(GW2::Profession profession)
         }
 
         Request<Specialization>(ids);
-
     }
 }
 

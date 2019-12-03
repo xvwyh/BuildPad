@@ -4,6 +4,30 @@
 
 namespace buildpad
 {
+void Build::PostLoad()
+{
+    switch (GetParsedProfession())
+    {
+        case GW2::Profession::Revenant:
+            if (auto link = ChatLink::Decode(GetLink()); link && std::holds_alternative<ChatLink::BuildTemplate>(*link))
+            {
+                auto& data = std::get<ChatLink::BuildTemplate>(*link);
+                for (uint8_t i = 0; i < 3; ++i)
+                {
+                    if (!data.ProfessionSpecific.Revenant.InactiveSkills.Land[i])
+                        data.ProfessionSpecific.Revenant.InactiveSkills.Land[i] = data.Skills[1 + i].Land;
+                    if (!data.ProfessionSpecific.Revenant.InactiveSkills.Water[i])
+                        data.ProfessionSpecific.Revenant.InactiveSkills.Water[i] = data.Skills[1 + i].Water;
+                }
+                SetLink(ChatLink::Encode(data));
+            }
+            break;
+        default:
+            break;
+    }
+    SetSaved();
+}
+
 Build::ParsedInfo Build::ParseInfo(std::string_view code)
 {
     ParsedInfo parsed { };
@@ -50,8 +74,13 @@ Build::ParsedInfo Build::ParseInfo(std::string_view code)
                         std::copy(link.ProfessionSpecific.RangerPets.Water.begin(), link.ProfessionSpecific.RangerPets.Water.end(), parsed.RangerPetsWater.begin());
                         break;
                     case GW2::Profession::Revenant:
-                        std::copy(link.ProfessionSpecific.RevenantLegends.Land.begin(), link.ProfessionSpecific.RevenantLegends.Land.end(), parsed.RevenantLegendsLand.begin());
-                        std::copy(link.ProfessionSpecific.RevenantLegends.Water.begin(), link.ProfessionSpecific.RevenantLegends.Water.end(), parsed.RevenantLegendsWater.begin());
+                        std::copy(link.ProfessionSpecific.Revenant.Legends.Land.begin(), link.ProfessionSpecific.Revenant.Legends.Land.end(), parsed.RevenantLegendsLand.begin());
+                        std::copy(link.ProfessionSpecific.Revenant.Legends.Water.begin(), link.ProfessionSpecific.Revenant.Legends.Water.end(), parsed.RevenantLegendsWater.begin());
+                        for (uint8_t i = 0; i < 3; ++i)
+                        {
+                            parsed.RevenantInactiveSkillsLand[i] = link.ProfessionSpecific.Revenant.InactiveSkills.Land[i];
+                            parsed.RevenantInactiveSkillsWater[i] = link.ProfessionSpecific.Revenant.InactiveSkills.Water[i];
+                        }
                         if (auto itr = util::find_if(parsed.RevenantLegendsLand, [](GW2::RevenantLegend legend) { return GW2::GetRevenantLegendInfo(legend).RequiredSpecialization != GW2::Specialization::None; }))
                             parsed.Specialization = GW2::GetRevenantLegendInfo(*itr).RequiredSpecialization;
                         else if (itr = util::find_if(parsed.RevenantLegendsWater, [](GW2::RevenantLegend legend) { return GW2::GetRevenantLegendInfo(legend).RequiredSpecialization != GW2::Specialization::None; }))
