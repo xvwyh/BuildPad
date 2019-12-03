@@ -17,6 +17,59 @@ void API::PreloadAllPets()
     Request<Pet>(ids);
 }
 
+void API::PreloadAllProfessions()
+{
+    if (!m_professionsRequested)
+    {
+        m_professionsRequested = true;
+        Request<Profession>(std::set<uint32_t> { 1 });
+    }
+}
+
+void API::PreloadAllProfessionSkills(GW2::Profession profession)
+{
+    PreloadAllProfessions();
+
+    bool result = true;
+    if (auto const& info = Profession::Get((uint32_t)profession))
+    {
+        std::set<uint32_t> ids;
+        for (auto const& id : info.Skills)
+            Reserve<Skill>(id, ids, result);
+
+        Request<Skill>(ids);
+    }
+}
+
+void API::PreloadAllProfessionSpecializations(GW2::Profession profession)
+{
+    PreloadAllProfessions();
+
+    bool result = true;
+    if (auto const& info = Profession::Get((uint32_t)profession))
+    {
+        std::set<uint32_t> ids;
+        for (auto const& specialization : info.Specializations)
+        {
+            Reserve<Specialization>((uint32_t)specialization, ids, result);
+
+            if (auto& info = Specialization::Get((uint32_t)specialization))
+            {
+                if (!info.IconLoaded)
+                {
+                    info.IconLoaded = true;
+                    Web::Instance().Request(info.IconURL,
+                        [&info](std::string_view const data) { info.Icon = H.LoadTexture(std::pair { data.data(), data.size() }); },
+                        [&info](auto const&) { info.Icon = H.GetIcon(Icons::ErrorSpecialization); });
+                }
+            }
+        }
+
+        Request<Specialization>(ids);
+
+    }
+}
+
 bool API::PreloadAllBuildInfos(Build const& build)
 {
     bool result = true;
@@ -93,9 +146,9 @@ bool API::PreloadAllBuildInfos(Build const& build)
         {
             if (auto& info = Specialization::Get((uint32_t)line.Specialization))
             {
-                if (!info.Icon)
+                if (!info.IconLoaded)
                 {
-                    info.Icon = H.GetIcon(Icons::LoadingSpecialization);
+                    info.IconLoaded = true;
                     Web::Instance().Request(info.IconURL,
                         [&info](std::string_view const data) { info.Icon = H.LoadTexture(std::pair { data.data(), data.size() }); },
                         [&info](auto const&) { info.Icon = H.GetIcon(Icons::ErrorSpecialization); });
@@ -146,6 +199,31 @@ bool API::PreloadAllGearInfos(ChatLink::ArcDPSLegendaryTemplate<uint32_t> const&
     return result;
 }
 
+void API::InfoHandlers<API::Profession>::Success(std::string_view const data)
+{
+    for (auto const& profession : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
+    {
+        GW2::Profession id;
+        if (auto const itr = util::find_if(GW2::GetProfessionInfos(), util::member_equals(&GW2::ProfessionInfo::Name, profession["id"])))
+            id = itr->Profession;
+        else
+            return;
+
+        auto& info = Profession::Get((uint32_t)id);
+        info.Name = profession["name"];
+        for (auto const& specialization : profession["specializations"])
+            info.Specializations.emplace_back((GW2::Specialization)specialization);
+        for (auto const& skill : profession["skills"])
+        {
+            info.Skills.emplace_back(skill["id"]);
+            H.AddProfessionSkill(id, skill["id"], skill["type"]);
+        }
+        info.Icon = H.GetIcon(id);
+        info.Loaded = true;
+    }
+}
+void API::InfoHandlers<API::Profession>::Error(std::set<uint32_t> const& ids) { }
+
 void API::InfoHandlers<API::Specialization>::Success(std::string_view const data)
 {
     for (auto const& specialization : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
@@ -195,6 +273,11 @@ void API::InfoHandlers<API::Skill>::Success(std::string_view const data)
         auto& info = Skill::Get(id);
         info.Name = skill["name"];
         info.Loaded = true;
+        for (auto const& flag : skill["flags"])
+        {
+            if (flag == "NoUnderwater")
+                info.NoUnderwater = true;
+        }
 
         Web::Instance().Request(skill["icon"], [&info](std::string_view const data)
         {
@@ -217,8 +300,7 @@ void API::InfoHandlers<API::Item>::Success(std::string_view const data)
         uint32_t const id = item["id"];
         auto& info = Item::Get(id);
         info.Name = item["name"];
-        if (auto itr = std::find_if(GW2::GetRarityInfos().begin(), GW2::GetRarityInfos().end(),
-            [rarity = (std::string_view)item["rarity"]](GW2::RarityInfo const& info) { return info.Name == rarity; }); itr != GW2::GetRarityInfos().end())
+        if (auto const itr = util::find_if(GW2::GetRarityInfos(), util::member_equals(&GW2::RarityInfo::Name, item["rarity"])))
             info.Rarity = itr->Rarity;
         info.Loaded = true;
 

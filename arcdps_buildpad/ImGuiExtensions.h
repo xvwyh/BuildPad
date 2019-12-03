@@ -16,7 +16,8 @@ bool ImageButtonWithText(ImTextureID texId,
                          ImVec4 const& bg_col = { 0, 0, 0, 0 },
                          ImVec4 const& tint_col = { 1, 1, 1, 1 },
                          bool borders = false,
-                         char const* rightSideLabel = nullptr)
+                         char const* rightSideLabel = nullptr,
+                         std::vector<buildpad::TextureData const*> additionalImages = { })
 {
     ImGuiWindow* window = GetCurrentWindow();
     if (window->SkipItems)
@@ -53,9 +54,9 @@ bool ImageButtonWithText(ImTextureID texId,
         start.y += (buttonSize.y - size.y) * .5f;
     else if (size.y < textSize.y)
         start.y += (textSize.y - size.y) * .5f;
-    ImRect const image_bb(ImFloor(start), ImFloor(start + size));
+    ImRect image_bb(ImFloor(start), ImFloor(start + size));
     start = window->DC.CursorPos + padding;
-    start.x += size.x + innerSpacing;
+    start.x += size.x * (1 + additionalImages.size()) + innerSpacing;
     if (size.y > textSize.y)
         start.y += (size.y - textSize.y) * .5f;
     ItemSize(bb);
@@ -84,6 +85,11 @@ bool ImageButtonWithText(ImTextureID texId,
         window->DrawList->AddRectFilled(image_bb.Min, image_bb.Max, GetColorU32(bg_col));
 
     window->DrawList->AddImage(texId, image_bb.Min, image_bb.Max, uv0, uv1, GetColorU32(tint_col));
+    for (auto const& image : additionalImages)
+    {
+        image_bb.Min.x = std::exchange(image_bb.Max.x, image_bb.Max.x + image_bb.Max.x - image_bb.Min.x);
+        window->DrawList->AddImage(image->Texture, image_bb.Min, image_bb.Max, image->GetUV0(), image->GetUV1(), GetColorU32(tint_col));
+    }
 
     if (textSize.x > 0)
     {
@@ -405,9 +411,12 @@ void TooltipWithHeader(char const* header, char const* sub, T&&... args)
         Text("%s", fmt::format(header, args...).c_str());
     if (sub)
     {
+        auto* window = GetCurrentWindow();
+        PushTextWrapPos(std::max<float>(window->DC.CursorMaxPos.x - (window->Pos.x + window->DC.IndentX + window->DC.ColumnsOffsetX), 200.0f * window->FontWindowScale));
         ImVec4 color = ColorConvertU32ToFloat4(GetColorU32(ImGuiCol_Text));
         color.w /= 2;
         TextColored(color, "%s", fmt::format(sub, args...).c_str());
+        PopTextWrapPos();
     }
     EndTooltip();
 }

@@ -52,6 +52,8 @@
     <ClInclude Include="buildpad\resources\1535141.h" />
     <ClInclude Include="buildpad\resources\1535145.h" />
     <ClInclude Include="buildpad\resources\155143.h" />
+    <ClInclude Include="buildpad\resources\155919.h" />
+    <ClInclude Include="buildpad\resources\155923.h" />
     <ClInclude Include="buildpad\resources\156058.h" />
     <ClInclude Include="buildpad\resources\156293.h" />
     <ClInclude Include="buildpad\resources\156297.h" />
@@ -342,6 +344,7 @@
       <AdditionalIncludeDirectories>./dep;%DXSDK_DIR%/Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -362,6 +365,7 @@
       <AdditionalIncludeDirectories>./dep;%DXSDK_DIR%/Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

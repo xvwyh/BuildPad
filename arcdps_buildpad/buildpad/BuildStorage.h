@@ -80,15 +80,14 @@ public:
     }
 
     [[nodiscard]] bool IsFilteringFlags() const { return m_flagsFilter != Build::Flags::None; }
-    [[nodiscard]] bool IsFilteringFlag(Build::Flags flag) const { return ((std::underlying_type_t<Build::Flags>)m_flagsFilter & (std::underlying_type_t<Build::Flags>)flag) != 0; }
+    [[nodiscard]] bool IsFilteringFlag(Build::Flags flag) const { return (m_flagsFilter & flag) != Build::Flags::None; }
     void ToggleFlagFilter(Build::Flags flag, bool on)
     {
         if (IsFilteringFlag(flag) == on)
             return;
 
-        m_flagsFilter = (Build::Flags)(on
-            ? (std::underlying_type_t<Build::Flags>)m_flagsFilter | (std::underlying_type_t<Build::Flags>)flag
-            : (std::underlying_type_t<Build::Flags>)m_flagsFilter & ~(std::underlying_type_t<Build::Flags>)flag);
+        if (on) m_flagsFilter |=  flag;
+        else    m_flagsFilter &= ~flag;
         m_needsSave = true;
     }
 
@@ -102,7 +101,7 @@ public:
         std::transform(m_normalizedNameFilter.begin(), m_normalizedNameFilter.end(), m_normalizedNameFilter.begin(), toupper);
     }
 
-    [[nodiscard]] bool IsBuildMatchingFilter(Build const& build) const;
+    [[nodiscard]] bool IsBuildMatchingFilter(Build const& build, bool simpleFlagsFilter) const;
 
     // Saving
     [[nodiscard]] bool IsSaveNeeded() const { return m_needsSave || std::any_of(m_builds.begin(), m_builds.end(), [](Build const& build) { return build.IsSaveNeeded(); }); }
@@ -121,7 +120,7 @@ private:
     // Builds
     Container m_builds;
     Container::iterator GetBuildIterator(Build const& build) { return GetBuildIterator(build.GetID()); }
-    Container::iterator GetBuildIterator(Build::id_t id) { return std::find_if(m_builds.begin(), m_builds.end(), [id](Build const& b) { return b.GetID() == id; }); }
+    Container::iterator GetBuildIterator(Build::id_t id) { return std::find_if(m_builds.begin(), m_builds.end(), util::method_equals(&Build::GetID, id)); }
 
     // Editing
     std::optional<Build> m_editedBuild;

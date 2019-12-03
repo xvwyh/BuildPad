@@ -94,7 +94,19 @@ public:
     struct ArcDPSGearTemplate : ArcDPSLegendaryTemplate<T>
     {
         std::array<char, AG_NAME_LEN> Character;
-        std::array<uint8_t, 4> SlotVisible;
+        std::array<uint8_t, 4> SlotHidden;
+
+        [[nodiscard]] std::optional<bool> GetSlotVisibility(GW2::Slot slot) const
+        {
+            switch (slot)
+            {
+                case GW2::Slot::Helm:       return !SlotHidden[0];
+                case GW2::Slot::Shoulders:  return !SlotHidden[1];
+                case GW2::Slot::Gloves:     return !SlotHidden[2];
+                case GW2::Slot::Back:       return !SlotHidden[3];
+                default: return { };
+            }
+        }
     };
     struct BuildTemplate
     {

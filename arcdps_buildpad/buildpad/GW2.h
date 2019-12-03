@@ -46,7 +46,7 @@ struct GW2
         } };
         return instance;
     }
-    static ProfessionInfo const& GetProfessionInfo(Profession profession) { return *std::find_if(GetProfessionInfos().begin(), GetProfessionInfos().end(), [profession](ProfessionInfo const& info) { return info.Profession == profession; }); }
+    static ProfessionInfo const& GetProfessionInfo(Profession profession) { return *util::find_if(GetProfessionInfos(), util::member_equals(&ProfessionInfo::Profession, profession)); }
 
     enum class Specialization : uint8_t
     {
@@ -205,7 +205,7 @@ struct GW2
         } };
         return instance;
     }
-    static SpecializationInfo const& GetSpecializationInfo(Specialization specialization) { return *std::find_if(GetSpecializationInfos().begin(), GetSpecializationInfos().end(), [specialization](SpecializationInfo const& info) { return info.Specialization == specialization; }); }
+    static SpecializationInfo const& GetSpecializationInfo(Specialization specialization) { return *util::find_if(GetSpecializationInfos(), util::member_equals(&SpecializationInfo::Specialization, specialization)); }
 
     enum class RevenantLegend : uint8_t
     {
@@ -248,12 +248,12 @@ struct GW2
             { RevenantLegend::Shiro,   Specialization::None,                27659, { 26937, 29209, 28231, 27107, 28406 }, },
             { RevenantLegend::Jallis,  Specialization::None,                26650, { 27372, 28516, 26679, 26557, 27975 }, },
             { RevenantLegend::Mallix,  Specialization::None,                28376, { 28219, 27322, 27505, 27917, 28287 }, },
-            { RevenantLegend::Kalla,   Specialization::RevenantRenegade,    41858, { 45686, 42949, 40485, 41220, 45773 }, },
+            { RevenantLegend::Kalla,   Specialization::RevenantRenegade,    41858, { 45686, 42949, 40485, 41220, 45773 }, true, false },
             { RevenantLegend::Ventari, Specialization::None,                28141, { 28427, 26821, 27025, 27715, 27356 }, true, false },
         } };
         return instance;
     }
-    static RevenantLegendInfo const& GetRevenantLegendInfo(RevenantLegend legend) { return *std::find_if(GetRevenantLegendInfos().begin(), GetRevenantLegendInfos().end(), [legend](RevenantLegendInfo const& info) { return info.Legend == legend; }); }
+    static RevenantLegendInfo const& GetRevenantLegendInfo(RevenantLegend legend) { return *util::find_if(GetRevenantLegendInfos(), util::member_equals(&RevenantLegendInfo::Legend, legend)); }
 
     enum class Rarity : uint8_t
     {
@@ -287,7 +287,7 @@ struct GW2
         } };
         return instance;
     }
-    static RarityInfo const& GetRarityInfo(Rarity rarity) { return *std::find_if(GetRarityInfos().begin(), GetRarityInfos().end(), [rarity](RarityInfo const& info) { return info.Rarity == rarity; }); }
+    static RarityInfo const& GetRarityInfo(Rarity rarity) { return *util::find_if(GetRarityInfos(), util::member_equals(&RarityInfo::Rarity, rarity)); }
 
     enum class Slot : uint8_t
     {
@@ -342,7 +342,7 @@ struct GW2
         } };
         return instance;
     }
-    static SlotInfo const& GetSlotInfo(Slot slot) { return *std::find_if(GetSlotInfos().begin(), GetSlotInfos().end(), [slot](SlotInfo const& info) { return info.Slot == slot; }); }
+    static SlotInfo const& GetSlotInfo(Slot slot) { return *util::find_if(GetSlotInfos(), util::member_equals(&SlotInfo::Slot, slot)); }
 
 };
 }

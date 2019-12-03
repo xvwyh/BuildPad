@@ -112,13 +112,36 @@ void BuildStorage::CancelBuildEdit()
     m_editedBuild.reset();
 }
 
-bool BuildStorage::IsBuildMatchingFilter(Build const& build) const
+bool BuildStorage::IsBuildMatchingFilter(Build const& build, bool simpleFlagsFilter) const
 {
     if (IsFilteringProfession() && build.GetParsedProfession() != m_currentProfession)
         return false;
 
-    if (IsFilteringFlags() && !IsFilteringFlag(build.GetFlags()))
-        return false;
+    if (IsFilteringFlags())
+    {
+        if (simpleFlagsFilter)
+        {
+            if (!IsFilteringFlag(build.GetFlags()))
+                return false;
+        }
+        else
+        {
+            Build::Flags flags = Build::Flags::None;
+            for (auto const& info : Build::GetFlagInfos())
+            {
+                if (info.Separator)
+                {
+                    if (IsFilteringFlag(flags) && !build.HasFlag(m_flagsFilter & flags))
+                        return false;
+
+                    flags = Build::Flags::None;
+                }
+                flags |= info.Flag;
+            }
+            if (IsFilteringFlag(flags) && !build.HasFlag(m_flagsFilter & flags))
+                return false;
+        }
+    }
 
     if (IsFilteringName() && build.GetNormalizedName().find(GetNormalizedNameFilter()) == std::string::npos)
         return false;
@@ -130,7 +153,7 @@ void BuildStorage::Save(std::ofstream& file)
 {
     file << "[Builds]\n";
     for (Build const& build : GetBuilds())
-        file << fmt::format("={}|{}|{}|{}|{}\n", 2, build.GetLink(), (uint32_t)build.GetFlags(), build.GetKeyBind().ToString().value_or(""), build.GetName());
+        file << fmt::format("={}|{}|{}|{}|{}|{}\n", 3, build.GetLink(), (uint32_t)build.GetFlags(), (uint32_t)build.GetFlagIcons(), build.GetKeyBind().ToString().value_or(""), build.GetName());
     file << "\n[Filter]\n";
     file << fmt::format("Profession = {}\n", (uint32_t)m_professionFilter);
     file << fmt::format("Flags = {}\n", (uint32_t)m_flagsFilter);
@@ -176,6 +199,21 @@ bool BuildStorage::Load(std::string_view section, std::string_view name, std::st
                     build.SetLink(buffer.data());
                 if (str.getline(buffer.data(), buffer.size(), '|'))
                     build.ToggleFlag((Build::Flags)std::strtoul(buffer.data(), nullptr, 0), true);
+                if (str.getline(buffer.data(), buffer.size(), '|'))
+                    build.SetKeyBind(buffer.data());
+                if (str.getline(buffer.data(), buffer.size()))
+                    build.SetName(buffer.data());
+                build.SetSaved();
+                return true;
+            }
+            case 3:
+            {
+                if (str.getline(buffer.data(), buffer.size(), '|'))
+                    build.SetLink(buffer.data());
+                if (str.getline(buffer.data(), buffer.size(), '|'))
+                    build.ToggleFlag((Build::Flags)std::strtoul(buffer.data(), nullptr, 0), true);
+                if (str.getline(buffer.data(), buffer.size(), '|'))
+                    build.ToggleFlagIcon((Build::Flags)std::strtoul(buffer.data(), nullptr, 0), true);
                 if (str.getline(buffer.data(), buffer.size(), '|'))
                     build.SetKeyBind(buffer.data());
                 if (str.getline(buffer.data(), buffer.size()))

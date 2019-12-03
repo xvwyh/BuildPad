@@ -26,6 +26,7 @@ public:
         Support     = BITMASK(11),
         Heal        = BITMASK(12),
     };
+    DEFINE_BITMASK_OPERATORS(buildpad::Build::Flags)
     struct FlagInfo
     {
         Flags Flag;
@@ -82,7 +83,9 @@ public:
     [[nodiscard]] std::string_view GetLink() const { return m_link; }
     [[nodiscard]] std::string_view GetSecondaryLink() const { return m_secondaryLink; }
     [[nodiscard]] Flags GetFlags() const { return m_flags; }
-    [[nodiscard]] bool HasFlag(Flags flag) const { return ((std::underlying_type_t<Flags>)m_flags & (std::underlying_type_t<Flags>)flag) != 0; }
+    [[nodiscard]] bool HasFlag(Flags flag) const { return (m_flags & flag) != Flags::None; }
+    [[nodiscard]] Flags GetFlagIcons() const { return m_flagIcons; }
+    [[nodiscard]] bool HasFlagIcon(Flags flag) const { return (m_flagIcons & flag) != Flags::None; }
     [[nodiscard]] KeyBind const& GetKeyBind() const { return m_keyBind; }
     [[nodiscard]] std::string_view GetNormalizedName() const { return m_normalizedName; }
     [[nodiscard]] ParsedInfo const& GetParsedInfo() const { return m_parsedInfo; }
@@ -133,9 +136,17 @@ public:
         if (HasFlag(flag) == on)
             return;
 
-        m_flags = (Flags)(on
-            ? (std::underlying_type_t<Flags>)m_flags |  (std::underlying_type_t<Flags>)flag
-            : (std::underlying_type_t<Flags>)m_flags & ~(std::underlying_type_t<Flags>)flag);
+        if (on) m_flags |=  flag;
+        else    m_flags &= ~flag;
+        m_needsSave = true;
+    }
+    void ToggleFlagIcon(Flags flag, bool on)
+    {
+        if (HasFlagIcon(flag) == on)
+            return;
+
+        if (on) m_flagIcons |=  flag;
+        else    m_flagIcons &= ~flag;
         m_needsSave = true;
     }
     void SetKeyBind(std::string_view keyBind) { SetKeyBind(KeyBind { keyBind }); }
@@ -157,12 +168,14 @@ private:
     std::string m_link;
     std::string m_secondaryLink;
     Flags m_flags = Flags::None;
+    Flags m_flagIcons = Flags::None;
     KeyBind m_keyBind;
     ParsedInfo m_parsedInfo;
     std::string m_normalizedName;
     bool m_needsSave = false;
 
     static ParsedInfo ParseInfo(std::string_view code);
+    static std::optional<std::string> ValidateParsedInfo(ParsedInfo& parsed);
     void HandleMigration();
 };
 }

@@ -52,6 +52,7 @@ public:
         CancelBuildEdit,
         ClearSearch,
         Settings,
+        MissingProfession,
         MissingSkill,
         LandSkills,
         WaterSkills,
@@ -71,11 +72,14 @@ public:
         LoadingPet,
         ErrorPet,
         SelectionChevron,
+        CheckBoxUnchecked,
+        CheckBoxChecked,
     };
     template<typename Key>
     [[nodiscard]] TextureData const& GetIcon(Key key) const { return GetIconContainer<Key>().at(key); }
     [[nodiscard]] std::optional<TextureData> LoadTexture(std::variant<fs::path, std::pair<char const*, size_t>>&& source) const;
 
+    [[nodiscard]] bool AreSkillsLoaded() const { return m_loaded; }
     [[nodiscard]] uint32_t SkillPaletteToSkill(uint32_t palette, GW2::RevenantLegend legend) const
     {
         if (auto const index = GW2::RevenantLegendInfo::GetSkillIndex(palette))
@@ -84,12 +88,41 @@ public:
         auto const itr = m_palettes.find(palette);
         return itr != m_palettes.end() ? itr->second.front() : 0;
     }
+    [[nodiscard]] uint32_t SkillToSkillPalette(uint32_t skill) const
+    {
+        auto const itr = m_skills.find(skill);
+        return itr != m_skills.end() && !itr->second.Palettes.empty() ? itr->second.Palettes.front() : 0;
+    }
+    [[nodiscard]] GW2::Profession GetPaletteProfession(uint32_t palette, GW2::RevenantLegend legend) const
+    {
+        auto const itr = m_skills.find(SkillPaletteToSkill(palette, legend));
+        return itr != m_skills.end() ? itr->second.Profession : GW2::Profession::None;
+    }
     [[nodiscard]] GW2::Specialization GetPaletteSpecialization(uint32_t palette, GW2::RevenantLegend legend) const
     {
         auto const itr = m_skills.find(SkillPaletteToSkill(palette, legend));
         return itr != m_skills.end() ? itr->second.Specialization : GW2::Specialization::None;
     }
 
+    void AddProfessionSkill(GW2::Profession profession, uint32_t id, std::string_view type)
+    {
+        Skill& skill = *m_professionSkills[(size_t)profession].emplace_back(&m_skills[id]);
+        skill.ID = id;
+        skill.Type = [type]
+        {
+            if (type == "Profession")
+                return Skill::SkillType::Profession;
+            if (type == "Heal")
+                return Skill::SkillType::Heal;
+            if (type == "Utility")
+                return Skill::SkillType::Utility;
+            if (type == "Elite")
+                return Skill::SkillType::Elite;
+            return Skill::SkillType::None;
+        }();
+    }
+
+    [[nodiscard]] bool ArePetsLoaded() const { return m_petsLoaded; }
     [[nodiscard]] std::vector<uint32_t> const& GetPets() const { return m_petIDs; }
 
     [[nodiscard]] float GetUIScale() const { return m_config.UIScale / 100.0f; }
@@ -114,12 +147,14 @@ private:
         };
         uint32_t ID = 0;
         SkillType Type = SkillType::None;
+        GW2::Profession Profession = GW2::Profession::None;
         GW2::Specialization Specialization = GW2::Specialization::None;
         std::vector<uint32_t> Palettes;
         std::string Name;
     };
     std::unordered_map<uint32_t, Skill> m_skills;
     std::unordered_map<uint32_t, std::vector<uint32_t>> m_palettes;
+    std::array<std::vector<Skill*>, 10> m_professionSkills;
 
     struct Pet
     {
@@ -164,7 +199,76 @@ private:
     void BeginRenderBuildList(GW2::Profession profession, bool& firstVisible, bool& firstSorted, bool singleProfession, GW2::Profession professionColor, float colorMultiplier = 1.0f) const;
     void EndRenderBuildList(bool singleProfession) const;
 
-    void RenderBuildTooltip(Build const& build, bool footer = true, bool errorMissing = false, Build* editTarget = nullptr) const;
+    void RenderBuildTooltip(Build const& build, bool footer = true, bool errorMissing = false, Build* editTarget = nullptr, bool allowChangeProfession = false) const;
+
+    template<typename DataType, typename InfoType, typename InfoSourceType, typename APIType>
+    struct PaletteContext
+    {
+        Build* EditTarget;
+        std::string Context;
+
+        std::function<void()> Preload;
+
+        std::function<DataType(bool water, uint8_t index)> Getter;
+        std::function<void(ChatLink::BuildTemplate& data, bool water, uint8_t index, DataType selection)> Setter;
+
+        bool PaletteSourceLoaded;
+        InfoSourceType const& PaletteSource;
+        std::function<bool(InfoType const& info, bool water, uint8_t index)> PaletteFilter;
+        std::function<bool(InfoType const& info, bool water, uint8_t index)> PaletteActive;
+        std::function<bool(InfoType const& info, bool water, uint8_t index)> PaletteUsable;
+        std::function<bool(InfoType const* a, InfoType const* b)> PaletteSorter;
+
+        Icons MissingAPIIcon;
+        std::string APIType::*APIName;
+        TextureData APIType::*APIIcon;
+        std::function<TextureData const&(DataType const& selection, bool palette)> IconGetter;
+        std::function<DataType(InfoType const& info)> InfoToDataTransform;
+        std::function<uint32_t(DataType const& selection, bool water)> DataToAPITransform;
+
+        bool Water;
+        bool DarkenFirst = false;
+        ImVec2 TypeSize;
+        bool BarVertical;
+        float BarSpacing;
+        uint8_t BarButtonCount;
+        ImVec2 ButtonSize;
+        float ButtonSpacing;
+        ImVec2 PaletteSize;
+        ImVec2 PaletteSpacing;
+        uint8_t PalettePerRow;
+        bool PaletteReverse = false;
+
+        std::string ButtonTooltip;
+
+        PaletteContext(std::string_view context, InfoSourceType const& paletteSource, std::string APIType::*apiName, TextureData APIType::*apiIcon) : Context(context), PaletteSource(paletteSource), APIName(apiName), APIIcon(apiIcon) { }
+    };
+    template<typename DataType, typename InfoType, typename InfoSourceType, typename APIType>
+    void RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType, APIType> const& context) const;
+
+    struct BuildEditContext
+    {
+        static inline uint32_t NextWindowID = 0;
+        uint32_t WindowID = NextWindowID++;
+
+        Build::id_t ID;
+        Build Original;
+        Build TemporaryEditTarget;
+        bool BuildStorageEditedBuild = false;
+        bool Closed = false;
+
+        bool IsChanged();
+        void RevertChanges();
+        Build const& GetOriginal();
+        Build& GetEditTarget();
+
+        BuildEditContext(Build const& build, bool buildStorageEditedBuild) : ID(build.GetID()), Original(build), TemporaryEditTarget(build), BuildStorageEditedBuild(buildStorageEditedBuild) { }
+    };
+    std::list<BuildEditContext> m_editedBuilds;
+    void RenderBuildEditor(BuildEditContext& context) const;
+    void RenderBuildEditors();
+    void CloseBuildEditor(Build const& build) { m_editedBuilds.remove_if(util::member_equals(&BuildEditContext::ID, build.GetID())); }
+    void OpenBuildEditor(Build const& build, bool buildStorageEditedBuild) { CloseBuildEditor(build); m_editedBuilds.emplace_back(build, buildStorageEditedBuild); }
 
     void RenderArcDPSMigration(Time const& delta);
     std::future<void> m_arcdpsMigrationDiscovery;
@@ -202,7 +306,6 @@ private:
     {
         Idle,
         Downloading,
-        Manifesting,
         Done,
         Error,
     } m_versionUpdateState = VersionUpdateState::Idle;
@@ -231,6 +334,7 @@ private:
         bool ShowNameFilter = true;
         bool ShowFlagsFilter = true;
         bool ShowSettingsButton = true;
+        bool SimpleFlagsFilter = false;
         bool ClearFiltersOnWindowClose = false;
         bool LessTransparentButtons = false;
         uint32_t HideFlagsMask = 0;
@@ -287,6 +391,7 @@ private:
                 FIELD(ShowNameFilter),
                 FIELD(ShowFlagsFilter),
                 FIELD(ShowSettingsButton),
+                FIELD(SimpleFlagsFilter),
                 FIELD(ClearFiltersOnWindowClose),
                 FIELD(LessTransparentButtons),
                 FIELD(HideFlagsMask),

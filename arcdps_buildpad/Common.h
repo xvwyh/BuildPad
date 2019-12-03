@@ -40,6 +40,14 @@ using namespace std::literals::string_view_literals;
 namespace fs = std::filesystem;
 
 constexpr uint32_t BITMASK(uint8_t bit) { return 1u << bit; }
+#define DEFINE_BITMASK_OPERATORS(Enum) \
+friend constexpr Enum& operator|=(Enum& lhs, Enum rhs) noexcept { return lhs = static_cast<Enum>( static_cast<std::underlying_type_t<Enum>>(lhs) | static_cast<std::underlying_type_t<Enum>>(rhs)); } \
+friend constexpr Enum& operator&=(Enum& lhs, Enum rhs) noexcept { return lhs = static_cast<Enum>( static_cast<std::underlying_type_t<Enum>>(lhs) & static_cast<std::underlying_type_t<Enum>>(rhs)); } \
+friend constexpr Enum& operator^=(Enum& lhs, Enum rhs) noexcept { return lhs = static_cast<Enum>( static_cast<std::underlying_type_t<Enum>>(lhs) ^ static_cast<std::underlying_type_t<Enum>>(rhs)); } \
+friend constexpr Enum  operator| (Enum  lhs, Enum rhs) noexcept { return       static_cast<Enum>( static_cast<std::underlying_type_t<Enum>>(lhs) | static_cast<std::underlying_type_t<Enum>>(rhs)); } \
+friend constexpr Enum  operator& (Enum  lhs, Enum rhs) noexcept { return       static_cast<Enum>( static_cast<std::underlying_type_t<Enum>>(lhs) & static_cast<std::underlying_type_t<Enum>>(rhs)); } \
+friend constexpr Enum  operator^ (Enum  lhs, Enum rhs) noexcept { return       static_cast<Enum>( static_cast<std::underlying_type_t<Enum>>(lhs) ^ static_cast<std::underlying_type_t<Enum>>(rhs)); } \
+friend constexpr Enum  operator~ (Enum  lhs)           noexcept { return       static_cast<Enum>(~static_cast<std::underlying_type_t<Enum>>(lhs)); }
 
 template<typename T>
 struct Singleton
@@ -135,4 +143,36 @@ T lerp(T a, T b, float t)
 {
     return a + (b - a) * t;
 }
+
+template<typename Iterator>
+class find_result_t
+{
+public:
+    find_result_t(Iterator itr, Iterator end) : m_itr(itr), m_found(itr != end) { }
+
+    operator Iterator() const { return m_itr; }
+    operator bool() const { return m_found; }
+    auto& operator*() const { return *m_itr; }
+    auto* operator->() const { return &*m_itr; }
+
+private:
+    Iterator m_itr;
+    bool m_found;
+};
+template<typename Container, typename Func>
+auto find_if(Container const& container, Func predicate)
+{
+    return find_result_t { std::find_if(std::begin(container), std::end(container), predicate), std::end(container) };
+}
+template<typename Container, typename Func>
+auto distance_if(Container const& container, Func predicate)
+{
+    return std::distance(std::begin(container), static_cast<decltype(std::begin(container))>(find_if(container, std::move(predicate))));
+}
+
+template<typename T, typename R, typename V> auto member_equals(R T::*member,          V const& value) { return [member, &value](T const& obj) { return static_cast<std::remove_cv_t<std::remove_reference_t<V>>>( obj.*member   ) == value; }; }
+template<typename T, typename R, typename V> auto method_equals(R(T::*method)() const, V const& value) { return [method, &value](T const& obj) { return static_cast<std::remove_cv_t<std::remove_reference_t<V>>>((obj.*method)()) == value; }; }
+template<typename V> auto        equals(V const& value) { return [&value](auto const& self) { return        self == value; }; }
+template<typename V> auto  first_equals(V const& value) { return [&value](auto const& pair) { return pair. first == value; }; }
+template<typename V> auto second_equals(V const& value) { return [&value](auto const& pair) { return pair.second == value; }; }
 }

@@ -1,7 +1,23 @@
 {
-  "latest": "2019-11-06",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-11-06.dll",
+  "latest": "2019-12-03",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-12-03.dll",
   "history": [
+    {
+      "version": "2019-12-03",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-12-03.dll",
+      "changes": [
+        { "type": "feature", "text": "Builds can now be edited in detail as well as created from scratch: profession, specializations, skills, traits, pets and legends can now be changed at any time by clicking \"Edit\" either from the build's context menu, or from under the quill button" },
+        { "type": "feature", "text": "Flags can now be right-clicked when editing a build to display them next to the profession icon in the build list" },
+        { "type": "feature", "text": "Changed how flag filtering works: flags from separate groups will now filter by intersection, e.g. filtering by Raid and Power will now only show builds that have both Raid AND Power flags, as opposed to the previous behavior where all builds that had either Raid OR Power or both were shown. Filtering by multiple flags within the same group will still filter additively, so e.g. filtering by Power and Condition will still show builds that have either Power or Condition or both. You can revert back to the old behavior from the settings menu, if this \"breaks your workflow\"" },
+        { "type": "feature", "text": "ArcDPS gear templates preview window will now display which skin slots (helm, shoulders, gloves, backpiece) were hidden when the template was saved" },
+        { "type": "bug", "text": "Fixed pressing Tab erroneously focusing keyboard input on search box when the window becomes visible" },
+        { "type": "bug", "text": "Fixed Kalla legend being selectable in aquatic slots" },
+        { "type": "bug", "text": "Added some basic build validation to prevent crashes on invalid chat links" },
+        { "type": "misc", "text": "Removed multiple revenant skill arrangements when migrating from ArcDPS, since now the skill order can freely be changed by hand" },
+        { "type": "misc", "text": "Removed /addons/arcdps/arcdps.buildpad/version file: from now on only the latest version of BuildPad present in /bin64/ will be loaded" },
+        { "type": "misc", "text": "Reduced blurriness of Raid flag icon" }
+      ]
+    },
     {
       "version": "2019-11-06",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-11-06.dll",
@@ -28,7 +44,7 @@
     }
   ],
   "colors": {
-    "feature": "#00FF00FF",
+    "feature": "#AAFF00FF",
     "bug": "#FFFFFFFF",
     "misc": "#808080FF"
   }

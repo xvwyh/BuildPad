@@ -22,6 +22,14 @@ public:
         static T& Get(uint32_t const id) { return Instance().Get<T>(id); }
         operator bool() const { return Loaded; }
     };
+    struct Profession : Info<Profession>
+    {
+        using Info::Info;
+        std::string Name;
+        std::vector<GW2::Specialization> Specializations;
+        std::vector<uint32_t> Skills;
+        TextureData Icon = Handler::Instance().GetIcon(GW2::Profession::None);
+    };
     struct Specialization : Info<Specialization>
     {
         using Info::Info;
@@ -30,7 +38,8 @@ public:
         std::array<uint32_t, 9> MajorTraits { };
         uint32_t WeaponTrait = 0;
         std::string IconURL;
-        std::optional<TextureData> Icon;
+        bool IconLoaded = false;
+        TextureData Icon = Handler::Instance().GetIcon(Handler::Icons::LoadingSpecialization);
 
         [[nodiscard]] uint16_t GetTrait(uint8_t rank, uint8_t order) const
         {
@@ -58,6 +67,7 @@ public:
     {
         using Info::Info;
         std::string Name;
+        bool NoUnderwater = false;
         TextureData Icon = Handler::Instance().GetIcon(Handler::Icons::LoadingSkill);
 
         [[nodiscard]] std::string ToChatLink() const
@@ -124,6 +134,9 @@ public:
     }
 
     void PreloadAllPets();
+    void PreloadAllProfessions();
+    void PreloadAllProfessionSkills(GW2::Profession profession);
+    void PreloadAllProfessionSpecializations(GW2::Profession profession);
     bool PreloadAllBuildInfos(Build const& build);
     bool PreloadAllGearInfos(ChatLink::ArcDPSLegendaryTemplate<uint32_t> const& gear);
 
@@ -136,6 +149,8 @@ private:
     std::string m_lang;
     std::string m_schema = "2019-05-22T00:00:00.000Z";
 
+    bool m_professionsRequested = false;
+    InfoContainer<Profession> m_professions;
     InfoContainer<Specialization> m_specializations;
     InfoContainer<Trait> m_traits;
     InfoContainer<Skill> m_skills;
@@ -174,6 +189,7 @@ private:
     }
 };
 
+template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContainer<Profession>       const& { return m_professions; }
 template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContainer<Specialization>   const& { return m_specializations; }
 template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContainer<Trait>            const& { return m_traits; }
 template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContainer<Skill>            const& { return m_skills; }
@@ -181,6 +197,7 @@ template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContai
 template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContainer<ItemStats>        const& { return m_itemStats; }
 template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContainer<Pet>              const& { return m_pets; }
 
+template<> struct API::InfoHandlers<API::Profession>        { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/professions?ids=all&lang={}&v={}"; };
 template<> struct API::InfoHandlers<API::Specialization>    { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/specializations?ids={}&lang={}&v={}"; };
 template<> struct API::InfoHandlers<API::Trait>             { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/traits?ids={}&lang={}&v={}"; };
 template<> struct API::InfoHandlers<API::Skill>             { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/skills?ids={}&lang={}&v={}"; };

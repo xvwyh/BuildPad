@@ -23,26 +23,23 @@ bool dll_init(HANDLE hModule)
 
         if (versionsFound.size() > 1)
         {
+            std::string const newestVersion = *versionsFound.rbegin();
+
+            // If we're not running the latest installed version, but there is a latest version DLL in bin64 folder - don't load this outdated version
+            if (buildpad::BUILDPAD_VERSION != newestVersion)
+                return false;
+
+            // If we're running the latest installed version - delete all other versions (they shouldn't be in use right now)
+            if (buildpad::BUILDPAD_VERSION == newestVersion)
+                for (auto const& version : versionsFound)
+                    if (version != newestVersion)
+                        if (fs::path path = fmt::format("./bin64/d3d9_arcdps_buildpad_{}.dll", version); exists(path))
+                            fs::remove(path);
+
+            // No longer using this file - remove it if previous BuildPad version have been deleted
             fs::path const versionPath = "./addons/arcdps/arcdps.buildpad/version";
             if (exists(versionPath))
-            {
-                std::ostringstream stream;
-                stream << std::ifstream { versionPath, std::ifstream::in | std::ofstream::binary }.rdbuf();
-                stream.flush();
-
-                std::string const newestVersion = stream.str();
-
-                // If we're not running the latest installed version, but there is a latest version DLL in bin64 folder - don't load this outdated version
-                if (buildpad::BUILDPAD_VERSION != newestVersion && versionsFound.find(buildpad::BUILDPAD_VERSION) != versionsFound.end())
-                    return false;
-
-                // If we're running the latest installed version - delete all other versions (they shouldn't be in use right now)
-                if (buildpad::BUILDPAD_VERSION == newestVersion)
-                    for (auto const& version : versionsFound)
-                        if (version != newestVersion)
-                            if (fs::path path = fmt::format("./bin64/d3d9_arcdps_buildpad_{}.dll", version); exists(path))
-                                fs::remove(path);
-            }
+                fs::remove(versionPath);
         }
     }
     catch (...) { }

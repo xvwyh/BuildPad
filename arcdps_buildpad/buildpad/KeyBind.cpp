@@ -29,7 +29,7 @@ bool KeyBind::FromString(std::string_view str)
             Shift = true;
         else if (part == ">GW2")
             PassThrough = true;
-        else if (auto itr = std::find_if(GetKeyMap().begin(), GetKeyMap().end(), [&part](auto const& pair) { return part == pair.second; }); itr != GetKeyMap().end())
+        else if (auto const itr = util::find_if(GetKeyMap(), util::second_equals(part)))
             Key = itr->first;
         else if (part[0] >= '0' && part[0] <= '9' || part[0] >= 'A' && part[0] <= 'Z')
             Key = part[0];
