@@ -15,7 +15,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2019-12-04";
+char const* const BUILDPAD_VERSION = "2019-12-04a";
 
 namespace resources
 {
@@ -2888,10 +2888,10 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
 
                     if (selection)
                         for (uint8_t i = 0; i < 3; ++i)
-                            if ((water ? data.ProfessionSpecific.Revenant.InactiveSkills.Water[i] : data.ProfessionSpecific.Revenant.InactiveSkills.Land[i]) == selection)
-                                (water ? data.ProfessionSpecific.Revenant.InactiveSkills.Water[i] : data.ProfessionSpecific.Revenant.InactiveSkills.Land[i]) = water ? data.ProfessionSpecific.Revenant.InactiveSkills.Water[index] : data.ProfessionSpecific.Revenant.InactiveSkills.Land[index];
+                            if (data.ProfessionSpecific.Revenant.InactiveSkills.Select(water)[i] == selection)
+                                data.ProfessionSpecific.Revenant.InactiveSkills.Select(water)[i] = data.ProfessionSpecific.Revenant.InactiveSkills.Select(water)[index];
 
-                    (water ? data.ProfessionSpecific.Revenant.InactiveSkills.Water[index] : data.ProfessionSpecific.Revenant.InactiveSkills.Land[index]) = selection;
+                    data.ProfessionSpecific.Revenant.InactiveSkills.Select(water)[index] = selection;
                     return;
                 }
 
@@ -2900,10 +2900,10 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
 
             if (selection)
                 for (uint8_t i = 0; i < 5; ++i)
-                    if ((water ? data.Skills[i].Water : data.Skills[i].Land) == selection)
-                        (water ? data.Skills[i].Water : data.Skills[i].Land) = water ? data.Skills[index].Water : data.Skills[index].Land;
+                    if (data.Skills[i].Select(water) == selection)
+                        data.Skills[i].Select(water) = data.Skills[index].Select(water);
 
-            (water ? data.Skills[index].Water : data.Skills[index].Land) = selection;
+            data.Skills[index].Select(water) = selection;
         };
         context.PaletteSourceLoaded = API::Profession::Get((uint32_t)parsed.Profession).Loaded;
         context.PaletteFilter = [&](Skill* const& info, bool water, uint8_t index)
@@ -2914,7 +2914,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
 
             if (parsed.Profession == GW2::Profession::Revenant &&
                 !info->Palettes.empty() &&
-                SkillPaletteToSkill(info->Palettes.front(), (water ? parsed.RevenantLegendsWater : parsed.RevenantLegendsLand)[0]) != info->ID)
+                SkillPaletteToSkill(info->Palettes.front(), (water ? parsed.RevenantLegendsWater : parsed.RevenantLegendsLand)[parsed.Profession == GW2::Profession::Revenant && index >= 5 ? 1 : 0]) != info->ID)
                 return false;
 
             if (parsed.Profession == GW2::Profession::Revenant && index >= 5)
@@ -2939,6 +2939,9 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
         };
         context.PaletteUsable = [&](Skill* const& info, bool water, uint8_t index)
         {
+            if (parsed.Profession == GW2::Profession::Revenant)
+                return true;
+
             if (water)
                 if (auto const& skill = API::Skill::Get(info->ID))
                     return !skill.NoUnderwater;
@@ -2985,10 +2988,10 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                 context.Getter = [&parsed](bool water, uint8_t index) { return (water ? parsed.RangerPetsWater : parsed.RangerPetsLand)[index]; };
                 context.Setter = [](ChatLink::BuildTemplate& data, bool water, uint8_t index, uint8_t selection)
                 {
-                    if (selection && (water ? data.ProfessionSpecific.RangerPets.Water : data.ProfessionSpecific.RangerPets.Land)[1 - index] == selection)
-                        (water ? data.ProfessionSpecific.RangerPets.Water : data.ProfessionSpecific.RangerPets.Land)[1 - index] = (water ? data.ProfessionSpecific.RangerPets.Water : data.ProfessionSpecific.RangerPets.Land)[index];
+                    if (selection && data.ProfessionSpecific.RangerPets.Select(water)[1 - index] == selection)
+                        data.ProfessionSpecific.RangerPets.Select(water)[1 - index] = data.ProfessionSpecific.RangerPets.Select(water)[index];
 
-                    (water ? data.ProfessionSpecific.RangerPets.Water : data.ProfessionSpecific.RangerPets.Land)[index] = selection;
+                    data.ProfessionSpecific.RangerPets.Select(water)[index] = selection;
                 };
                 context.PaletteSourceLoaded = m_petsLoaded;
                 context.PaletteFilter = [](Pet const& info, bool water, uint8_t index)
@@ -3031,10 +3034,10 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                 context.Getter = [&parsed](bool water, uint8_t index) { return (water ? parsed.RevenantLegendsWater : parsed.RevenantLegendsLand)[1 - index]; };
                 context.Setter = [](ChatLink::BuildTemplate& data, bool water, uint8_t index, GW2::RevenantLegend selection)
                 {
-                    if (selection != GW2::RevenantLegend::None && (water ? data.ProfessionSpecific.Revenant.Legends.Water : data.ProfessionSpecific.Revenant.Legends.Land)[index] == selection)
-                        (water ? data.ProfessionSpecific.Revenant.Legends.Water : data.ProfessionSpecific.Revenant.Legends.Land)[index] = (water ? data.ProfessionSpecific.Revenant.Legends.Water : data.ProfessionSpecific.Revenant.Legends.Land)[1 - index];
+                    if (selection != GW2::RevenantLegend::None && data.ProfessionSpecific.Revenant.Legends.Select(water)[index] == selection)
+                        data.ProfessionSpecific.Revenant.Legends.Select(water)[index] = data.ProfessionSpecific.Revenant.Legends.Select(water)[1 - index];
 
-                    (water ? data.ProfessionSpecific.Revenant.Legends.Water : data.ProfessionSpecific.Revenant.Legends.Land)[1 - index] = selection;
+                    data.ProfessionSpecific.Revenant.Legends.Select(water)[1 - index] = selection;
                 };
                 context.PaletteSourceLoaded = true;
                 context.PaletteFilter = [&parsed](GW2::RevenantLegendInfo const& info, bool water, uint8_t index)
@@ -3149,28 +3152,19 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                     {
                         if (data.Profession == GW2::Profession::Revenant)
                         {
-                            for (auto& legend : data.ProfessionSpecific.Revenant.Legends.Land)
-                                if (legend != GW2::RevenantLegend::None)
-                                    if (GW2::Specialization const legendSpec = GW2::GetRevenantLegendInfo(legend).RequiredSpecialization; legendSpec != GW2::Specialization::None && legendSpec != newSpecialization)
-                                        legend = GW2::RevenantLegend::None;
-
-                            for (auto& legend : data.ProfessionSpecific.Revenant.Legends.Water)
-                                if (legend != GW2::RevenantLegend::None)
-                                    if (GW2::Specialization const legendSpec = GW2::GetRevenantLegendInfo(legend).RequiredSpecialization; legendSpec != GW2::Specialization::None && legendSpec != newSpecialization)
-                                        legend = GW2::RevenantLegend::None;
+                            for (uint8_t type = 0; type < 2; ++type)
+                                for (auto& legend : data.ProfessionSpecific.Revenant.Legends.Select((bool)type))
+                                    if (legend != GW2::RevenantLegend::None)
+                                        if (GW2::Specialization const legendSpec = GW2::GetRevenantLegendInfo(legend).RequiredSpecialization; legendSpec != GW2::Specialization::None && legendSpec != newSpecialization)
+                                            legend = GW2::RevenantLegend::None;
                         }
                         else
                         {
-                            for (auto& skill : data.Skills)
-                            {
-                                if (uint16_t& palette = skill.Land)
-                                    if (GW2::Specialization const skillSpec = GetPaletteSpecialization(palette, data.ProfessionSpecific.Revenant.Legends.Land[0]); GW2::GetSpecializationInfo(skillSpec).Elite && skillSpec != newSpecialization)
-                                        palette = 0;
-
-                                if (uint16_t& palette = skill.Water)
-                                    if (GW2::Specialization const skillSpec = GetPaletteSpecialization(palette, data.ProfessionSpecific.Revenant.Legends.Water[0]); GW2::GetSpecializationInfo(skillSpec).Elite && skillSpec != newSpecialization)
-                                        palette = 0;
-                            }
+                            for (uint8_t type = 0; type < 2; ++type)
+                                for (auto& skill : data.Skills)
+                                    if (uint16_t& palette = skill.Select((bool)type))
+                                        if (GW2::Specialization const skillSpec = GetPaletteSpecialization(palette, data.ProfessionSpecific.Revenant.Legends.Select((bool)type)[0]); GW2::GetSpecializationInfo(skillSpec).Elite && skillSpec != newSpecialization)
+                                            palette = 0;
                         }
                     }
                 };
@@ -3629,13 +3623,10 @@ void Handler::RenderArcDPSMigration(Time const& delta)
                     data.ProfessionSpecific.Revenant.Legends.Land[1] = previousRevenantLegendsLand[1];
                     data.ProfessionSpecific.Revenant.Legends.Water[0] = previousRevenantLegendsWater[0];
                     data.ProfessionSpecific.Revenant.Legends.Water[1] = previousRevenantLegendsWater[1];
-                    for (uint8_t i = 0; i < 3; ++i)
-                    {
-                        if (!data.ProfessionSpecific.Revenant.InactiveSkills.Land[i])
-                            data.ProfessionSpecific.Revenant.InactiveSkills.Land[i] = data.Skills[1 + i].Land;
-                        if (!data.ProfessionSpecific.Revenant.InactiveSkills.Water[i])
-                            data.ProfessionSpecific.Revenant.InactiveSkills.Water[i] = data.Skills[1 + i].Water;
-                    }
+                    for (uint8_t water = 0; water < 2; ++water)
+                        for (uint8_t i = 0; i < 3; ++i)
+                            if (!data.ProfessionSpecific.Revenant.InactiveSkills.Select((bool)water)[i])
+                                data.ProfessionSpecific.Revenant.InactiveSkills.Select((bool)water)[i] = data.Skills[1 + i].Select((bool)water);
                     previewBuild.SetLink(ChatLink::Encode(data));
                 }
                 break;

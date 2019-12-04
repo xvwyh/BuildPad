@@ -123,6 +123,9 @@ public:
         {
             T Land { };
             T Water { };
+
+            T      & Select(bool water)       { return water ? Water : Land; }
+            T const& Select(bool water) const { return water ? Water : Land; }
         };
 
         uint8_t Type = 0x0D;

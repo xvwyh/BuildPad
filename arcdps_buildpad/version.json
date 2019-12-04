@@ -1,7 +1,15 @@
 {
-  "latest": "2019-12-04",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-12-04.dll",
+  "latest": "2019-12-04a",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-12-04a.dll",
   "history": [
+    {
+      "version": "2019-12-04a",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-12-04a.dll",
+      "changes": [
+        { "type": "bug", "text": "Fixed skill selection not being shown for inactive revenant legend if there was no active legend selected" },
+        { "type": "bug", "text": "Fixed being unable to select \"Inspiring Reinforcement\" as an aquatic revenant skill" }
+      ]
+    },
     {
       "version": "2019-12-04",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-12-04.dll",

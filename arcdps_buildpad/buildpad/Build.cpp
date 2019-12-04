@@ -12,13 +12,10 @@ void Build::PostLoad()
             if (auto link = ChatLink::Decode(GetLink()); link && std::holds_alternative<ChatLink::BuildTemplate>(*link))
             {
                 auto& data = std::get<ChatLink::BuildTemplate>(*link);
-                for (uint8_t i = 0; i < 3; ++i)
-                {
-                    if (!data.ProfessionSpecific.Revenant.InactiveSkills.Land[i])
-                        data.ProfessionSpecific.Revenant.InactiveSkills.Land[i] = data.Skills[1 + i].Land;
-                    if (!data.ProfessionSpecific.Revenant.InactiveSkills.Water[i])
-                        data.ProfessionSpecific.Revenant.InactiveSkills.Water[i] = data.Skills[1 + i].Water;
-                }
+                for (uint8_t water = 0; water < 2; ++water)
+                    for (uint8_t i = 0; i < 3; ++i)
+                        if (!data.ProfessionSpecific.Revenant.InactiveSkills.Select((bool)water)[i])
+                            data.ProfessionSpecific.Revenant.InactiveSkills.Select((bool)water)[i] = data.Skills[1 + i].Select((bool)water);
                 SetLink(ChatLink::Encode(data));
             }
             break;
