@@ -15,7 +15,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2019-12-04a";
+char const* const BUILDPAD_VERSION = "2019-12-12";
 
 namespace resources
 {
@@ -2770,7 +2770,9 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
 
     auto const& parsed = build.GetParsedInfo();
 
+    ImGui::PushTextWrapPos(std::max<float>(ImGui::GetContentRegionAvailWidth(), ImGui::GetCurrentWindow()->Flags & ImGuiWindowFlags_AlwaysAutoResize ? 400px : 50px));
     ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(0xFF44BBEE), "%s", fmt::format("{}", build.GetName()).c_str());
+    ImGui::PopTextWrapPos();
     if (parsed.SkillsLand || parsed.SkillsWater || parsed.TraitLines)
     {
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, { 0, 0 });

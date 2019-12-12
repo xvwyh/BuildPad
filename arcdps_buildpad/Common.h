@@ -24,6 +24,7 @@
 
 #define ZLIB_CONST
 #define INI_ALLOW_INLINE_COMMENTS 0
+#define INI_MAX_LINE 1024
 
 using std::uintptr_t;
 using std::uint64_t;
