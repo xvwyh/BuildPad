@@ -15,7 +15,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2019-12-12";
+char const* const BUILDPAD_VERSION = "2019-12-26";
 
 namespace resources
 {
@@ -591,6 +591,33 @@ void Handler::SaveConfig()
 void Handler::LoadTest()
 {
     m_shown = true;
+}
+
+void Handler::Unload()
+{
+    if (!m_loaded)
+        return;
+
+    m_loaded = false;
+
+    static auto const unloadContainer = [this](auto& container)
+    {
+        for (auto&& [key, icon] : container)
+            UnloadTexture(icon);
+    };
+    unloadContainer(GetIconContainer<Icons>());
+    unloadContainer(GetIconContainer<GW2::Profession>());
+    unloadContainer(GetIconContainer<GW2::Specialization>());
+    unloadContainer(GetIconContainer<GW2::Slot>());
+    unloadContainer(GetIconContainer<Build::Flags>());
+
+    for (auto& profession : m_professionSkills)
+        profession.clear();
+
+    API::Instance().Unload();
+
+    while (!m_loadedTextures.empty())
+        UnloadTexture(m_loadedTextures.front());
 }
 
 Time constexpr BUILD_FADE_DURATION_FADE = 200ms;
@@ -1629,7 +1656,7 @@ void Handler::RenderMainWindow(Time const& delta)
 
                     if (ImGui::Selectable(working ? "Please wait..." : "Copy as Text", false, working ? ImGuiSelectableFlags_Disabled : ImGuiSelectableFlags_DontClosePopups))
                     {
-                        auto task = [this, build, popup = ImGui::GetCurrentWindow()->GetID("##BuildPadContextMenu")]
+                        auto task = [this, build]
                         {
                             if (!API::Instance().PreloadAllBuildInfos(build))
                                 return RepeatCurrentMainThreadTask(), false;
@@ -1643,7 +1670,7 @@ void Handler::RenderMainWindow(Time const& delta)
                                 stream << "\n";
                                 for (auto const& line : *parsed.TraitLines)
                                     if (line.Specialization != GW2::Specialization::None)
-                                        if (auto const& info = API::Specialization::Get((uint32_t)line.Specialization); info.Loaded)
+                                        if (auto const& info = API::Specialization::Get((uint32_t)line.Specialization))
                                             stream << fmt::format("\n{}\n- {}\n- {}\n- {}",
                                                 info.Name,
                                                 line.Traits[0] ? API::Trait::Get(info.GetTrait(0, line.Traits[0])).Name : "",
@@ -1691,7 +1718,11 @@ void Handler::RenderMainWindow(Time const& delta)
                                 default:
                                     break;
                             }
+#if _WIN32
+                            ImGui::SetClipboardText(util::replace_all(stream.str(), "\n", "\r\n").c_str());
+#else
                             ImGui::SetClipboardText(stream.str().c_str());
+#endif
                             copyAsTextClosePopupBuildID = build.GetID();
                             return true;
                         };
@@ -1729,7 +1760,7 @@ void Handler::RenderMainWindow(Time const& delta)
                     }
                     if (ImGui::Selectable(working ? "Please wait..." : "Copy Traits as Chat Links", false, !build.GetParsedInfo().TraitLines || working ? ImGuiSelectableFlags_Disabled : ImGuiSelectableFlags_DontClosePopups))
                     {
-                        auto task = [this, build, popup = ImGui::GetCurrentWindow()->GetID("##BuildPadContextMenu")]
+                        auto task = [this, build]
                         {
                             if (!API::Instance().PreloadAllBuildInfos(build))
                                 return RepeatCurrentMainThreadTask(), false;
@@ -1738,7 +1769,7 @@ void Handler::RenderMainWindow(Time const& delta)
                             std::ostringstream stream;
                             for (auto const& line : *parsed.TraitLines)
                                 if (line.Specialization != GW2::Specialization::None)
-                                    if (auto const& info = API::Specialization::Get((uint32_t)line.Specialization); info.Loaded)
+                                    if (auto const& info = API::Specialization::Get((uint32_t)line.Specialization))
                                         stream << fmt::format(" {} {}{}{}",
                                             info.Name,
                                             line.Traits[0] ? API::Trait::Get(info.GetTrait(0, line.Traits[0])).ToChatLink() : "-",
@@ -1761,20 +1792,39 @@ void Handler::RenderMainWindow(Time const& delta)
                             OnMainThread(std::move(task));
                         }
                     }
-                    if (ImGui::Selectable("Copy Traits as Numbers", false, !build.GetParsedInfo().TraitLines ? ImGuiSelectableFlags_Disabled : 0))
+                    if (ImGui::Selectable(working ? "Please wait..." : "Copy Traits as Numbers", false, !build.GetParsedInfo().TraitLines || working ? ImGuiSelectableFlags_Disabled : ImGuiSelectableFlags_DontClosePopups))
                     {
-                        auto const& parsed = build.GetParsedInfo();
-                        std::ostringstream stream;
-                        for (auto const& line : *parsed.TraitLines)
-                            if (line.Specialization != GW2::Specialization::None)
-                                stream << fmt::format(" {} {}{}{}",
-                                    GW2::GetSpecializationInfo(line.Specialization).Name,
-                                    (uint32_t)line.Traits[0],
-                                    (uint32_t)line.Traits[1],
-                                    (uint32_t)line.Traits[2]);
+                        auto task = [this, build]
+                        {
+                            if (!API::Instance().PreloadAllBuildInfos(build))
+                                return RepeatCurrentMainThreadTask(), false;
 
-                        if (std::string const str = stream.str(); !str.empty())
-                            ImGui::SetClipboardText(str.substr(1).c_str());
+                            auto const& parsed = build.GetParsedInfo();
+                            std::ostringstream stream;
+                            for (auto const& line : *parsed.TraitLines)
+                                if (line.Specialization != GW2::Specialization::None)
+                                    if (auto const& info = API::Specialization::Get((uint32_t)line.Specialization))
+                                        stream << fmt::format(" {} {}{}{}",
+                                            info.Name,
+                                            (uint32_t)line.Traits[0],
+                                            (uint32_t)line.Traits[1],
+                                            (uint32_t)line.Traits[2]);
+
+                            if (std::string const str = stream.str(); !str.empty())
+                                ImGui::SetClipboardText(str.substr(1).c_str());
+
+                            copyAsTextClosePopupBuildID = build.GetID();
+                            return true;
+                        };
+
+                        if (task())
+                            ImGui::CloseCurrentPopup();
+                        else
+                        {
+                            copyAsTextWorkingPopupBuildID = build.GetID();
+                            copyAsTextExistsPopupBuildID = true;
+                            OnMainThread(std::move(task));
+                        }
                     }
 
                     ImGui::Separator();
@@ -1995,6 +2045,85 @@ void Handler::RenderMainWindow(Time const& delta)
     }
     #pragma endregion
 
+    #pragma region Snow
+    static bool snow = [] { time_t t = time(nullptr); tm tm { }; localtime_s(&tm, &t); return tm.tm_mon >= 11 && tm.tm_mday >= 22 || tm.tm_mon <= 0 && tm.tm_mday <= 4; }();
+    if (snow && m_config.Snow && delta < 1s)
+    {
+        static std::mt19937 mt { std::random_device{}() };
+        static auto const random = [](uint32_t min = 0, uint32_t max = std::numeric_limits<uint32_t>::max()) { return std::uniform_int_distribution<uint32_t> { min, max }(mt); };
+        struct Snowflake
+        {
+            uint32_t Lifetime = 0;
+            uint32_t Seed;
+            ImVec2 Position;
+        };
+        static std::array<Snowflake, 500> snowflakes { };
+        static ImU32 snowflakeColor = ImGui::ColorConvertFloat4ToU32({ 1.0f, 1.0f, 1.0f, 1.0f });
+        static Time nextSnowflakeCooldown { };
+        float const perSecond = (float)delta.count() / 1000ms .count();
+
+        bool spawned = false;
+        if (nextSnowflakeCooldown > delta)
+            nextSnowflakeCooldown -= delta;
+
+        auto* window = ImGui::GetCurrentWindow();
+        static std::optional<ImVec2> prevWindowPos;
+        static std::optional<ImVec2> prevWindowSize;
+        bool resizing = prevWindowSize && (prevWindowSize->x != window->Size.x || prevWindowSize->y != window->Size.y);
+        static ImVec2 drag { };
+        if (prevWindowPos && (prevWindowPos->x != window->Pos.x || prevWindowPos->y != window->Pos.y))
+            drag += (window->Pos - *prevWindowPos) / 20;
+        drag *= std::max<float>(0.0f, 1.0f - 5.0f * perSecond);
+
+        for (auto& snowflake : snowflakes)
+        {
+            if (!snowflake.Lifetime)
+            {
+                if (!spawned && nextSnowflakeCooldown <= delta)
+                {
+                    spawned = true;
+                    nextSnowflakeCooldown = Time(100 + random(0, 500));
+                    snowflake.Seed = random();
+                    snowflake.Position.x = window->Pos.x + (float)random(0, (uint32_t)window->Size.x);
+                    snowflake.Position.y = window->Pos.y;
+                }
+                else
+                    continue;
+            }
+
+            float const phase = 3.141592653589f * (float)snowflake.Lifetime / 1000ms .count();
+            snowflake.Lifetime += (uint32_t)delta.count();
+            snowflake.Position.x += drag.x * 0.1f * (float)(5 + snowflake.Seed % 5) + UI_SCALE * (float)( 5 + snowflake.Seed % 30) * perSecond * std::sin(phase) * (snowflake.Seed % 2 ? 1 : -1);
+            snowflake.Position.y += drag.y * 0.1f * (float)(5 + snowflake.Seed % 5) + UI_SCALE * (float)(20 + snowflake.Seed % 10) * perSecond;
+
+            float size;
+            switch (snowflake.Seed % 10) { case 0: case 1: case 2: case 3: case 4: case 5: size = 1.0f; break; case 6: case 7: case 8: size = 1.5f; break; case 9: size = 2.0f; break; }
+            size *= UI_SCALE;
+            window->DrawList->AddRectFilled(snowflake.Position - ImVec2 { size, size }, snowflake.Position + ImVec2 { size, size }, snowflakeColor, size <= 1.5f ? 0 : size * 2);
+
+            if (snowflake.Position.x < window->Pos.x)
+            {
+                if (resizing)
+                    snowflake.Lifetime = 0;
+                else
+                    snowflake.Position.x += window->Size.x;
+            }
+            if (snowflake.Position.x > window->Pos.x + window->Size.x)
+            {
+                if (resizing)
+                    snowflake.Lifetime = 0;
+                else
+                    snowflake.Position.x -= window->Size.x;
+            }
+            if (snowflake.Position.y < window->Pos.y - 50 ||
+                snowflake.Position.y > window->Pos.y + window->Size.y + 50)
+                snowflake.Lifetime = 0;
+        }
+        prevWindowPos = window->Pos;
+        prevWindowSize = window->Size;
+    }
+    #pragma endregion
+
     if (postAction)
         postAction();
 
@@ -2067,6 +2196,8 @@ void Handler::RenderSettings(bool menu)
     ImGui::PopItemWidth();
     if (ImGui::IsItemHovered())
         ImGui::Tooltip("Some characters might require a custom font to display correctly");
+    static bool snow = [] { time_t t = time(nullptr); tm tm { }; localtime_s(&tm, &t); return tm.tm_mon >= 11 && tm.tm_mday >= 22 || tm.tm_mon <= 0 && tm.tm_mday <= 4; }();
+    if (snow) ImGui::Checkbox("Snow", &m_config.Snow);
     ImGui::Checkbox("Show Filter Panel", &m_config.ShowFilterPanel);
     if (m_config.ShowFilterPanel)
     {
@@ -2907,7 +3038,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
 
             data.Skills[index].Select(water) = selection;
         };
-        context.PaletteSourceLoaded = API::Profession::Get((uint32_t)parsed.Profession).Loaded;
+        context.PaletteSourceLoaded = API::Profession::Get((uint32_t)parsed.Profession);
         context.PaletteFilter = [&](Skill* const& info, bool water, uint8_t index)
         {
             if (info->Specialization != GW2::Specialization::None &&
@@ -3170,7 +3301,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                         }
                     }
                 };
-                context.PaletteSourceLoaded = API::Profession::Get((uint32_t)parsed.Profession).Loaded;
+                context.PaletteSourceLoaded = API::Profession::Get((uint32_t)parsed.Profession);
                 context.PaletteFilter = [&lineIndex](GW2::Specialization const& info, bool water, uint8_t index)
                 {
                     return lineIndex == 2 || !GW2::GetSpecializationInfo(info).Elite;
@@ -4260,7 +4391,7 @@ std::tuple<std::vector<char>, uint32_t, uint32_t> Handler::LoadImageFile(std::va
 #undef CHECK
 }
 
-std::optional<TextureData> Handler::LoadTexture(std::variant<fs::path, std::pair<char const*, size_t>>&& source) const
+std::optional<TextureData> Handler::LoadTexture(std::variant<fs::path, std::pair<char const*, size_t>>&& source)
 {
     try
     {
@@ -4280,8 +4411,20 @@ std::optional<TextureData> Handler::LoadTexture(std::variant<fs::path, std::pair
         memcpy(rect.pBits, data.data(), sizeof(char) * width * height * 4);
         texture->UnlockRect(0);
 
+        m_loadedTextures.push_back(texture);
+
         return TextureData { texture, width, height };
     }
     catch (...) { return { }; }
 }
+
+void Handler::UnloadTexture(TextureID const& texture)
+{
+    if (texture)
+    {
+        texture->Release();
+        m_loadedTextures.remove(texture);
+    }
+}
+
 }

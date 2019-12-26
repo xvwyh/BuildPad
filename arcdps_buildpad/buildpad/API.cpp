@@ -60,7 +60,7 @@ void API::PreloadAllProfessionSpecializations(GW2::Profession profession)
                     info.IconLoaded = true;
                     Web::Instance().Request(info.IconURL,
                         [&info](std::string_view const data) { info.Icon = H.LoadTexture(std::pair { data.data(), data.size() }); },
-                        [&info](auto const&) { info.Icon = H.GetIcon(Icons::ErrorSpecialization); });
+                        [&info](auto const&) { info.Icon = Specialization::GetErrorIcon(); });
                 }
             }
         }
@@ -129,12 +129,10 @@ bool API::PreloadAllBuildInfos(Build const& build)
     {
         std::set<uint32_t> ids;
         for (uint32_t const id : parsed.RangerPetsLand)
-            if (Reserve<Pet>(id, ids, result))
-                Get<Pet>(id).Icon = H.GetIcon(Icons::LoadingPet);
+            Reserve<Pet>(id, ids, result);
 
         for (uint32_t const id : parsed.RangerPetsWater)
-            if (Reserve<Pet>(id, ids, result))
-                Get<Pet>(id).Icon = H.GetIcon(Icons::LoadingPet);
+            Reserve<Pet>(id, ids, result);
 
         Request<Pet>(ids);
     }
@@ -150,7 +148,7 @@ bool API::PreloadAllBuildInfos(Build const& build)
                     info.IconLoaded = true;
                     Web::Instance().Request(info.IconURL,
                         [&info](std::string_view const data) { info.Icon = H.LoadTexture(std::pair { data.data(), data.size() }); },
-                        [&info](auto const&) { info.Icon = H.GetIcon(Icons::ErrorSpecialization); });
+                        [&info](auto const&) { info.Icon = Specialization::GetErrorIcon(); });
                 }
 
                 std::set<uint32_t> ids;
@@ -198,6 +196,7 @@ bool API::PreloadAllGearInfos(ChatLink::ArcDPSLegendaryTemplate<uint32_t> const&
     return result;
 }
 
+std::array<TextureData, 1> API::InfoHandlers<API::Profession>::GetDefaultIcons() { return { H.GetIcon(GW2::Profession::None) }; }
 void API::InfoHandlers<API::Profession>::Success(std::string_view const data)
 {
     for (auto const& profession : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
@@ -223,6 +222,7 @@ void API::InfoHandlers<API::Profession>::Success(std::string_view const data)
 }
 void API::InfoHandlers<API::Profession>::Error(std::set<uint32_t> const& ids) { }
 
+std::array<TextureData, 2> API::InfoHandlers<API::Specialization>::GetDefaultIcons() { return { H.GetIcon(Icons::LoadingSpecialization), H.GetIcon(Icons::ErrorSpecialization) }; }
 void API::InfoHandlers<API::Specialization>::Success(std::string_view const data)
 {
     for (auto const& specialization : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
@@ -242,6 +242,7 @@ void API::InfoHandlers<API::Specialization>::Success(std::string_view const data
 }
 void API::InfoHandlers<API::Specialization>::Error(std::set<uint32_t> const& ids) { }
 
+std::array<TextureData, 4> API::InfoHandlers<API::Trait>::GetDefaultIcons() { return { H.GetIcon(Icons::LoadingTrait), H.GetIcon(Icons::ErrorTrait), H.GetIcon(Icons::LoadingTraitMinor), H.GetIcon(Icons::ErrorTraitMinor) }; }
 void API::InfoHandlers<API::Trait>::Success(std::string_view data)
 {
     for (auto const& trait : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
@@ -254,16 +255,17 @@ void API::InfoHandlers<API::Trait>::Success(std::string_view data)
 
         Web::Instance().Request(trait["icon"],
             [&info](std::string_view const data) { info.Icon = H.LoadTexture(std::pair { data.data(), data.size() }); },
-            [&info](auto const&) { info.Icon = H.GetIcon(info.Major ? Icons::ErrorTrait : Icons::ErrorTraitMinor); });
+            [&info](auto const&) { info.Icon = info.Major ? Trait::GetErrorIcon() : H.GetIcon(Icons::ErrorTraitMinor); });
     }
 }
 void API::InfoHandlers<API::Trait>::Error(std::set<uint32_t> const& ids)
 {
     for (uint32_t const id : ids)
-        if (auto& info = Trait::Get(id); info.Icon.Texture == H.GetIcon(Icons::LoadingTrait).Texture || info.Icon.Texture == H.GetIcon(Icons::LoadingTraitMinor).Texture)
-            info.Icon = H.GetIcon(info.Icon.Texture == H.GetIcon(Icons::LoadingTrait).Texture ? Icons::ErrorTrait : Icons::ErrorTraitMinor);
+        if (auto& info = Trait::Get(id); info.Icon.Texture == Trait::GetDefaultIcon().Texture || info.Icon.Texture == H.GetIcon(Icons::LoadingTraitMinor).Texture)
+            info.Icon = info.Icon.Texture == Trait::GetDefaultIcon().Texture ? Trait::GetErrorIcon() : H.GetIcon(Icons::ErrorTraitMinor);
 }
 
+std::array<TextureData, 2> API::InfoHandlers<API::Skill>::GetDefaultIcons() { return { H.GetIcon(Icons::LoadingSkill), H.GetIcon(Icons::ErrorSkill) }; }
 void API::InfoHandlers<API::Skill>::Success(std::string_view const data)
 {
     for (auto const& skill : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
@@ -282,16 +284,17 @@ void API::InfoHandlers<API::Skill>::Success(std::string_view const data)
         {
             if (auto texture = H.LoadTexture(std::pair { data.data(), data.size() }))
                 info.Icon = texture->Trim(texture->Width / 10);
-        }, [&info](auto const&) { info.Icon = H.GetIcon(Icons::ErrorSkill); });
+        }, [&info](auto const&) { info.Icon = Skill::GetErrorIcon(); });
     }
 }
 void API::InfoHandlers<API::Skill>::Error(std::set<uint32_t> const& ids)
 {
     for (uint32_t const id : ids)
-        if (auto& info = Skill::Get(id); info.Icon.Texture == H.GetIcon(Icons::LoadingSkill).Texture)
-            info.Icon = H.GetIcon(Icons::ErrorSkill);
+        if (auto& info = Skill::Get(id); info.Icon.Texture == Skill::GetDefaultIcon().Texture)
+            info.Icon = Skill::GetErrorIcon();
 }
 
+std::array<TextureData, 2> API::InfoHandlers<API::Item>::GetDefaultIcons() { return { H.GetIcon(Icons::LoadingItem), H.GetIcon(Icons::ErrorItem) }; }
 void API::InfoHandlers<API::Item>::Success(std::string_view const data)
 {
     for (auto const& item : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
@@ -305,14 +308,14 @@ void API::InfoHandlers<API::Item>::Success(std::string_view const data)
 
         Web::Instance().Request(item["icon"].get<std::string>(),
             [&info](std::string_view const data) { info.Icon = H.LoadTexture(std::pair { data.data(), data.size() }); },
-            [&info](auto const&) { info.Icon = H.GetIcon(Icons::ErrorItem); });
+            [&info](auto const&) { info.Icon = Item::GetErrorIcon(); });
     }
 }
 void API::InfoHandlers<API::Item>::Error(std::set<uint32_t> const& ids)
 {
     for (uint32_t const id : ids)
-        if (auto& info = Item::Get(id); info.Icon.Texture == H.GetIcon(Icons::LoadingItem).Texture)
-            info.Icon = H.GetIcon(Icons::ErrorItem);
+        if (auto& info = Item::Get(id); info.Icon.Texture == Item::GetDefaultIcon().Texture)
+            info.Icon = Item::GetErrorIcon();
 }
 
 void API::InfoHandlers<API::ItemStats>::Success(std::string_view const data)
@@ -327,6 +330,7 @@ void API::InfoHandlers<API::ItemStats>::Success(std::string_view const data)
 }
 void API::InfoHandlers<API::ItemStats>::Error(std::set<uint32_t> const& ids) { }
 
+std::array<TextureData, 2> API::InfoHandlers<API::Pet>::GetDefaultIcons() { return { H.GetIcon(Icons::LoadingPet), H.GetIcon(Icons::ErrorPet) }; }
 void API::InfoHandlers<API::Pet>::Success(std::string_view const data)
 {
     for (auto const& pet : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
@@ -340,13 +344,13 @@ void API::InfoHandlers<API::Pet>::Success(std::string_view const data)
         {
             if (auto texture = H.LoadTexture(std::pair { data.data(), data.size() }))
                 info.Icon = texture->Trim(52);
-        }, [&info](auto const&) { info.Icon = H.GetIcon(Icons::ErrorPet); });
+        }, [&info](auto const&) { info.Icon = Pet::GetErrorIcon(); });
     }
 }
 void API::InfoHandlers<API::Pet>::Error(std::set<uint32_t> const& ids)
 {
     for (uint32_t const id : ids)
-        if (auto& info = Pet::Get(id); info.Icon.Texture == H.GetIcon(Icons::LoadingPet).Texture)
-            info.Icon = H.GetIcon(Icons::ErrorPet);
+        if (auto& info = Pet::Get(id); info.Icon.Texture == Pet::GetDefaultIcon().Texture)
+            info.Icon = Pet::GetErrorIcon();
 }
 }

@@ -180,6 +180,5 @@ public:
     static std::string Encode(unsigned char const* data, size_t length);
     static std::string Encode(link_t const& link);
     static std::optional<link_t> Decode(std::string_view code);
-
 };
 }

@@ -23,6 +23,7 @@ public:
     void LoadConfig();
     void SaveConfig();
     void LoadTest();
+    void Unload();
 
     bool HandleKeyBinds();
     void Update();
@@ -77,7 +78,9 @@ public:
     };
     template<typename Key>
     [[nodiscard]] TextureData const& GetIcon(Key key) const { return GetIconContainer<Key>().at(key); }
-    [[nodiscard]] std::optional<TextureData> LoadTexture(std::variant<fs::path, std::pair<char const*, size_t>>&& source) const;
+    [[nodiscard]] std::optional<TextureData> LoadTexture(std::variant<fs::path, std::pair<char const*, size_t>>&& source);
+    void UnloadTexture(TextureData& texture) { UnloadTexture(std::exchange(texture.Texture, TextureID { })); }
+    void UnloadTexture(TextureID const& texture);
 
     [[nodiscard]] bool AreSkillsLoaded() const { return m_loaded; }
     [[nodiscard]] uint32_t SkillPaletteToSkill(uint32_t palette, GW2::RevenantLegend legend) const
@@ -134,6 +137,7 @@ private:
     KeyBind m_keyBindToggleBuilds;
     using Clock = std::chrono::high_resolution_clock;
     Clock::time_point m_previousUpdate { };
+    std::list<TextureID> m_loadedTextures;
 
     struct Skill
     {
@@ -377,6 +381,7 @@ private:
         bool HideWindowHeader = false;
         bool KeepWindowInBounds = true;
         std::string GearIconSet;
+        bool Snow = true;
 
         using field_t = std::variant<bool(Config::*), uint32_t(Config::*), int32_t(Config::*), std::string(Config::*), std::array<uint32_t, 10>(Config::*)>;
         [[nodiscard]] static std::vector<std::pair<std::string, field_t>> const& GetFields()
@@ -420,6 +425,7 @@ private:
                 FIELD(HideWindowHeader),
                 FIELD(KeepWindowInBounds),
                 FIELD(GearIconSet),
+                FIELD(Snow),
             };
 #undef FIELD
             return instance;

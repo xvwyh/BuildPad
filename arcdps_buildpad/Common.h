@@ -22,6 +22,7 @@
 #include "dep/gsl/gsl"
 #include "dep/imgui/imgui.h"
 
+#define NOMINMAX
 #define ZLIB_CONST
 #define INI_ALLOW_INLINE_COMMENTS 0
 #define INI_MAX_LINE 1024
@@ -80,6 +81,25 @@ T from_string(std::string_view str, std::chars_format format = std::chars_format
     T result { };
     if (!str.empty())
         std::from_chars(&*str.begin(), &*str.rbegin() + 1, result, format);
+    return result;
+}
+
+inline std::string replace_all(std::string_view source, std::string_view from, std::string_view to)
+{
+    std::string result;
+    result.reserve(source.length());
+
+    std::string::size_type lastPos = 0;
+    std::string::size_type findPos;
+
+    while ((findPos = source.find(from, lastPos)) != std::string::npos)
+    {
+        result.append(source, lastPos, findPos - lastPos);
+        result += to;
+        lastPos = findPos + from.length();
+    }
+
+    result += source.substr(lastPos);
     return result;
 }
 

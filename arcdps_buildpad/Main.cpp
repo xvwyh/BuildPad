@@ -70,6 +70,7 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD ulReasonForCall, LPVOID lpReserved)
 uintptr_t mod_release()
 {
     buildpad::Handler::Instance().SaveConfig();
+    buildpad::Handler::Instance().Unload();
     return 0;
 }
 

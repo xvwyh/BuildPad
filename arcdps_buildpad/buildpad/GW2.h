@@ -343,6 +343,5 @@ struct GW2
         return instance;
     }
     static SlotInfo const& GetSlotInfo(Slot slot) { return *util::find_if(GetSlotInfos(), util::member_equals(&SlotInfo::Slot, slot)); }
-
 };
 }

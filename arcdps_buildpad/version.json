@@ -1,7 +1,18 @@
 {
-  "latest": "2019-12-12",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-12-12.dll",
+  "latest": "2019-12-26",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-12-26.dll",
   "history": [
+    {
+      "version": "2019-12-26",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-12-26.dll",
+      "changes": [
+        { "type": "bug", "text": "Fixed profession palette not using localized profession names" },
+        { "type": "bug", "text": "Fixed missing localization of specialization names in \"Copy Traits as Numbers\" menu button" },
+        { "type": "bug", "text": "Fixed incorrect line ending in \"Copy as Text\" menu button, which could lead to some Windows text editors not displaying line breaks" },
+        { "type": "bug", "text": "Fixed potential memory corruption when changing API language while some API requests are still in progress" },
+        { "type": "bug", "text": "All textures are now unloaded together with BuildPad to fix d912pxy memory leak reports" }
+      ]
+    },
     {
       "version": "2019-12-12",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-12-12.dll",
