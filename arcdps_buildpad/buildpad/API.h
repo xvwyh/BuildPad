@@ -147,6 +147,7 @@ public:
         m_professionsRequested = false;
     }
 
+    void LoadSkillData() const;
     void PreloadAllPets();
     void PreloadAllProfessions();
     void PreloadAllProfessionSkills(GW2::Profession profession);
@@ -161,7 +162,7 @@ private:
     struct InfoHandlers;
 
     std::string m_lang;
-    std::string m_schema = "2019-05-22T00:00:00.000Z";
+    std::string m_schema = "2019-12-19T00:00:00.000Z";
 
     bool m_professionsRequested = false;
     uint32_t m_generation = 0;

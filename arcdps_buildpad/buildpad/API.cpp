@@ -1,10 +1,127 @@
 ﻿#include "API.h"
 #include "json/json.hpp"
+#include "SkillStorage.h"
 
 namespace buildpad
 {
 #define H Handler::Instance()  // NOLINT(cppcoreguidelines-macro-usage)
 using Icons = Handler::Icons;
+
+void API::LoadSkillData() const
+{
+    SkillStorage::Instance().SetLoadingState(SkillStorage::LoadingState::Loading);
+
+    auto const loader = [this](std::string_view const data)
+    {
+        for (auto const& profession : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
+        {
+            GW2::Profession id;
+            if (auto const itr = util::find_if(GW2::GetProfessionInfos(), util::member_equals(&GW2::ProfessionInfo::Name, profession["id"])))
+                id = itr->Profession;
+            else
+                return;
+
+            std::vector<GW2::Specialization> specializations;
+            for (auto const& specialization : profession["specializations"])
+                specializations.emplace_back((GW2::Specialization)specialization);
+
+            for (auto const& skill : profession["skills"])
+            {
+                SkillStorage::Instance().AddProfessionSkill(id, skill["id"], [type = skill["type"]]
+                {
+                    if (type == "Profession")
+                        return SkillStorage::SkillType::Profession;
+                    if (type == "Heal")
+                        return SkillStorage::SkillType::Heal;
+                    if (type == "Utility")
+                        return SkillStorage::SkillType::Utility;
+                    if (type == "Elite")
+                        return SkillStorage::SkillType::Elite;
+                    return SkillStorage::SkillType::None;
+                }());
+            }
+
+            auto specialization = specializations.begin();
+            for (auto const& training : profession["training"])
+            {
+                if (training["category"] == "Specializations" || training["category"] == "EliteSpecializations")
+                {
+                    for (auto const& track : training["track"])
+                    {
+                        if (track["type"] == "Skill")
+                        {
+                            auto& skill = *SkillStorage::Instance().GetSkill(track["skill_id"]);
+                            skill.Profession = id;
+                            skill.Specialization = *specialization;
+                        }
+                    }
+                    ++specialization;
+                }
+            }
+
+            for (auto const& pair : profession["skills_by_palette"])
+                SkillStorage::Instance().AddPalette(pair[0], pair[1]);
+        }
+
+        auto const loader = [](std::string_view const data)
+        {
+            for (auto const& legend : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
+            {
+                GW2::RevenantLegend id;
+                if (auto const itr = util::find_if(GW2::GetRevenantLegendInfos(), util::member_equals(&GW2::RevenantLegendInfo::Legend, (GW2::RevenantLegend)legend["code"])))
+                    id = itr->Legend;
+                else
+                    return;
+
+                SkillStorage::RevenantLegendSkills skills { };
+                skills.SwapSkill = legend["swap"];
+
+                uint8_t index = 0;
+                skills.Skills[index++] = legend["heal"];
+                for (auto const& utility : legend["utilities"])
+                    skills.Skills[index++] = utility;
+                skills.Skills[index] = legend["elite"];
+
+                SkillStorage::Instance().AddRevenantLegendSkills(id, skills);
+            }
+
+            // Needed until the API contains palette assignments for all revenant legend skills (currently only Kalla is present)
+            Web::Instance().Request(
+                "https://buildpad.gw2archive.eu/skillpalette.json",
+                [](std::string_view const data)
+                {
+                    for (auto const& skill : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
+                        for (auto& palette : skill["palette"])
+                            SkillStorage::Instance().AddPalette(palette, skill["id"], skill.contains("override_api") ? (bool)skill["override_api"] : false);
+
+                    SkillStorage::Instance().SetLoadingState(SkillStorage::LoadingState::Done);
+                },
+                [](auto&&) { SkillStorage::Instance().SetLoadingState(SkillStorage::LoadingState::Failed); }, false);
+        };
+
+        Web::Instance().Request(
+            fmt::format("https://api.guildwars2.com/v2/legends?lang={}&v={}&ids={}", GetLanguageInfos().front().Tag, m_schema, "all"),
+            loader,
+            [loader](auto&&)
+        {
+            Web::Instance().Request(
+                "https://buildpad.gw2archive.eu/apifallback_legends.json",
+                loader,
+                [](auto&&) { SkillStorage::Instance().SetLoadingState(SkillStorage::LoadingState::Failed); }, false);
+        }, false);
+    };
+
+    Web::Instance().Request(
+        fmt::format(InfoHandlers<Profession>::URL, GetLanguageInfos().front().Tag, m_schema, "all"),
+        loader,
+        [loader](auto&&)
+        {
+            Web::Instance().Request(
+                "https://buildpad.gw2archive.eu/apifallback_professions.json",
+                loader,
+                [](auto&&) { SkillStorage::Instance().SetLoadingState(SkillStorage::LoadingState::Failed); }, false);
+        }, false);
+}
 
 void API::PreloadAllPets()
 {
@@ -88,38 +205,32 @@ bool API::PreloadAllBuildInfos(Build const& build)
         std::set<uint32_t> ids;
         if (parsed.SkillsLand)
             for (uint32_t const palette : *parsed.SkillsLand)
-                if (uint32_t const id = H.SkillPaletteToSkill(palette, parsed.RevenantLegendsLand[0]))
+                if (uint32_t const id = SkillStorage::Instance().FromPalette(palette, parsed.RevenantLegendsLand[0]))
                     Reserve<Skill>(id, ids, result);
 
         if (parsed.SkillsWater)
             for (uint32_t const palette : *parsed.SkillsWater)
-                if (uint32_t const id = H.SkillPaletteToSkill(palette, parsed.RevenantLegendsWater[0]))
+                if (uint32_t const id = SkillStorage::Instance().FromPalette(palette, parsed.RevenantLegendsWater[0]))
                     Reserve<Skill>(id, ids, result);
 
         if (parsed.Profession == GW2::Profession::Revenant)
         {
             for (auto const& info : GW2::GetRevenantLegendInfos())
-                if (uint32_t const id = info.SwapSkill)
-                    Reserve<Skill>(id, ids, result);
+                if (auto const* skills = SkillStorage::Instance().GetRevenantLegendSkills(info.Legend))
+                    if (uint32_t const id = skills->SwapSkill)
+                        Reserve<Skill>(id, ids, result);
 
             for (auto const& legend : parsed.RevenantLegendsLand)
-            {
                 if (legend != GW2::RevenantLegend::None)
-                {
-                    auto const& info = GW2::GetRevenantLegendInfo(legend);
-                    for (uint32_t const id : info.Skills)
-                        Reserve<Skill>(id, ids, result);
-                }
-            }
+                    if (auto const* skills = SkillStorage::Instance().GetRevenantLegendSkills(legend))
+                        for (uint32_t const id : skills->Skills)
+                            Reserve<Skill>(id, ids, result);
+
             for (auto const& legend : parsed.RevenantLegendsWater)
-            {
                 if (legend != GW2::RevenantLegend::None)
-                {
-                    auto const& info = GW2::GetRevenantLegendInfo(legend);
-                    for (uint32_t const id : info.Skills)
-                        Reserve<Skill>(id, ids, result);
-                }
-            }
+                    if (auto const* skills = SkillStorage::Instance().GetRevenantLegendSkills(legend))
+                        for (uint32_t const id : skills->Skills)
+                            Reserve<Skill>(id, ids, result);
         }
 
         Request<Skill>(ids);
@@ -212,10 +323,7 @@ void API::InfoHandlers<API::Profession>::Success(std::string_view const data)
         for (auto const& specialization : profession["specializations"])
             info.Specializations.emplace_back((GW2::Specialization)specialization);
         for (auto const& skill : profession["skills"])
-        {
             info.Skills.emplace_back(skill["id"]);
-            H.AddProfessionSkill(id, skill["id"], skill["type"]);
-        }
         info.Icon = H.GetIcon(id);
         info.Loaded = true;
     }

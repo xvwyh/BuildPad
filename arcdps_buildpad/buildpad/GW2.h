@@ -221,8 +221,6 @@ struct GW2
     {
         RevenantLegend Legend = RevenantLegend::None;
         Specialization RequiredSpecialization = Specialization::None;
-        uint32_t SwapSkill = 0;
-        std::array<uint32_t, 5> Skills { };
         bool Terrestrial = true;
         bool Aquatic = true;
 
@@ -243,13 +241,13 @@ struct GW2
     {
         constexpr static std::array<RevenantLegendInfo, 7> instance
         { {
-            { RevenantLegend::None,    Specialization::None,                    0, {     0,     0,     0,     0,     0 }, },
-            { RevenantLegend::Glint,   Specialization::RevenantHerald,      28229, { 27220, 28379, 27014, 26644, 27760 }, },
-            { RevenantLegend::Shiro,   Specialization::None,                27659, { 26937, 29209, 28231, 27107, 28406 }, },
-            { RevenantLegend::Jallis,  Specialization::None,                26650, { 27372, 28516, 26679, 26557, 27975 }, },
-            { RevenantLegend::Mallix,  Specialization::None,                28376, { 28219, 27322, 27505, 27917, 28287 }, },
-            { RevenantLegend::Kalla,   Specialization::RevenantRenegade,    41858, { 45686, 42949, 40485, 41220, 45773 }, true, false },
-            { RevenantLegend::Ventari, Specialization::None,                28141, { 28427, 26821, 27025, 27715, 27356 }, true, false },
+            { RevenantLegend::None,    Specialization::None,                            },
+            { RevenantLegend::Glint,   Specialization::RevenantHerald,                  },
+            { RevenantLegend::Shiro,   Specialization::None,                            },
+            { RevenantLegend::Jallis,  Specialization::None,                            },
+            { RevenantLegend::Mallix,  Specialization::None,                            },
+            { RevenantLegend::Kalla,   Specialization::RevenantRenegade,    true, false },
+            { RevenantLegend::Ventari, Specialization::None,                true, false },
         } };
         return instance;
     }

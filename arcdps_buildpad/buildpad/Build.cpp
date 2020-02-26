@@ -1,6 +1,7 @@
 ﻿#include "Build.h"
 #include "ChatLink.h"
 #include "Handler.h"
+#include "SkillStorage.h"
 
 namespace buildpad
 {
@@ -60,10 +61,10 @@ Build::ParsedInfo Build::ParseInfo(std::string_view code)
                     parsed.Error = *error;
                     return;
                 }
-                if (auto itr = util::find_if(land, [&parsed](uint32_t palette) { return GW2::GetSpecializationInfo(Handler::Instance().GetPaletteSpecialization(palette, parsed.RevenantLegendsLand[0])).Elite; }))
-                    parsed.Specialization = Handler::Instance().GetPaletteSpecialization(*itr, parsed.RevenantLegendsLand[0]);
-                else if (itr = util::find_if(water, [&parsed](uint32_t palette) { return GW2::GetSpecializationInfo(Handler::Instance().GetPaletteSpecialization(palette, parsed.RevenantLegendsWater[0])).Elite; }))
-                    parsed.Specialization = Handler::Instance().GetPaletteSpecialization(*itr, parsed.RevenantLegendsWater[0]);
+                if (auto itr = util::find_if(land, [&parsed](uint32_t palette) { return GW2::GetSpecializationInfo(SkillStorage::Instance().GetPaletteSpecialization(palette, parsed.RevenantLegendsLand[0])).Elite; }))
+                    parsed.Specialization = SkillStorage::Instance().GetPaletteSpecialization(*itr, parsed.RevenantLegendsLand[0]);
+                else if (itr = util::find_if(water, [&parsed](uint32_t palette) { return GW2::GetSpecializationInfo(SkillStorage::Instance().GetPaletteSpecialization(palette, parsed.RevenantLegendsWater[0])).Elite; }))
+                    parsed.Specialization = SkillStorage::Instance().GetPaletteSpecialization(*itr, parsed.RevenantLegendsWater[0]);
                 switch (parsed.Profession)
                 {
                     case GW2::Profession::Ranger:
@@ -99,10 +100,10 @@ Build::ParsedInfo Build::ParseInfo(std::string_view code)
                     parsed.Error = *error;
                     return;
                 }
-                if (auto itr = util::find_if(land, [&parsed](uint32_t palette) { return GW2::GetSpecializationInfo(Handler::Instance().GetPaletteSpecialization(palette, parsed.RevenantLegendsLand[0])).Elite; }))
-                    parsed.Specialization = Handler::Instance().GetPaletteSpecialization(*itr, parsed.RevenantLegendsLand[0]);
-                else if (itr = util::find_if(water, [&parsed](uint32_t palette) { return GW2::GetSpecializationInfo(Handler::Instance().GetPaletteSpecialization(palette, parsed.RevenantLegendsWater[0])).Elite; }))
-                    parsed.Specialization = Handler::Instance().GetPaletteSpecialization(*itr, parsed.RevenantLegendsWater[0]);
+                if (auto itr = util::find_if(land, [&parsed](uint32_t palette) { return GW2::GetSpecializationInfo(SkillStorage::Instance().GetPaletteSpecialization(palette, parsed.RevenantLegendsLand[0])).Elite; }))
+                    parsed.Specialization = SkillStorage::Instance().GetPaletteSpecialization(*itr, parsed.RevenantLegendsLand[0]);
+                else if (itr = util::find_if(water, [&parsed](uint32_t palette) { return GW2::GetSpecializationInfo(SkillStorage::Instance().GetPaletteSpecialization(palette, parsed.RevenantLegendsWater[0])).Elite; }))
+                    parsed.Specialization = SkillStorage::Instance().GetPaletteSpecialization(*itr, parsed.RevenantLegendsWater[0]);
                 else
                     parsed.Specialization = GW2::GetProfessionInfo(parsed.Profession).Specializations.front();
                 parsed.NeedsSecondaryLink = true;
@@ -224,7 +225,7 @@ std::optional<std::string> Build::ValidateParsedInfo(ParsedInfo& parsed)
     */
 
     /* Disabled, as this requires manual maintenance and might break saved builds until its updated
-    if (Handler::Instance().AreSkillsLoaded())
+    if (SkillStorage::Instance().AreSkillsLoaded())
     {
         bool water = false;
         for (auto* skills : { &parsed.SkillsLand, &parsed.SkillsWater })
@@ -237,20 +238,20 @@ std::optional<std::string> Build::ValidateParsedInfo(ParsedInfo& parsed)
                         continue;
 
                     GW2::RevenantLegend const legend = water ? parsed.RevenantLegendsLand[0] : parsed.RevenantLegendsWater[0];
-                    if (!Handler::Instance().SkillPaletteToSkill(palette, legend))
+                    if (!SkillStorage::Instance().FromPalette(palette, legend))
                     {
                         palette = 0;
                         errors.emplace_back("Unknown skill");
                     }
 
-                    GW2::Profession const profession = Handler::Instance().GetPaletteProfession(palette, legend);
+                    GW2::Profession const profession = SkillStorage::Instance().GetPaletteProfession(palette, legend);
                     if (profession != GW2::Profession::None && profession != parsed.Profession)
                     {
                         palette = 0;
                         errors.emplace_back("Skill from a wrong profession");
                     }
 
-                    GW2::Specialization const specialization = Handler::Instance().GetPaletteSpecialization(palette, legend);
+                    GW2::Specialization const specialization = SkillStorage::Instance().GetPaletteSpecialization(palette, legend);
                     if (specialization != GW2::Specialization::None && specialization != parsed.Specialization)
                     {
                         palette = 0;

@@ -1,7 +1,14 @@
 {
-  "latest": "2019-12-26",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-12-26.dll",
+  "latest": "2020-02-26",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-02-26.dll",
   "history": [
+    {
+      "version": "2020-02-26",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-02-26.dll",
+      "changes": [
+        { "type": "bug", "text": "Skill data is now loaded almost exclusively from the API, keeping it always up to date with balance changes" }
+      ]
+    },
     {
       "version": "2019-12-26",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2019-12-26.dll",

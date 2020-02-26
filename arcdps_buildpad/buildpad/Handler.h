@@ -82,49 +82,6 @@ public:
     void UnloadTexture(TextureData& texture) { UnloadTexture(std::exchange(texture.Texture, TextureID { })); }
     void UnloadTexture(TextureID const& texture);
 
-    [[nodiscard]] bool AreSkillsLoaded() const { return m_loaded; }
-    [[nodiscard]] uint32_t SkillPaletteToSkill(uint32_t palette, GW2::RevenantLegend legend) const
-    {
-        if (auto const index = GW2::RevenantLegendInfo::GetSkillIndex(palette))
-            return GW2::GetRevenantLegendInfo(legend).Skills[*index];
-
-        auto const itr = m_palettes.find(palette);
-        return itr != m_palettes.end() ? itr->second.front() : 0;
-    }
-    [[nodiscard]] uint32_t SkillToSkillPalette(uint32_t skill) const
-    {
-        auto const itr = m_skills.find(skill);
-        return itr != m_skills.end() && !itr->second.Palettes.empty() ? itr->second.Palettes.front() : 0;
-    }
-    [[nodiscard]] GW2::Profession GetPaletteProfession(uint32_t palette, GW2::RevenantLegend legend) const
-    {
-        auto const itr = m_skills.find(SkillPaletteToSkill(palette, legend));
-        return itr != m_skills.end() ? itr->second.Profession : GW2::Profession::None;
-    }
-    [[nodiscard]] GW2::Specialization GetPaletteSpecialization(uint32_t palette, GW2::RevenantLegend legend) const
-    {
-        auto const itr = m_skills.find(SkillPaletteToSkill(palette, legend));
-        return itr != m_skills.end() ? itr->second.Specialization : GW2::Specialization::None;
-    }
-
-    void AddProfessionSkill(GW2::Profession profession, uint32_t id, std::string_view type)
-    {
-        Skill& skill = *m_professionSkills[(size_t)profession].emplace_back(&m_skills[id]);
-        skill.ID = id;
-        skill.Type = [type]
-        {
-            if (type == "Profession")
-                return Skill::SkillType::Profession;
-            if (type == "Heal")
-                return Skill::SkillType::Heal;
-            if (type == "Utility")
-                return Skill::SkillType::Utility;
-            if (type == "Elite")
-                return Skill::SkillType::Elite;
-            return Skill::SkillType::None;
-        }();
-    }
-
     [[nodiscard]] bool ArePetsLoaded() const { return m_petsLoaded; }
     [[nodiscard]] std::vector<uint32_t> const& GetPets() const { return m_petIDs; }
 
@@ -139,26 +96,7 @@ private:
     Clock::time_point m_previousUpdate { };
     std::list<TextureID> m_loadedTextures;
 
-    struct Skill
-    {
-        enum class SkillType : uint8_t
-        {
-            None,
-            Profession,
-            Heal,
-            Utility,
-            Elite,
-        };
-        uint32_t ID = 0;
-        SkillType Type = SkillType::None;
-        GW2::Profession Profession = GW2::Profession::None;
-        GW2::Specialization Specialization = GW2::Specialization::None;
-        std::vector<uint32_t> Palettes;
-        std::string Name;
-    };
-    std::unordered_map<uint32_t, Skill> m_skills;
-    std::unordered_map<uint32_t, std::vector<uint32_t>> m_palettes;
-    std::array<std::vector<Skill*>, 10> m_professionSkills;
+    std::future<void> m_skillLoading;
 
     struct Pet
     {

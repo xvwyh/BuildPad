@@ -1,5 +1,6 @@
 ﻿#include "Handler.h"
 #include "BuildStorage.h"
+#include "SkillStorage.h"
 #include "ChatLink.h"
 #include "API.h"
 #include "Web.h"
@@ -15,7 +16,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2019-12-26";
+char const* const BUILDPAD_VERSION = "2020-02-26";
 
 namespace resources
 {
@@ -257,25 +258,17 @@ void Handler::LoadTextures()
     LoadIcon(GW2::Slot::WeaponW2, resources::tex156313).Trim(36);
 
     VersionCheck();
-    Web::Instance().Request("https://buildpad.gw2archive.eu/skillpalette.json", [this](std::string_view const data)
+    m_skillLoading = std::async(std::launch::async, [this] { try
     {
-        for (auto const& skill : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
-        {
-            auto const id = skill["id"];
-            auto& info = m_skills[id];
-            info.ID = id;
-            info.Type = (Skill::SkillType)skill["type"];
-            if (auto const itr = util::find_if(GW2::GetSpecializationInfos(), util::member_equals(&GW2::SpecializationInfo::Name, skill["training"])))
-                info.Specialization = itr->Specialization;
-            info.Name = skill["name"];
-            for (auto& palette : skill["palette"])
-            {
-                info.Palettes.push_back(palette);
-                m_palettes[palette].push_back(info.ID);
-            }
-        }
+        API::Instance().LoadSkillData();
+
+        while (SkillStorage::Instance().GetLoadingState() == SkillStorage::LoadingState::Loading)
+            std::this_thread::sleep_for(250ms);
 
         m_loaded = true;
+
+        if (!SkillStorage::Instance().AreSkillsLoaded())
+            return;
 
         m_arcdpsMigrationDiscovery = std::async(std::launch::async, [this]
         {
@@ -424,7 +417,7 @@ void Handler::LoadTextures()
             m_arcdpsMigrationAvailable = !m_arcdpsTraits.empty() || !m_arcdpsSkills.empty();
             m_arcdpsGearAvailable = !m_arcdpsGear.empty();
         });
-    }, [this](auto const&) { m_loaded = true; }, false);
+    } catch (...) { m_loaded = true; } });
     Web::Instance().Request("https://buildpad.gw2archive.eu/pets.json", [this](std::string_view const data)
     {
         for (auto const& pet : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
@@ -611,8 +604,7 @@ void Handler::Unload()
     unloadContainer(GetIconContainer<GW2::Slot>());
     unloadContainer(GetIconContainer<Build::Flags>());
 
-    for (auto& profession : m_professionSkills)
-        profession.clear();
+    SkillStorage::Instance().ClearProfessionSkills();
 
     API::Instance().Unload();
 
@@ -982,6 +974,19 @@ void Handler::RenderMainWindow(Time const& delta)
         }
     }
     #pragma endregion
+
+    if (SkillStorage::Instance().GetLoadingState() == SkillStorage::LoadingState::Failed)
+    {
+        ImGui::BeginGroup();
+        ImGui::PushStyleColor(ImGuiCol_Text, { 1.0f, 0.0f, 0.0f, 1.0f });
+        ImGui::TextWrapped("Failed to load skill data from Guild Wars 2 API. The API might be unavailable, or BuildPad might need to be updated.\n\nSome functionality is disabled.\n\nRestart Guild Wars 2 to try again.");
+        ImGui::PopStyleColor();
+        ImGui::EndGroup();
+        ImGui::NewLine();
+
+        ImVec2 const offset { 2px, 2px };
+        ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvailWidth(), ImGui::GetItemRectMax().y } +offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildWindowRounding);
+    }
 
     if ((m_arcdpsMigrationAvailable || m_arcdpsGearAvailable) && !m_config.ArcDPSMigrationHintHidden)
     {
@@ -1376,7 +1381,7 @@ void Handler::RenderMainWindow(Time const& delta)
                 #pragma endregion
 
                 auto const& parsed = edited.GetParsedInfo();
-                bool canEdit = (!alpha || alpha >= 1.0f) && (edited.GetLink().empty() || parsed.SkillsLand && parsed.SkillsWater && parsed.TraitLines);
+                bool canEdit = (!alpha || alpha >= 1.0f) && (edited.GetLink().empty() || parsed.SkillsLand && parsed.SkillsWater && parsed.TraitLines) && SkillStorage::Instance().AreSkillsLoaded();
                 #pragma region Build Link Input
                 {
                     auto buffer = util::to_buffer(edited.GetLink());
@@ -1682,18 +1687,18 @@ void Handler::RenderMainWindow(Time const& delta)
                                 stream << "\n";
                                 if (parsed.SkillsLand)
                                     stream << fmt::format("\nTerrestrial Skills:\n- {}\n- {}\n- {}\n- {}\n- {}",
-                                        API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsLand)[0], parsed.RevenantLegendsLand[0])).Name,
-                                        API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsLand)[1], parsed.RevenantLegendsLand[0])).Name,
-                                        API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsLand)[2], parsed.RevenantLegendsLand[0])).Name,
-                                        API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsLand)[3], parsed.RevenantLegendsLand[0])).Name,
-                                        API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsLand)[4], parsed.RevenantLegendsLand[0])).Name);
+                                        API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsLand)[0], parsed.RevenantLegendsLand[0])).Name,
+                                        API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsLand)[1], parsed.RevenantLegendsLand[0])).Name,
+                                        API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsLand)[2], parsed.RevenantLegendsLand[0])).Name,
+                                        API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsLand)[3], parsed.RevenantLegendsLand[0])).Name,
+                                        API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsLand)[4], parsed.RevenantLegendsLand[0])).Name);
                                 if (parsed.SkillsWater)
                                     stream << fmt::format("\nAquatic Skills:\n- {}\n- {}\n- {}\n- {}\n- {}",
-                                        API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsWater)[0], parsed.RevenantLegendsWater[0])).Name,
-                                        API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsWater)[1], parsed.RevenantLegendsWater[0])).Name,
-                                        API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsWater)[2], parsed.RevenantLegendsWater[0])).Name,
-                                        API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsWater)[3], parsed.RevenantLegendsWater[0])).Name,
-                                        API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsWater)[4], parsed.RevenantLegendsWater[0])).Name);
+                                        API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsWater)[0], parsed.RevenantLegendsWater[0])).Name,
+                                        API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsWater)[1], parsed.RevenantLegendsWater[0])).Name,
+                                        API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsWater)[2], parsed.RevenantLegendsWater[0])).Name,
+                                        API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsWater)[3], parsed.RevenantLegendsWater[0])).Name,
+                                        API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsWater)[4], parsed.RevenantLegendsWater[0])).Name);
                             }
                             switch (parsed.Profession)
                             {
@@ -1709,11 +1714,11 @@ void Handler::RenderMainWindow(Time const& delta)
                                 case GW2::Profession::Revenant:
                                     stream << "\n";
                                     stream << fmt::format("\nTerrestrial Legends:\n- {}\n- {}",
-                                        API::Skill::Get(GW2::GetRevenantLegendInfo(parsed.RevenantLegendsLand[0]).SwapSkill).Name,
-                                        API::Skill::Get(GW2::GetRevenantLegendInfo(parsed.RevenantLegendsLand[1]).SwapSkill).Name);
+                                        API::Skill::Get(SkillStorage::Instance().GetRevenantLegendSwapSkill(parsed.RevenantLegendsLand[0])).Name,
+                                        API::Skill::Get(SkillStorage::Instance().GetRevenantLegendSwapSkill(parsed.RevenantLegendsLand[1])).Name);
                                     stream << fmt::format("\nAquatic Legends:\n- {}\n- {}",
-                                        API::Skill::Get(GW2::GetRevenantLegendInfo(parsed.RevenantLegendsWater[0]).SwapSkill).Name,
-                                        API::Skill::Get(GW2::GetRevenantLegendInfo(parsed.RevenantLegendsWater[1]).SwapSkill).Name);
+                                        API::Skill::Get(SkillStorage::Instance().GetRevenantLegendSwapSkill(parsed.RevenantLegendsWater[0])).Name,
+                                        API::Skill::Get(SkillStorage::Instance().GetRevenantLegendSwapSkill(parsed.RevenantLegendsWater[1])).Name);
                                     break;
                                 default:
                                     break;
@@ -1741,22 +1746,22 @@ void Handler::RenderMainWindow(Time const& delta)
                         auto const& parsed = build.GetParsedInfo();
                         if (parsed.SkillsLand)
                             ImGui::SetClipboardText(fmt::format("{}{}{}{}{}",
-                                API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsLand)[0], parsed.RevenantLegendsLand[0])).ToChatLink(),
-                                API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsLand)[1], parsed.RevenantLegendsLand[0])).ToChatLink(),
-                                API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsLand)[2], parsed.RevenantLegendsLand[0])).ToChatLink(),
-                                API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsLand)[3], parsed.RevenantLegendsLand[0])).ToChatLink(),
-                                API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsLand)[4], parsed.RevenantLegendsLand[0])).ToChatLink()).c_str());
+                                API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsLand)[0], parsed.RevenantLegendsLand[0])).ToChatLink(),
+                                API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsLand)[1], parsed.RevenantLegendsLand[0])).ToChatLink(),
+                                API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsLand)[2], parsed.RevenantLegendsLand[0])).ToChatLink(),
+                                API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsLand)[3], parsed.RevenantLegendsLand[0])).ToChatLink(),
+                                API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsLand)[4], parsed.RevenantLegendsLand[0])).ToChatLink()).c_str());
                     }
                     if (ImGui::Selectable("Copy Aquatic Skills as Chat Links", false, !build.GetParsedInfo().SkillsWater ? ImGuiSelectableFlags_Disabled : 0))
                     {
                         auto const& parsed = build.GetParsedInfo();
                         if (parsed.SkillsWater)
                             ImGui::SetClipboardText(fmt::format("{}{}{}{}{}",
-                                API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsWater)[0], parsed.RevenantLegendsWater[0])).ToChatLink(),
-                                API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsWater)[1], parsed.RevenantLegendsWater[0])).ToChatLink(),
-                                API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsWater)[2], parsed.RevenantLegendsWater[0])).ToChatLink(),
-                                API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsWater)[3], parsed.RevenantLegendsWater[0])).ToChatLink(),
-                                API::Skill::Get(SkillPaletteToSkill((*parsed.SkillsWater)[4], parsed.RevenantLegendsWater[0])).ToChatLink()).c_str());
+                                API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsWater)[0], parsed.RevenantLegendsWater[0])).ToChatLink(),
+                                API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsWater)[1], parsed.RevenantLegendsWater[0])).ToChatLink(),
+                                API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsWater)[2], parsed.RevenantLegendsWater[0])).ToChatLink(),
+                                API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsWater)[3], parsed.RevenantLegendsWater[0])).ToChatLink(),
+                                API::Skill::Get(SkillStorage::Instance().FromPalette((*parsed.SkillsWater)[4], parsed.RevenantLegendsWater[0])).ToChatLink()).c_str());
                     }
                     if (ImGui::Selectable(working ? "Please wait..." : "Copy Traits as Chat Links", false, !build.GetParsedInfo().TraitLines || working ? ImGuiSelectableFlags_Disabled : ImGuiSelectableFlags_DontClosePopups))
                     {
@@ -1829,7 +1834,7 @@ void Handler::RenderMainWindow(Time const& delta)
 
                     ImGui::Separator();
 
-                    if (ImGui::Selectable("Edit", false, !(build.GetLink().empty() || build.GetParsedInfo().SkillsLand && build.GetParsedInfo().SkillsWater && build.GetParsedInfo().TraitLines) ? ImGuiSelectableFlags_Disabled : 0))
+                    if (ImGui::Selectable("Edit", false, !(build.GetLink().empty() || build.GetParsedInfo().SkillsLand && build.GetParsedInfo().SkillsWater && build.GetParsedInfo().TraitLines) || !SkillStorage::Instance().AreSkillsLoaded() ? ImGuiSelectableFlags_Disabled : 0))
                         OpenBuildEditor(build, false);
 
                     ImGui::Separator();
@@ -2996,7 +3001,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
     }
     else if (parsed.SkillsLand || parsed.SkillsWater)
     {
-        PaletteContext<uint32_t, Skill*, decltype(m_professionSkills)::value_type, API::Skill> context { "Skill", m_professionSkills[(size_t)parsed.Profession], &API::Skill::Name, &API::Skill::Icon };
+        PaletteContext<uint32_t, SkillStorage::Skill*, std::vector<SkillStorage::Skill*>, API::Skill> context { "Skill", SkillStorage::Instance().GetProfessionSkills(parsed.Profession), &API::Skill::Name, &API::Skill::Icon };
         context.EditTarget = parsed.TraitLines ? editTarget : nullptr;
         context.Preload = [&] { API::Instance().PreloadAllProfessionSkills(parsed.Profession); };
         context.Getter = [&](bool water, uint8_t index)
@@ -3039,15 +3044,17 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
             data.Skills[index].Select(water) = selection;
         };
         context.PaletteSourceLoaded = API::Profession::Get((uint32_t)parsed.Profession);
-        context.PaletteFilter = [&](Skill* const& info, bool water, uint8_t index)
+        context.PaletteFilter = [&](SkillStorage::Skill* const& info, bool water, uint8_t index)
         {
             if (info->Specialization != GW2::Specialization::None &&
-                parsed.Specialization != info->Specialization)
+                info->Specialization != parsed.Specialization)
+                return false;
+
+            if (info->Palettes.empty())
                 return false;
 
             if (parsed.Profession == GW2::Profession::Revenant &&
-                !info->Palettes.empty() &&
-                SkillPaletteToSkill(info->Palettes.front(), (water ? parsed.RevenantLegendsWater : parsed.RevenantLegendsLand)[parsed.Profession == GW2::Profession::Revenant && index >= 5 ? 1 : 0]) != info->ID)
+                info->ID != SkillStorage::Instance().FromPalette(info->Palettes.front(), (water ? parsed.RevenantLegendsWater : parsed.RevenantLegendsLand)[parsed.Profession == GW2::Profession::Revenant && index >= 5 ? 1 : 0]))
                 return false;
 
             if (parsed.Profession == GW2::Profession::Revenant && index >= 5)
@@ -3055,22 +3062,22 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
 
             switch (index)
             {
-                case 0: return info->Type == Skill::SkillType::Heal;
+                case 0: return info->Type == SkillStorage::SkillType::Heal;
                 case 1:
                 case 2:
-                case 3: return info->Type == Skill::SkillType::Utility;
-                case 4: return info->Type == Skill::SkillType::Elite;
+                case 3: return info->Type == SkillStorage::SkillType::Utility;
+                case 4: return info->Type == SkillStorage::SkillType::Elite;
                 default: return false;
             }
         };
-        context.PaletteActive = [&](Skill* const& info, bool water, uint8_t index) -> bool
+        context.PaletteActive = [&](SkillStorage::Skill* const& info, bool water, uint8_t index) -> bool
         {
             if (parsed.Profession == GW2::Profession::Revenant && index >= 6 && index <= 8)
-                return util::find_if(water ? parsed.RevenantInactiveSkillsWater : parsed.RevenantInactiveSkillsLand, util::equals(SkillToSkillPalette(info->ID)));
+                return util::find_if(water ? parsed.RevenantInactiveSkillsWater : parsed.RevenantInactiveSkillsLand, util::equals(info->ToPalette()));
 
-            return util::find_if(water ? *parsed.SkillsWater : *parsed.SkillsLand, util::equals(SkillToSkillPalette(info->ID)));
+            return util::find_if(water ? *parsed.SkillsWater : *parsed.SkillsLand, util::equals(info->ToPalette()));
         };
-        context.PaletteUsable = [&](Skill* const& info, bool water, uint8_t index)
+        context.PaletteUsable = [&](SkillStorage::Skill* const& info, bool water, uint8_t index)
         {
             if (parsed.Profession == GW2::Profession::Revenant)
                 return true;
@@ -3082,8 +3089,8 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
             return true;
         };
         context.MissingAPIIcon = Icons::MissingSkill;
-        context.InfoToDataTransform = [&](Skill* const& info) { return SkillToSkillPalette(info->ID); };
-        context.DataToAPITransform = [&](uint32_t selection, bool water, uint8_t index) { return SkillPaletteToSkill(selection, (water ? parsed.RevenantLegendsWater : parsed.RevenantLegendsLand)[parsed.Profession == GW2::Profession::Revenant && index >= 5 ? 1 : 0]); };
+        context.InfoToDataTransform = [&](SkillStorage::Skill* const& info) { return info->ToPalette(); };
+        context.DataToAPITransform = [&](uint32_t selection, bool water, uint8_t index) { return SkillStorage::Instance().FromPalette(selection, (water ? parsed.RevenantLegendsWater : parsed.RevenantLegendsLand)[parsed.Profession == GW2::Profession::Revenant && index >= 5 ? 1 : 0]); };
         context.Water = true;
         context.DarkenSecondHalf = parsed.Profession == GW2::Profession::Revenant;
         context.TypeSize = { 24px, 24px };
@@ -3204,7 +3211,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                 };
                 context.MissingAPIIcon = Icons::MissingSkill;
                 context.InfoToDataTransform = [](GW2::RevenantLegendInfo const& info) { return info.Legend; };
-                context.DataToAPITransform = [](GW2::RevenantLegend selection, bool water, uint8_t index) { return GW2::GetRevenantLegendInfo(selection).SwapSkill; };
+                context.DataToAPITransform = [](GW2::RevenantLegend selection, bool water, uint8_t index) { return SkillStorage::Instance().GetRevenantLegendSwapSkill(selection); };
                 context.Water = true;
                 context.DarkenFirstHalf = true;
                 context.TypeSize = { 16px, 16px };
@@ -3296,7 +3303,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                             for (uint8_t type = 0; type < 2; ++type)
                                 for (auto& skill : data.Skills)
                                     if (uint16_t& palette = skill.Select((bool)type))
-                                        if (GW2::Specialization const skillSpec = GetPaletteSpecialization(palette, data.ProfessionSpecific.Revenant.Legends.Select((bool)type)[0]); GW2::GetSpecializationInfo(skillSpec).Elite && skillSpec != newSpecialization)
+                                        if (GW2::Specialization const skillSpec = SkillStorage::Instance().GetPaletteSpecialization(palette, data.ProfessionSpecific.Revenant.Legends.Select((bool)type)[0]); GW2::GetSpecializationInfo(skillSpec).Elite && skillSpec != newSpecialization)
                                             palette = 0;
                         }
                     }
