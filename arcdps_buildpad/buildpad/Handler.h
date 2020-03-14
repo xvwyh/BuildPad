@@ -269,6 +269,7 @@ private:
     // Config
     struct Config
     {
+        std::string LastLaunchedVersion;
         std::string SkipUpdateVersion;
         bool ArcDPSMigrationHintHidden = false;
         std::string KeyBindToggleBuilds = "ALT+SHIFT+D";
@@ -327,6 +328,7 @@ private:
 #define FIELD(name) { #name, &Config::##name }
             static std::vector<std::pair<std::string, field_t>> const instance
             {
+                FIELD(LastLaunchedVersion),
                 FIELD(SkipUpdateVersion),
                 FIELD(ArcDPSMigrationHintHidden),
                 FIELD(KeyBindToggleBuilds),

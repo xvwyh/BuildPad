@@ -16,10 +16,11 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2020-02-26";
+char const* const BUILDPAD_VERSION = "2020-03-14";
 
 namespace resources
 {
+#include "resources/102584.h"
 #include "resources/155143.h"
 #include "resources/155919.h"
 #include "resources/155923.h"
@@ -51,7 +52,9 @@ namespace resources
 #include "resources/156640.h"
 #include "resources/156641.h"
 #include "resources/156643.h"
+#include "resources/156668.h"
 #include "resources/156675.h"
+#include "resources/156679.h"
 #include "resources/156721.h"
 #include "resources/156723.h"
 #include "resources/156794.h"
@@ -63,6 +66,7 @@ namespace resources
 #include "resources/523389.h"
 #include "resources/536048.h"
 #include "resources/536052.h"
+#include "resources/961376.h"
 #include "resources/961390.h"
 #include "resources/993598.h"
 #include "resources/993687.h"
@@ -76,12 +80,15 @@ namespace resources
 #include "resources/1128581.h"
 #include "resources/1128583.h"
 #include "resources/1293677.h"
+#include "resources/1414035.h"
 #include "resources/1424219.h"
 #include "resources/1441449.h"
 #include "resources/1444520.h"
 #include "resources/1444524.h"
 #include "resources/1535141.h"
 #include "resources/1670506.h"
+#include "resources/1716667.h"
+#include "resources/1769850.h"
 #include "resources/1770211.h"
 #include "resources/1770213.h"
 #include "resources/1770215.h"
@@ -237,6 +244,13 @@ void Handler::LoadTextures()
     LoadIcon(Build::Flags::Tank, resources::tex536048).Trim(5);
     LoadIcon(Build::Flags::Support, resources::tex156599).Trim(4);
     LoadIcon(Build::Flags::Heal, resources::tex536052).Trim(4);
+    LoadIcon(Build::Flags::Control, resources::tex156668).Trim(2);
+    LoadIcon(Build::Flags::Conquest, resources::tex102584).Trim(1);
+    LoadIcon(Build::Flags::Stronghold, resources::tex961376).Trim(3);
+    LoadIcon(Build::Flags::Duos, resources::tex156679).Trim(0, 0, 2, 2);
+    LoadIcon(Build::Flags::Zerg, resources::tex1716667).Trim(8);
+    LoadIcon(Build::Flags::Havoc, resources::tex1769850).Trim(8);
+    LoadIcon(Build::Flags::Roaming, resources::tex1414035).Trim(0);
     LoadIcon(GW2::Slot::Helm, resources::tex156307).Trim(36);
     LoadIcon(GW2::Slot::Shoulders, resources::tex156311).Trim(36);
     LoadIcon(GW2::Slot::Coat, resources::tex156297).Trim(36);
@@ -484,12 +498,24 @@ bool Handler::Load(std::string_view section, std::string_view name, std::string_
 
 void Handler::LoadConfig()
 {
-    FILE* file;
-    if (_wfopen_s(&file, GetConfigPath().c_str(), L"r"))
+    auto postConfigLoad = gsl::finally([this]
     {
         API::Instance().SetLanguage(m_config.APILocale);
+        m_keyBindToggleBuilds.FromString(m_config.KeyBindToggleBuilds);
+
+        if (m_config.LastLaunchedVersion < "2020-03-14")
+        {
+            for (auto const& info : Build::GetFlagInfos())
+                if (!info.VisibleByDefault)
+                    m_config.HideFlagsMask |= (uint32_t)info.Flag;
+        }
+
+        m_config.LastLaunchedVersion = m_versionCurrent;
+    });
+
+    FILE* file;
+    if (_wfopen_s(&file, GetConfigPath().c_str(), L"r"))
         return;
-    }
     auto guard = gsl::finally([file] { fclose(file); });
 
     m_config = { };
@@ -504,15 +530,11 @@ void Handler::LoadConfig()
     }, this))
     {
         m_config = m_savedConfig;
-        API::Instance().SetLanguage(m_config.APILocale);
         return;
     }
 
     BuildStorage::Instance().LoadEnd();
     m_savedConfig = m_config;
-
-    API::Instance().SetLanguage(m_config.APILocale);
-    m_keyBindToggleBuilds.FromString(m_config.KeyBindToggleBuilds);
 }
 
 void Handler::SaveConfig()

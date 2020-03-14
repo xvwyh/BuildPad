@@ -25,31 +25,46 @@ public:
         Tank        = BITMASK(10),
         Support     = BITMASK(11),
         Heal        = BITMASK(12),
+        Control     = BITMASK(13),
+        Conquest    = BITMASK(14),
+        Stronghold  = BITMASK(15),
+        Duos        = BITMASK(16),
+        Zerg        = BITMASK(17),
+        Havoc       = BITMASK(18),
+        Roaming     = BITMASK(19),
     };
     DEFINE_BITMASK_OPERATORS(Flags)
     struct FlagInfo
     {
         Flags Flag;
         std::string Name;
+        bool VisibleByDefault;
         bool Separator = false;
     };
     static std::vector<FlagInfo> const& GetFlagInfos()
     {
         static std::vector<FlagInfo> const instance
         {
-            { Flags::Favorite,  "Favorite",        },
-            { Flags::PvE,       "PvE",        true },
-            { Flags::PvP,       "PvP",             },
-            { Flags::WvW,       "WvW",             },
-            { Flags::OpenWorld, "Open World", true },
-            { Flags::Dungeons,  "Dungeons",        },
-            { Flags::Fractals,  "Fractals",        },
-            { Flags::Raids,     "Raids",           },
-            { Flags::Power,     "Power",      true },
-            { Flags::Condition, "Condition",       },
-            { Flags::Tank,      "Tank",            },
-            { Flags::Support,   "Support",         },
-            { Flags::Heal,      "Heal",            },
+            { Flags::Favorite,      "Favorite",     true,        },
+            { Flags::PvE,           "PvE",          true,   true },
+            { Flags::PvP,           "PvP",          true,        },
+            { Flags::WvW,           "WvW",          true,        },
+            { Flags::OpenWorld,     "Open World",   true,   true },
+            { Flags::Dungeons,      "Dungeons",     true,        },
+            { Flags::Fractals,      "Fractals",     true,        },
+            { Flags::Raids,         "Raids",        true,        },
+            { Flags::Conquest,      "Conquest",     false,  true },
+            { Flags::Stronghold,    "Stronghold",   false,       },
+            { Flags::Duos,          "Duos",         false,       },
+            { Flags::Zerg,          "Zerg",         false,  true },
+            { Flags::Havoc,         "Havoc",        false,       },
+            { Flags::Roaming,       "Roaming",      false,       },
+            { Flags::Power,         "Power",        true,   true },
+            { Flags::Condition,     "Condition",    true,        },
+            { Flags::Tank,          "Tank",         true,        },
+            { Flags::Control,       "Control",      false,       },
+            { Flags::Support,       "Support",      true,        },
+            { Flags::Heal,          "Heal",         true,        },
         };
         return instance;
     }

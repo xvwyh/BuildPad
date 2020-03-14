@@ -35,6 +35,7 @@
     <ClInclude Include="buildpad\GW2.h" />
     <ClInclude Include="buildpad\KeyBind.h" />
     <ClInclude Include="buildpad\MumbleLink.h" />
+    <ClInclude Include="buildpad\resources\102584.h" />
     <ClInclude Include="buildpad\resources\1128567.h" />
     <ClInclude Include="buildpad\resources\1128569.h" />
     <ClInclude Include="buildpad\resources\1128571.h" />
@@ -45,6 +46,7 @@
     <ClInclude Include="buildpad\resources\1128581.h" />
     <ClInclude Include="buildpad\resources\1128583.h" />
     <ClInclude Include="buildpad\resources\1293677.h" />
+    <ClInclude Include="buildpad\resources\1414035.h" />
     <ClInclude Include="buildpad\resources\1424219.h" />
     <ClInclude Include="buildpad\resources\1441449.h" />
     <ClInclude Include="buildpad\resources\1444520.h" />
@@ -83,7 +85,9 @@
     <ClInclude Include="buildpad\resources\156641.h" />
     <ClInclude Include="buildpad\resources\156643.h" />
     <ClInclude Include="buildpad\resources\156665g.h" />
+    <ClInclude Include="buildpad\resources\156668.h" />
     <ClInclude Include="buildpad\resources\156675.h" />
+    <ClInclude Include="buildpad\resources\156679.h" />
     <ClInclude Include="buildpad\resources\156721.h" />
     <ClInclude Include="buildpad\resources\156723.h" />
     <ClInclude Include="buildpad\resources\156794.h" />
@@ -92,6 +96,8 @@
     <ClInclude Include="buildpad\resources\157262.h" />
     <ClInclude Include="buildpad\resources\157325.h" />
     <ClInclude Include="buildpad\resources\1670506.h" />
+    <ClInclude Include="buildpad\resources\1716667.h" />
+    <ClInclude Include="buildpad\resources\1769850.h" />
     <ClInclude Include="buildpad\resources\1770211.h" />
     <ClInclude Include="buildpad\resources\1770213.h" />
     <ClInclude Include="buildpad\resources\1770215.h" />
@@ -108,6 +114,7 @@
     <ClInclude Include="buildpad\resources\523389.h" />
     <ClInclude Include="buildpad\resources\536048.h" />
     <ClInclude Include="buildpad\resources\536052.h" />
+    <ClInclude Include="buildpad\resources\961376.h" />
     <ClInclude Include="buildpad\resources\961390.h" />
     <ClInclude Include="buildpad\Defines.h" />
     <ClInclude Include="buildpad\Handler.h" />

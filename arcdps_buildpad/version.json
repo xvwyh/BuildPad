@@ -1,7 +1,15 @@
 {
-  "latest": "2020-02-26",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-02-26.dll",
+  "latest": "2020-03-14",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-03-14.dll",
   "history": [
+    {
+      "version": "2020-03-14",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-03-14.dll",
+      "changes": [
+        { "type": "feature", "text": "Added new filtering flags for PvP and WvW. They are hidden by default and can be enabled in Settings > Toggle Flags" },
+        { "type": "bug", "text": "Fixed builds window toggle keybind not working on the very first launch" }
+      ]
+    },
     {
       "version": "2020-02-26",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-02-26.dll",
