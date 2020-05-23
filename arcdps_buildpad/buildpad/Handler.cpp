@@ -16,7 +16,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2020-03-14";
+char const* const BUILDPAD_VERSION = "2020-05-23";
 
 namespace resources
 {
@@ -162,7 +162,7 @@ void Handler::LoadTextures()
     LoadIcon(GW2::Profession::Warrior, resources::tex156643);
     LoadIcon(GW2::Profession::Engineer, resources::tex156632);
     LoadIcon(GW2::Profession::Ranger, resources::tex156640);
-    LoadIcon(GW2::Profession::Thief, resources::tex1128571);
+    LoadIcon(GW2::Profession::Thief, resources::tex156641);
     LoadIcon(GW2::Profession::Elementalist, resources::tex156630);
     LoadIcon(GW2::Profession::Mesmer, resources::tex156636);
     LoadIcon(GW2::Profession::Necromancer, resources::tex156638);
@@ -3962,7 +3962,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
             return { };
         }
     };
-    static std::vector<ItemStatsIconsInfo> iconSets;
+    static std::list<ItemStatsIconsInfo> iconSets;
     static bool iconSetsInited = false;
     if (!iconSetsInited)
     {
@@ -3999,7 +3999,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
                         if (stats.contains("y"))
                             icon.OffsetX = stats["y"];
                         if (stats.contains("icon"))
-                            Web::Instance().Request(icons["icon"], [this, &icon](std::string_view const data) { icon.Icon = LoadTexture(std::pair { data.data(), data.size() }); });
+                            Web::Instance().Request(stats["icon"], [this, &icon](std::string_view const data) { icon.Icon = LoadTexture(std::pair { data.data(), data.size() }); });
                     }
                 }
             }
@@ -4196,8 +4196,12 @@ void Handler::RenderArcDPSGear(Time const& delta)
         ImGui::SameLine();
         ImGui::PushItemWidth(FRAME_PADDING.x + width + FRAME_PADDING.x + (FRAME_PADDING.x + ImGui::GetFontSize() + FRAME_PADDING.x));
         if (int iconSet = (int)util::distance_if(iconSets, util::member_equals(&ItemStatsIconsInfo::Name, m_config.GearIconSet));
-            ImGui::Combo("", &iconSet, [](void* data, int const index, char const** text) { return *text = (!iconSets[index].Name.empty() ? iconSets[index].Name : DEFAULT_NAME).c_str(), true; }, nullptr, (int)iconSets.size()))
-            m_config.GearIconSet = iconSets[iconSet].Name;
+            ImGui::Combo("", &iconSet, [](void* data, int const index, char const** text) { auto itr = iconSets.begin(); std::advance(itr, index); return *text = (!itr->Name.empty() ? itr->Name : DEFAULT_NAME).c_str(), true; }, nullptr, (int)iconSets.size()))
+        {
+            auto itr = iconSets.begin();
+            std::advance(itr, iconSet);
+            m_config.GearIconSet = itr->Name;
+        }
         ImGui::PopItemWidth();
     }
     ImGui::Columns(1);
