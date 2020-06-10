@@ -19,7 +19,7 @@ void API::LoadSkillData() const
             if (auto const itr = util::find_if(GW2::GetProfessionInfos(), util::member_equals(&GW2::ProfessionInfo::Name, profession["id"])))
                 id = itr->Profession;
             else
-                return;
+                throw std::exception();
 
             std::vector<GW2::Specialization> specializations;
             for (auto const& specialization : profession["specializations"])
@@ -71,7 +71,7 @@ void API::LoadSkillData() const
                 if (auto const itr = util::find_if(GW2::GetRevenantLegendInfos(), util::member_equals(&GW2::RevenantLegendInfo::Legend, (GW2::RevenantLegend)legend["code"])))
                     id = itr->Legend;
                 else
-                    return;
+                    throw std::exception();
 
                 SkillStorage::RevenantLegendSkills skills { };
                 skills.SwapSkill = legend["swap"];

@@ -1,7 +1,14 @@
 {
-  "latest": "2020-05-23",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-05-23.dll",
+  "latest": "2020-06-10",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-06-10.dll",
   "history": [
+    {
+      "version": "2020-06-10",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-06-10.dll",
+      "changes": [
+        { "type": "warning", "text": "Build templates are currently broken both in Guild Wars 2 and in BuildPad as the result of unexpected Revenant legend ID changes. This is a temporary fix to allow BuildPad to load using fallback API data, but Revenant build templates are not functional: builds created in BuildPad will not work in the game, and attempting to paste a build from the game with Ventari legend can outright cause a crash! A new update will be released once it's clear if the new IDs are here to stay, avoid using Revenant builds in the meantime." }
+      ]
+    },
     {
       "version": "2020-05-23",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-05-23.dll",
