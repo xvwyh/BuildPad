@@ -120,13 +120,13 @@ public:
         std::transform(m_normalizedName.begin(), m_normalizedName.end(), m_normalizedName.begin(), toupper);
         m_needsSave = true;
     }
-    void SetLink(std::string_view link)
+    void SetLink(std::string_view link, std::optional<uint32_t> const buildVersion = { })
     {
         if (m_link == link)
             return;
 
         m_link = link;
-        m_parsedInfo = ParseInfo(m_link);
+        m_parsedInfo = ParseInfo(m_link, buildVersion);
         m_needsSave = true;
 
         HandleMigration();
@@ -179,7 +179,7 @@ public:
     [[nodiscard]] bool IsSaveNeeded() const { return m_needsSave; }
     void SetSaved() { m_needsSave = false; }
 
-    void PostLoad();
+    void PostLoad(uint32_t buildVersion);
 
 private:
     id_t m_id;
@@ -193,7 +193,7 @@ private:
     std::string m_normalizedName;
     bool m_needsSave = false;
 
-    static ParsedInfo ParseInfo(std::string_view code);
+    static ParsedInfo ParseInfo(std::string_view code, std::optional<uint32_t> buildVersion = { });
     static std::optional<std::string> ValidateParsedInfo(ParsedInfo& parsed);
     void HandleMigration();
 };

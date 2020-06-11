@@ -153,7 +153,7 @@ void BuildStorage::Save(std::ofstream& file)
 {
     file << "[Builds]\n";
     for (Build const& build : GetBuilds())
-        file << fmt::format("={}|{}|{}|{}|{}|{}\n", 3, build.GetLink(), (uint32_t)build.GetFlags(), (uint32_t)build.GetFlagIcons(), build.GetKeyBind().ToString().value_or(""), build.GetName());
+        file << fmt::format("={}|{}|{}|{}|{}|{}\n", 4, build.GetLink(), (uint32_t)build.GetFlags(), (uint32_t)build.GetFlagIcons(), build.GetKeyBind().ToString().value_or(""), build.GetName());
     file << "\n[Filter]\n";
     file << fmt::format("Profession = {}\n", (uint32_t)m_professionFilter);
     file << fmt::format("Flags = {}\n", (uint32_t)m_flagsFilter);
@@ -176,7 +176,7 @@ bool BuildStorage::Load(std::string_view section, std::string_view name, std::st
         else
         {
             build.SetName("<MALFORMED BUILD>");
-            build.PostLoad();
+            build.PostLoad(0);
             return false;
         }
 
@@ -185,31 +185,32 @@ bool BuildStorage::Load(std::string_view section, std::string_view name, std::st
             case 1:
             {
                 if (str.getline(buffer.data(), buffer.size(), '|'))
-                    build.SetLink(buffer.data());
+                    build.SetLink(buffer.data(), version);
                 if (str.getline(buffer.data(), buffer.size(), '|'))
                     build.ToggleFlag((Build::Flags)std::strtoul(buffer.data(), nullptr, 0), true);
                 if (str.getline(buffer.data(), buffer.size()))
                     build.SetName(buffer.data());
-                build.PostLoad();
+                build.PostLoad(version);
                 return true;
             }
             case 2:
             {
                 if (str.getline(buffer.data(), buffer.size(), '|'))
-                    build.SetLink(buffer.data());
+                    build.SetLink(buffer.data(), version);
                 if (str.getline(buffer.data(), buffer.size(), '|'))
                     build.ToggleFlag((Build::Flags)std::strtoul(buffer.data(), nullptr, 0), true);
                 if (str.getline(buffer.data(), buffer.size(), '|'))
                     build.SetKeyBind(buffer.data());
                 if (str.getline(buffer.data(), buffer.size()))
                     build.SetName(buffer.data());
-                build.PostLoad();
+                build.PostLoad(version);
                 return true;
             }
             case 3:
+            case 4:
             {
                 if (str.getline(buffer.data(), buffer.size(), '|'))
-                    build.SetLink(buffer.data());
+                    build.SetLink(buffer.data(), version);
                 if (str.getline(buffer.data(), buffer.size(), '|'))
                     build.ToggleFlag((Build::Flags)std::strtoul(buffer.data(), nullptr, 0), true);
                 if (str.getline(buffer.data(), buffer.size(), '|'))
@@ -218,13 +219,13 @@ bool BuildStorage::Load(std::string_view section, std::string_view name, std::st
                     build.SetKeyBind(buffer.data());
                 if (str.getline(buffer.data(), buffer.size()))
                     build.SetName(buffer.data());
-                build.PostLoad();
+                build.PostLoad(version);
                 return true;
             }
             default:
             {
                 build.SetName(fmt::format("<INVALID BUILD #{} VERSION: {}>", build.GetID(), version));
-                build.PostLoad();
+                build.PostLoad(version);
                 return false;
             }
         }

@@ -210,12 +210,12 @@ struct GW2
     enum class RevenantLegend : uint8_t
     {
         None = 0,
-        Glint = 13,
-        Shiro = 14,
-        Jallis = 15,
-        Mallix = 16,
-        Kalla = 17,
-        Ventari = 18,
+        Glint = 14,
+        Shiro = 15,
+        Jallis = 16,
+        Mallix = 17,
+        Kalla = 18,
+        Ventari = 19,
     };
     struct RevenantLegendInfo
     {

@@ -5,7 +5,7 @@
 
 namespace buildpad
 {
-void Build::PostLoad()
+void Build::PostLoad(uint32_t const buildVersion)
 {
     switch (GetParsedProfession())
     {
@@ -17,6 +17,29 @@ void Build::PostLoad()
                     for (uint8_t i = 0; i < 3; ++i)
                         if (!data.ProfessionSpecific.Revenant.InactiveSkills.Select((bool)water)[i])
                             data.ProfessionSpecific.Revenant.InactiveSkills.Select((bool)water)[i] = data.Skills[1 + i].Select((bool)water);
+
+                // Fix messed up legend IDs after 2020-06-09 GW2 patch
+                // Don't fix it already contains the post-patch Ventari, that means the user saved a new build
+                switch (buildVersion)
+                {
+                    case 1:
+                    case 2:
+                    case 3:
+                        if (!util::find_if(data.ProfessionSpecific.Revenant.Legends.Land, util::equals(GW2::RevenantLegend::Ventari)) &&
+                            !util::find_if(data.ProfessionSpecific.Revenant.Legends.Water, util::equals(GW2::RevenantLegend::Ventari)))
+                        {
+                            for (auto& legend : data.ProfessionSpecific.Revenant.Legends.Land)
+                                if (legend != GW2::RevenantLegend::None)
+                                    legend = (GW2::RevenantLegend)((std::underlying_type_t<GW2::RevenantLegend>)legend + 1);
+                            for (auto& legend : data.ProfessionSpecific.Revenant.Legends.Water)
+                                if (legend != GW2::RevenantLegend::None)
+                                    legend = (GW2::RevenantLegend)((std::underlying_type_t<GW2::RevenantLegend>)legend + 1);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
                 SetLink(ChatLink::Encode(data));
             }
             break;
@@ -26,14 +49,14 @@ void Build::PostLoad()
     SetSaved();
 }
 
-Build::ParsedInfo Build::ParseInfo(std::string_view code)
+Build::ParsedInfo Build::ParseInfo(std::string_view code, std::optional<uint32_t> const buildVersion)
 {
     ParsedInfo parsed { };
     if (auto link = ChatLink::Decode(code))
     {
         std::visit(overloaded
         {
-            [&parsed](ChatLink::BuildTemplate& link)
+            [&parsed, &buildVersion](ChatLink::BuildTemplate& link)
             {
                 parsed.Profession = link.Profession;
                 auto& land = parsed.SkillsLand.emplace();
@@ -72,6 +95,28 @@ Build::ParsedInfo Build::ParseInfo(std::string_view code)
                         std::copy(link.ProfessionSpecific.RangerPets.Water.begin(), link.ProfessionSpecific.RangerPets.Water.end(), parsed.RangerPetsWater.begin());
                         break;
                     case GW2::Profession::Revenant:
+                        // Fix messed up legend IDs after 2020-06-09 GW2 patch
+                        // Don't fix it already contains the post-patch Ventari, that means the user saved a new build
+                        switch (buildVersion.value_or(0))
+                        {
+                            case 1:
+                            case 2:
+                            case 3:
+                                if (!util::find_if(link.ProfessionSpecific.Revenant.Legends.Land, util::equals(GW2::RevenantLegend::Ventari)) &&
+                                    !util::find_if(link.ProfessionSpecific.Revenant.Legends.Water, util::equals(GW2::RevenantLegend::Ventari)))
+                                {
+                                    for (auto& legend : link.ProfessionSpecific.Revenant.Legends.Land)
+                                        if (legend != GW2::RevenantLegend::None)
+                                            legend = (GW2::RevenantLegend)((std::underlying_type_t<GW2::RevenantLegend>)legend + 1);
+                                    for (auto& legend : link.ProfessionSpecific.Revenant.Legends.Water)
+                                        if (legend != GW2::RevenantLegend::None)
+                                            legend = (GW2::RevenantLegend)((std::underlying_type_t<GW2::RevenantLegend>)legend + 1);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+
                         std::copy(link.ProfessionSpecific.Revenant.Legends.Land.begin(), link.ProfessionSpecific.Revenant.Legends.Land.end(), parsed.RevenantLegendsLand.begin());
                         std::copy(link.ProfessionSpecific.Revenant.Legends.Water.begin(), link.ProfessionSpecific.Revenant.Legends.Water.end(), parsed.RevenantLegendsWater.begin());
                         for (uint8_t i = 0; i < 3; ++i)

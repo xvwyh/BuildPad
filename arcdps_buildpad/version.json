@@ -1,12 +1,21 @@
 {
-  "latest": "2020-06-10",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-06-10.dll",
+  "latest": "2020-06-11",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-06-11.dll",
   "history": [
+    {
+      "version": "2020-06-11",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-06-11.dll",
+      "changes": [
+        { "type": "bug", "text": "Fixed Revenant build templates after the 2020-06-09 Guild Wars 2 patch" },
+        { "type": "bug", "text": "Previously saved Revenant build templates will be automatically updated to be compatible with the new patch" },
+        { "type": "warning", "text": "Any new Revenant build templates that were added since the previous BuildPad version (2020-06-10) may have corrupted legends. You will have to fix them manually, this will be your punishment for not heeding the warning" }
+      ]
+    },
     {
       "version": "2020-06-10",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-06-10.dll",
       "changes": [
-        { "type": "warning", "text": "Build templates are currently broken both in Guild Wars 2 and in BuildPad as the result of unexpected Revenant legend ID changes. This is a temporary fix to allow BuildPad to load using fallback API data, but Revenant build templates are not functional: builds created in BuildPad will not work in the game, and attempting to paste a build from the game with Ventari legend can outright cause a crash! A new update will be released once it's clear if the new IDs are here to stay, avoid using Revenant builds in the meantime." }
+        { "type": "bug", "text": "Build templates are currently broken both in Guild Wars 2 and in BuildPad as the result of unexpected Revenant legend ID changes. This is a temporary fix to allow BuildPad to load using fallback API data, but Revenant build templates are not functional: builds created in BuildPad will not work in the game, and attempting to paste a build from the game with Ventari legend can outright cause a crash! A new update will be released once it's clear if the new IDs are here to stay, avoid using Revenant builds in the meantime." }
       ]
     },
     {
