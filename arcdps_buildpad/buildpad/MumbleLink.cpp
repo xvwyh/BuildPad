@@ -16,7 +16,7 @@ bool MumbleLink::Update()
 {
     try
     {
-        if (!m_handle && !(m_handle = OpenFileMapping(FILE_MAP_READ, false, L"MumbleLink")))
+        if (!m_handle && !(m_handle = CreateFileMapping(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, sizeof(MappedFile), GetMumbleLinkName().c_str())))
             return false;
 
         if (!m_map && !(m_map = (MappedFile*)MapViewOfFile(m_handle, FILE_MAP_READ, 0, 0, sizeof(MappedFile))))
@@ -40,8 +40,31 @@ bool MumbleLink::Update()
         nlohmann::json json = nlohmann::json::parse(identity.begin(), identity.end(), nullptr, false);
         m_profession = (GW2::Profession)json["profession"].get<int>();
     }
-    catch(...) { }
+    catch (...) { }
 
     return true;
+}
+
+std::wstring const& MumbleLink::GetMumbleLinkName()
+{
+    if (m_nameCache.empty())
+    {
+        m_nameCache = L"MumbleLink";
+
+        try
+        {
+            static std::wstring const command = L"-mumble";
+            std::wstring commandLine = GetCommandLine();
+            if (auto const index = commandLine.find(command); index != std::wstring::npos && index + command.size() < commandLine.length() && commandLine[index + command.size()] == ' ')
+            {
+                auto const start = index + command.size() + 1;
+                auto const end = commandLine.find(' ', start);
+                m_nameCache = commandLine.substr(start, (end != std::wstring::npos ? end : commandLine.length()) - start);
+            }
+        }
+        catch (...) { }
+    }
+
+    return m_nameCache;
 }
 }

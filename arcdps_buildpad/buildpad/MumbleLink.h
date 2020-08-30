@@ -37,5 +37,8 @@ private:
     handle_t m_handle = nullptr;
     MappedFile* m_map = nullptr;
     GW2::Profession m_profession = GW2::Profession::None;
+    std::wstring m_nameCache;
+
+    [[nodiscard]] std::wstring const& GetMumbleLinkName();
 };
 }

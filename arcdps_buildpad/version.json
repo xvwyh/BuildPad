@@ -1,7 +1,14 @@
 {
-  "latest": "2020-08-25",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-08-25.dll",
+  "latest": "2020-08-30",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-08-30.dll",
   "history": [
+    {
+      "version": "2020-08-30",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-08-30.dll",
+      "changes": [
+        { "type": "bug", "text": "Added support for -mumble command line argument, fixes missing profession filter when Guild Wars 2 was started through Launchbuddy" }
+      ]
+    },
     {
       "version": "2020-08-25",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-08-25.dll",

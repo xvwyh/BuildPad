@@ -16,7 +16,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2020-08-25";
+char const* const BUILDPAD_VERSION = "2020-08-30";
 
 namespace resources
 {
@@ -272,6 +272,7 @@ void Handler::LoadTextures()
     LoadIcon(GW2::Slot::WeaponW2, resources::tex156313).Trim(36);
 
     VersionCheck();
+    m_mumbleLink.Update();
     m_skillLoading = std::async(std::launch::async, [this] { try
     {
         API::Instance().LoadSkillData();
