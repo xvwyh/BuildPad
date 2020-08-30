@@ -16,7 +16,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2020-06-11";
+char const* const BUILDPAD_VERSION = "2020-08-25";
 
 namespace resources
 {
@@ -615,6 +615,8 @@ void Handler::Unload()
 
     m_loaded = false;
 
+    API::Instance().Unload(); // Must be unloaded before icons, as it relies on icons to know which textures are shared and shouldn't be unloaded yet
+
     static auto const unloadContainer = [this](auto& container)
     {
         for (auto&& [key, icon] : container)
@@ -627,8 +629,6 @@ void Handler::Unload()
     unloadContainer(GetIconContainer<Build::Flags>());
 
     SkillStorage::Instance().ClearProfessionSkills();
-
-    API::Instance().Unload();
 
     while (!m_loadedTextures.empty())
         UnloadTexture(m_loadedTextures.front());

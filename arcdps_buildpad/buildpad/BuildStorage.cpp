@@ -153,7 +153,7 @@ void BuildStorage::Save(std::ofstream& file)
 {
     file << "[Builds]\n";
     for (Build const& build : GetBuilds())
-        file << fmt::format("={}|{}|{}|{}|{}|{}\n", 4, build.GetLink(), (uint32_t)build.GetFlags(), (uint32_t)build.GetFlagIcons(), build.GetKeyBind().ToString().value_or(""), build.GetName());
+        file << fmt::format("={}|{}|{}|{}|{}|{}\n", 5, build.GetLink(), (uint32_t)build.GetFlags(), (uint32_t)build.GetFlagIcons(), build.GetKeyBind().ToString().value_or(""), build.GetName());
     file << "\n[Filter]\n";
     file << fmt::format("Profession = {}\n", (uint32_t)m_professionFilter);
     file << fmt::format("Flags = {}\n", (uint32_t)m_flagsFilter);
@@ -208,6 +208,7 @@ bool BuildStorage::Load(std::string_view section, std::string_view name, std::st
             }
             case 3:
             case 4:
+            case 5:
             {
                 if (str.getline(buffer.data(), buffer.size(), '|'))
                     build.SetLink(buffer.data(), version);

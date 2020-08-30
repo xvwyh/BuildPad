@@ -18,24 +18,25 @@ void Build::PostLoad(uint32_t const buildVersion)
                         if (!data.ProfessionSpecific.Revenant.InactiveSkills.Select((bool)water)[i])
                             data.ProfessionSpecific.Revenant.InactiveSkills.Select((bool)water)[i] = data.Skills[1 + i].Select((bool)water);
 
-                // Fix messed up legend IDs after 2020-06-09 GW2 patch
-                // Don't fix it already contains the post-patch Ventari, that means the user saved a new build
+                // Fix reordered legend IDs after 2020-08-25 GW2 patch
                 switch (buildVersion)
                 {
                     case 1:
                     case 2:
                     case 3:
-                        if (!util::find_if(data.ProfessionSpecific.Revenant.Legends.Land, util::equals(GW2::RevenantLegend::Ventari)) &&
-                            !util::find_if(data.ProfessionSpecific.Revenant.Legends.Water, util::equals(GW2::RevenantLegend::Ventari)))
-                        {
-                            for (auto& legend : data.ProfessionSpecific.Revenant.Legends.Land)
-                                if (legend != GW2::RevenantLegend::None)
-                                    legend = (GW2::RevenantLegend)((std::underlying_type_t<GW2::RevenantLegend>)legend + 1);
-                            for (auto& legend : data.ProfessionSpecific.Revenant.Legends.Water)
-                                if (legend != GW2::RevenantLegend::None)
-                                    legend = (GW2::RevenantLegend)((std::underlying_type_t<GW2::RevenantLegend>)legend + 1);
-                        }
+                    case 4:
+                    {
+                        bool const patch20200609 = buildVersion == 4
+                            || util::find_if(data.ProfessionSpecific.Revenant.Legends.Land, util::equals((GW2::RevenantLegend)19))
+                            || util::find_if(data.ProfessionSpecific.Revenant.Legends.Water, util::equals((GW2::RevenantLegend)19));
+                        for (auto& legend : data.ProfessionSpecific.Revenant.Legends.Land)
+                            if (legend != GW2::RevenantLegend::None)
+                                legend = (GW2::RevenantLegend)((std::underlying_type_t<GW2::RevenantLegend>)legend - (patch20200609 ? 13 : 12));
+                        for (auto& legend : data.ProfessionSpecific.Revenant.Legends.Water)
+                            if (legend != GW2::RevenantLegend::None)
+                                legend = (GW2::RevenantLegend)((std::underlying_type_t<GW2::RevenantLegend>)legend - (patch20200609 ? 13 : 12));
                         break;
+                    }
                     default:
                         break;
                 }
@@ -95,27 +96,35 @@ Build::ParsedInfo Build::ParseInfo(std::string_view code, std::optional<uint32_t
                         std::copy(link.ProfessionSpecific.RangerPets.Water.begin(), link.ProfessionSpecific.RangerPets.Water.end(), parsed.RangerPetsWater.begin());
                         break;
                     case GW2::Profession::Revenant:
-                        // Fix messed up legend IDs after 2020-06-09 GW2 patch
-                        // Don't fix it already contains the post-patch Ventari, that means the user saved a new build
+                        // Fix reordered legend IDs after 2020-08-25 GW2 patch
                         switch (buildVersion.value_or(0))
                         {
                             case 1:
                             case 2:
                             case 3:
-                                if (!util::find_if(link.ProfessionSpecific.Revenant.Legends.Land, util::equals(GW2::RevenantLegend::Ventari)) &&
-                                    !util::find_if(link.ProfessionSpecific.Revenant.Legends.Water, util::equals(GW2::RevenantLegend::Ventari)))
-                                {
-                                    for (auto& legend : link.ProfessionSpecific.Revenant.Legends.Land)
-                                        if (legend != GW2::RevenantLegend::None)
-                                            legend = (GW2::RevenantLegend)((std::underlying_type_t<GW2::RevenantLegend>)legend + 1);
-                                    for (auto& legend : link.ProfessionSpecific.Revenant.Legends.Water)
-                                        if (legend != GW2::RevenantLegend::None)
-                                            legend = (GW2::RevenantLegend)((std::underlying_type_t<GW2::RevenantLegend>)legend + 1);
-                                }
+                            case 4:
+                            {
+                                bool const patch20200609 = buildVersion == 4
+                                    || util::find_if(link.ProfessionSpecific.Revenant.Legends.Land, util::equals((GW2::RevenantLegend)19))
+                                    || util::find_if(link.ProfessionSpecific.Revenant.Legends.Water, util::equals((GW2::RevenantLegend)19));
+                                for (auto& legend : link.ProfessionSpecific.Revenant.Legends.Land)
+                                    if (legend != GW2::RevenantLegend::None)
+                                        legend = (GW2::RevenantLegend)((std::underlying_type_t<GW2::RevenantLegend>)legend - (patch20200609 ? 13 : 12));
+                                for (auto& legend : link.ProfessionSpecific.Revenant.Legends.Water)
+                                    if (legend != GW2::RevenantLegend::None)
+                                        legend = (GW2::RevenantLegend)((std::underlying_type_t<GW2::RevenantLegend>)legend - (patch20200609 ? 13 : 12));
                                 break;
+                            }
                             default:
                                 break;
                         }
+                        // Just reset incorrect legends at this point to prevent a crash
+                        for (auto& legend : link.ProfessionSpecific.Revenant.Legends.Land)
+                            if (legend >= (GW2::RevenantLegend)12)
+                                legend = GW2::RevenantLegend::None;
+                        for (auto& legend : link.ProfessionSpecific.Revenant.Legends.Water)
+                            if (legend >= (GW2::RevenantLegend)12)
+                                legend = GW2::RevenantLegend::None;
 
                         std::copy(link.ProfessionSpecific.Revenant.Legends.Land.begin(), link.ProfessionSpecific.Revenant.Legends.Land.end(), parsed.RevenantLegendsLand.begin());
                         std::copy(link.ProfessionSpecific.Revenant.Legends.Water.begin(), link.ProfessionSpecific.Revenant.Legends.Water.end(), parsed.RevenantLegendsWater.begin());

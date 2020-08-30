@@ -1,14 +1,24 @@
 {
-  "latest": "2020-06-11",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-06-11.dll",
+  "latest": "2020-08-25",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-08-25.dll",
   "history": [
+    {
+      "version": "2020-08-25",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-08-25.dll",
+      "changes": [
+        { "type": "bug", "text": "Fixed Revenant build templates after the 2020-08-25 Guild Wars 2 patch" },
+        { "type": "bug", "text": "Previously saved Revenant build templates will be automatically updated to be compatible with the new patch" },
+        { "type": "bug", "text": "Pasting a build template code that was created prior to 2020-08-25 patch will require manually selecting legends, as it's now impossible to know whether the code was created before or after the 2020-06-09 patch" },
+        { "type": "misc", "text": "Attempt to fix some texture unloading issues" }
+      ]
+    },
     {
       "version": "2020-06-11",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-06-11.dll",
       "changes": [
         { "type": "bug", "text": "Fixed Revenant build templates after the 2020-06-09 Guild Wars 2 patch" },
         { "type": "bug", "text": "Previously saved Revenant build templates will be automatically updated to be compatible with the new patch" },
-        { "type": "warning", "text": "Any new Revenant build templates that were added since the previous BuildPad version (2020-06-10) may have corrupted legends. You will have to fix them manually, this will be your punishment for not heeding the warning" }
+        { "type": "bug", "text": "Any new Revenant build templates that were added since the previous BuildPad version (2020-06-10) may have corrupted legends. You will have to fix them manually, this will be your punishment for not heeding the warning" }
       ]
     },
     {
