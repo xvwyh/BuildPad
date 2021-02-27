@@ -16,7 +16,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2020-08-30";
+char const* const BUILDPAD_VERSION = "2021-02-23";
 
 namespace resources
 {
@@ -762,9 +762,9 @@ void Handler::Update()
     ITEM_INNER_SPACING = ImGui::GetStyle().ItemInnerSpacing;
     INDENT_SPACING = ImGui::GetStyle().IndentSpacing;
     BUTTON_SIZE.x = BUTTON_SIZE.y = FRAME_PADDING.y + LINE_SIZE.y + FRAME_PADDING.y;
-    BUTTON_COLOR = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Button));
-    BUTTON_COLOR_ACTIVE = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_ButtonActive));
-    BUTTON_COLOR_HOVERED = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_ButtonHovered));
+    BUTTON_COLOR = ImGui::GetStyleColorVec4(ImGuiCol_Button);
+    BUTTON_COLOR_ACTIVE = ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive);
+    BUTTON_COLOR_HOVERED = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
 
     #pragma region Debug Window
 #ifdef _DEBUG
@@ -774,22 +774,201 @@ void Handler::Update()
     ImGui::SliderInt("[TEST PROF]", &prof, 0, 9);
     storage.SetCurrentProfession((GW2::Profession)prof);
     UpdateOptions();
-    if (ImGui::Button("Default ArcDPS Style"))
+    auto const upgradeStyle_v150_v180 = [](std::vector<byte>& vars, std::vector<byte>& cols)
     {
-        std::copy_n(base64_decode("AACAPwAAgEAAAIBAAAAAQgAAAAAAAAAAAAAAAAAAAD8AAAAAAACAQAAAgEAAAAAAAACgQAAAQEAAAKBAAABAQAAAAAAAAAAAAADIQQAAwEAAABBBAAAAAAAAyEEAAAAAAAAAPwAAAD8AALBBAACwQQAAgEAAAIBAAQEAAAAAoD8=").begin(), sizeof ImGuiStyle - sizeof(ImVec4) * ImGuiCol_COUNT, (char*)&ImGui::GetStyle());
-        std::copy_n(base64_decode("zcxMP83MTD/helQ/AACAP4/CdT4fhWs+4XqUPgAAgD+PwnU9zcxMPSlcjz0AAEA/KVyPPSlcjz3sUbg9AAAAAClcjz0pXI897FG4PZqZWT8K1yM/hesRPzMzMz+PwnU+CtcjP1K4Hj8fhSs/AAAAAM3MzD3sUbg9j8L1PQAAQD+PwnU+H4VrPuF6lD4AAEA/KVwPPylcDz/hehQ/AABAP83MzD3sUbg9j8L1PZqZWT/NzMw97FG4PY/C9T2amVk/zczMPexRuD2PwvU9mplZP83MzD3sUbg9j8L1PTMzMz/NzMw97FG4PY/C9T3NzEw/H4XrPmZm5j7Xo/A+FK5HPx+FKz8fhSs/16MwPxSuRz8Urkc/FK5HP83MTD8Urkc/XI9CPuxROD49Clc+zcxMP83MTD/NzEw/4XpUP1K4nj7NzEw/zcxMP+F6VD9SuJ4+j8J1Pc3MTD0pXI89AACAP4/C9T2uR+E9mpkZPmZmZj8pXI8+cT2KPpqZmT5mZmY/ZmbmPq5H4T6PwvU+ZmZmP+xRuD7sUbg+XI/CPjMzMz/sUbg+7FG4PlyPwj4zM7M+7FG4PuxRuD5cj8I+MzMzP4/CdT4fhWs+4XqUPgAAgD+PwnU+H4VrPuF6lD4AAIA/j8J1Ph+Faz7hepQ+AACAPwAAAAAAAAAAAAAAAAAAAAApXA8/KVwPP+F6FD8AAIA/j8J1Pc3MTD0pXI89AACAP83MzD4Ursc+XI/CPgAAAADNzMw+FK7HPlyPwj4AAAAAzczMPhSuxz5cj8I+AAAAADMzMz97FC4/w/UoP4/C9T4AAIA+AACAPwAAAAAAAIA/MzMzP3sULj/D9Sg/j8L1PgAAgD4AAIA/AAAAAAAAgD/sUbg+7FG4PlyPwj4zM7M+AACAP0jhej8zM3M/SOE6Pw==").begin(), sizeof(ImVec4) * ImGuiCol_COUNT, (char*)&ImGui::GetStyle().Colors);
-    }
-    if (ImGui::Button("My ArcDPS Style"))
+        struct v150
+        {
+            enum
+            {
+                ImGuiCol_Text,
+                ImGuiCol_TextDisabled,
+                ImGuiCol_WindowBg,              // Background of normal windows
+                ImGuiCol_ChildWindowBg,         // Background of child windows
+                ImGuiCol_PopupBg,               // Background of popups, menus, tooltips windows
+                ImGuiCol_Border,
+                ImGuiCol_BorderShadow,
+                ImGuiCol_FrameBg,               // Background of checkbox, radio button, plot, slider, text input
+                ImGuiCol_FrameBgHovered,
+                ImGuiCol_FrameBgActive,
+                ImGuiCol_TitleBg,
+                ImGuiCol_TitleBgCollapsed,
+                ImGuiCol_TitleBgActive,
+                ImGuiCol_MenuBarBg,
+                ImGuiCol_ScrollbarBg,
+                ImGuiCol_ScrollbarGrab,
+                ImGuiCol_ScrollbarGrabHovered,
+                ImGuiCol_ScrollbarGrabActive,
+                ImGuiCol_ComboBg,
+                ImGuiCol_CheckMark,
+                ImGuiCol_SliderGrab,
+                ImGuiCol_SliderGrabActive,
+                ImGuiCol_Button,
+                ImGuiCol_ButtonHovered,
+                ImGuiCol_ButtonActive,
+                ImGuiCol_Header,
+                ImGuiCol_HeaderHovered,
+                ImGuiCol_HeaderActive,
+                ImGuiCol_Column,
+                ImGuiCol_ColumnHovered,
+                ImGuiCol_ColumnActive,
+                ImGuiCol_ResizeGrip,
+                ImGuiCol_ResizeGripHovered,
+                ImGuiCol_ResizeGripActive,
+                ImGuiCol_CloseButton,
+                ImGuiCol_CloseButtonHovered,
+                ImGuiCol_CloseButtonActive,
+                ImGuiCol_PlotLines,
+                ImGuiCol_PlotLinesHovered,
+                ImGuiCol_PlotHistogram,
+                ImGuiCol_PlotHistogramHovered,
+                ImGuiCol_TextSelectedBg,
+                ImGuiCol_ModalWindowDarkening,  // darken entire screen when a modal window is active
+                ImGuiCol_COUNT
+            };
+            struct ImGuiStyle
+            {
+                float       Alpha;                      // Global alpha applies to everything in ImGui
+                ImVec2      WindowPadding;              // Padding within a window
+                ImVec2      WindowMinSize;              // Minimum window size
+                float       WindowRounding;             // Radius of window corners rounding. Set to 0.0f to have rectangular windows
+                ImVec2      WindowTitleAlign;           // Alignment for title bar text. Defaults to (0.0f,0.5f) for left-aligned,vertically centered.
+                float       ChildWindowRounding;        // Radius of child window corners rounding. Set to 0.0f to have rectangular windows
+                ImVec2      FramePadding;               // Padding within a framed rectangle (used by most widgets)
+                float       FrameRounding;              // Radius of frame corners rounding. Set to 0.0f to have rectangular frame (used by most widgets).
+                ImVec2      ItemSpacing;                // Horizontal and vertical spacing between widgets/lines
+                ImVec2      ItemInnerSpacing;           // Horizontal and vertical spacing between within elements of a composed widget (e.g. a slider and its label)
+                ImVec2      TouchExtraPadding;          // Expand reactive bounding box for touch-based system where touch position is not accurate enough. Unfortunately we don't sort widgets so priority on overlap will always be given to the first widget. So don't grow this too much!
+                float       IndentSpacing;              // Horizontal indentation when e.g. entering a tree node. Generally == (FontSize + FramePadding.x*2).
+                float       ColumnsMinSpacing;          // Minimum horizontal spacing between two columns
+                float       ScrollbarSize;              // Width of the vertical scrollbar, Height of the horizontal scrollbar
+                float       ScrollbarRounding;          // Radius of grab corners for scrollbar
+                float       GrabMinSize;                // Minimum width/height of a grab box for slider/scrollbar.
+                float       GrabRounding;               // Radius of grabs corners rounding. Set to 0.0f to have rectangular slider grabs.
+                ImVec2      ButtonTextAlign;            // Alignment of button text when button is larger than text. Defaults to (0.5f,0.5f) for horizontally+vertically centered.
+                ImVec2      DisplayWindowPadding;       // Window positions are clamped to be visible within the display area by at least this amount. Only covers regular windows.
+                ImVec2      DisplaySafeAreaPadding;     // If you cannot see the edge of your screen (e.g. on a TV) increase the safe area padding. Covers popups/tooltips as well regular windows.
+                bool        AntiAliasedLines;           // Enable anti-aliasing on lines/borders. Disable if you are really tight on CPU/GPU.
+                bool        AntiAliasedShapes;          // Enable anti-aliasing on filled shapes (rounded rectangles, circles, etc.)
+                float       CurveTessellationTol;       // Tessellation tolerance. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.
+                ImVec4      Colors[v150::ImGuiCol_COUNT];
+            };
+        };
+        v150::ImGuiStyle old;
+        std::copy_n(vars.begin(), sizeof(old) - sizeof(ImVec4) * v150::ImGuiCol_COUNT, (char*)&old);
+        std::copy_n(cols.begin(),               sizeof(ImVec4) * v150::ImGuiCol_COUNT, (char*)&old.Colors);
+        ImGuiStyle& style = ImGui::GetStyle();
+        style.Alpha                                 = old.Alpha;
+        style.WindowPadding                         = old.WindowPadding;
+        style.WindowMinSize                         = { std::max(1.0f, old.WindowMinSize.x), std::max(1.0f, old.WindowMinSize.y) };
+        style.WindowRounding                        = old.WindowRounding;
+        style.WindowTitleAlign                      = old.WindowTitleAlign;
+        style.ChildRounding                         = old.ChildWindowRounding;
+        style.FramePadding                          = old.FramePadding;
+        style.FrameRounding                         = old.FrameRounding;
+        style.ItemSpacing                           = old.ItemSpacing;
+        style.ItemInnerSpacing                      = old.ItemInnerSpacing;
+        style.TouchExtraPadding                     = old.TouchExtraPadding;
+        style.IndentSpacing                         = old.IndentSpacing;
+        style.ColumnsMinSpacing                     = old.ColumnsMinSpacing;
+        style.ScrollbarSize                         = old.ScrollbarSize;
+        style.ScrollbarRounding                     = old.ScrollbarRounding;
+        style.GrabMinSize                           = old.GrabMinSize;
+        style.GrabRounding                          = old.GrabRounding;
+        style.ButtonTextAlign                       = old.ButtonTextAlign;
+        style.DisplayWindowPadding                  = old.DisplayWindowPadding;
+        style.DisplaySafeAreaPadding                = old.DisplaySafeAreaPadding;
+        style.AntiAliasedLines                      = old.AntiAliasedLines;
+        style.AntiAliasedFill                       = old.AntiAliasedShapes;
+        style.CurveTessellationTol                  = old.CurveTessellationTol;
+        style.Colors[ImGuiCol_Text]                 = old.Colors[v150::ImGuiCol_Text];
+        style.Colors[ImGuiCol_TextDisabled]         = old.Colors[v150::ImGuiCol_TextDisabled];
+        style.Colors[ImGuiCol_WindowBg]             = old.Colors[v150::ImGuiCol_WindowBg];
+        style.Colors[ImGuiCol_ChildBg]              = old.Colors[v150::ImGuiCol_ChildWindowBg];
+        style.Colors[ImGuiCol_PopupBg]              = old.Colors[v150::ImGuiCol_PopupBg];
+        style.Colors[ImGuiCol_Border]               = old.Colors[v150::ImGuiCol_Border];
+        style.Colors[ImGuiCol_BorderShadow]         = old.Colors[v150::ImGuiCol_BorderShadow];
+        style.Colors[ImGuiCol_FrameBg]              = old.Colors[v150::ImGuiCol_FrameBg];
+        style.Colors[ImGuiCol_FrameBgHovered]       = old.Colors[v150::ImGuiCol_FrameBgHovered];
+        style.Colors[ImGuiCol_FrameBgActive]        = old.Colors[v150::ImGuiCol_FrameBgActive];
+        style.Colors[ImGuiCol_TitleBg]              = old.Colors[v150::ImGuiCol_TitleBg];
+        style.Colors[ImGuiCol_TitleBgCollapsed]     = old.Colors[v150::ImGuiCol_TitleBgCollapsed];
+        style.Colors[ImGuiCol_TitleBgActive]        = old.Colors[v150::ImGuiCol_TitleBgActive];
+        style.Colors[ImGuiCol_MenuBarBg]            = old.Colors[v150::ImGuiCol_MenuBarBg];
+        style.Colors[ImGuiCol_ScrollbarBg]          = old.Colors[v150::ImGuiCol_ScrollbarBg];
+        style.Colors[ImGuiCol_ScrollbarGrab]        = old.Colors[v150::ImGuiCol_ScrollbarGrab];
+        style.Colors[ImGuiCol_ScrollbarGrabHovered] = old.Colors[v150::ImGuiCol_ScrollbarGrabHovered];
+        style.Colors[ImGuiCol_ScrollbarGrabActive]  = old.Colors[v150::ImGuiCol_ScrollbarGrabActive];
+        style.Colors[ImGuiCol_CheckMark]            = old.Colors[v150::ImGuiCol_CheckMark];
+        style.Colors[ImGuiCol_SliderGrab]           = old.Colors[v150::ImGuiCol_SliderGrab];
+        style.Colors[ImGuiCol_SliderGrabActive]     = old.Colors[v150::ImGuiCol_SliderGrabActive];
+        style.Colors[ImGuiCol_Button]               = old.Colors[v150::ImGuiCol_Button];
+        style.Colors[ImGuiCol_ButtonHovered]        = old.Colors[v150::ImGuiCol_ButtonHovered];
+        style.Colors[ImGuiCol_ButtonActive]         = old.Colors[v150::ImGuiCol_ButtonActive];
+        style.Colors[ImGuiCol_Header]               = old.Colors[v150::ImGuiCol_Header];
+        style.Colors[ImGuiCol_HeaderHovered]        = old.Colors[v150::ImGuiCol_HeaderHovered];
+        style.Colors[ImGuiCol_HeaderActive]         = old.Colors[v150::ImGuiCol_HeaderActive];
+        style.Colors[ImGuiCol_Separator]            = old.Colors[v150::ImGuiCol_Column];
+        style.Colors[ImGuiCol_SeparatorHovered]     = old.Colors[v150::ImGuiCol_ColumnHovered];
+        style.Colors[ImGuiCol_SeparatorActive]      = old.Colors[v150::ImGuiCol_ColumnActive];
+        style.Colors[ImGuiCol_ResizeGrip]           = old.Colors[v150::ImGuiCol_ResizeGrip];
+        style.Colors[ImGuiCol_ResizeGripHovered]    = old.Colors[v150::ImGuiCol_ResizeGripHovered];
+        style.Colors[ImGuiCol_ResizeGripActive]     = old.Colors[v150::ImGuiCol_ResizeGripActive];
+        style.Colors[ImGuiCol_PlotLines]            = old.Colors[v150::ImGuiCol_PlotLines];
+        style.Colors[ImGuiCol_PlotLinesHovered]     = old.Colors[v150::ImGuiCol_PlotLinesHovered];
+        style.Colors[ImGuiCol_PlotHistogram]        = old.Colors[v150::ImGuiCol_PlotHistogram];
+        style.Colors[ImGuiCol_PlotHistogramHovered] = old.Colors[v150::ImGuiCol_PlotHistogramHovered];
+        style.Colors[ImGuiCol_TextSelectedBg]       = old.Colors[v150::ImGuiCol_TextSelectedBg];
+        style.Colors[ImGuiCol_ModalWindowDimBg]     = old.Colors[v150::ImGuiCol_ModalWindowDarkening];
+        vars.resize(sizeof(ImGuiStyle) - sizeof(ImVec4) * ImGuiCol_COUNT);
+        cols.resize(                     sizeof(ImVec4) * ImGuiCol_COUNT);
+        std::copy_n((char*)&style,        vars.size(), vars.begin());
+        std::copy_n((char*)&style.Colors, cols.size(), cols.begin());
+    };
+    static struct
     {
-        std::copy_n(base64_decode("AACAPwAAwEAAAKBAAAAAQgAAAAAAAEBAAAAAAAAAAD8AAKBAAACAQAAAgEAAAABAAACgQAAAAEAAAKBAAABAQAAAAAAAAAAAAADIQQAAwEAAAHBBAADIQgAAoEAAAAAAAAAAPwAAAD8AALBBAACwQQAAgEAAAIBAAQEAAAAAoD8=").begin(), sizeof ImGuiStyle - sizeof(ImVec4) * ImGuiCol_COUNT, (char*)&ImGui::GetStyle());
-        std::copy_n(base64_decode("zcxMP83MTD/helQ/AACAP4/CdT4fhWs+4XqUPgAAgD8AAAAAAAAAAAAAAACamVk/KVyPPSlcjz3sUbg9AAAAAClcjz0pXI897FG4PZqZWT8K1yM/hesRPzMzMz+PwnU+CtcjP1K4Hj8fhSs/AAAAAAAAAAAAAAAAAAAAAAAAQD+PwnU+H4VrPuF6lD4AAEA/KVwPPylcDz/hehQ/AABAP83MzD3sUbg9j8L1PZqZWT/NzMw97FG4PY/C9T2amVk/zczMPexRuD2PwvU9mplZP83MzD3sUbg9j8L1PTMzMz/NzMw97FG4PY/C9T0AAAAAzcxMP83MTD/helQ/UriePuxRuD7sUbg+XI/CPhSuRz8fhes+ZmbmPtej8D4Urkc/XI9CPuxROD49Clc+zcxMP83MTD/NzEw/4XpUP1K4nj7NzEw/zcxMP+F6VD9SuJ4+j8J1Pc3MTD0pXI89AACAP4/C9T2uR+E9mpkZPmZmZj8pXI8+cT2KPpqZmT5mZmY/ZmbmPq5H4T6PwvU+ZmZmP+xRuD7sUbg+XI/CPjMzMz/sUbg+7FG4PlyPwj4zM7M+7FG4PuxRuD5cj8I+MzMzP4/CdT4fhWs+4XqUPgAAgD+PwnU+H4VrPuF6lD4AAIA/j8J1Ph+Faz7hepQ+AACAPwAAAAAAAAAAAAAAAAAAAAApXA8/KVwPP+F6FD8AAIA/j8J1Pc3MTD0pXI89AACAP83MzD4Ursc+XI/CPgAAAADNzMw+FK7HPlyPwj4AAIA/zczMPhSuxz5cj8I+AAAAADMzMz97FC4/w/UoP4/C9T4AAIA+AACAPwAAAAAAAIA/MzMzP3sULj/D9Sg/j8L1PgAAgD4AAIA/AAAAAAAAgD/sUbg+7FG4PlyPwj4zM7M+AACAP0jhej8zM3M/SOE6Pw==").begin(), sizeof(ImVec4) * ImGuiCol_COUNT, (char*)&ImGui::GetStyle().Colors);
+        std::string_view Name;
+        std::string Vars;
+        std::string Cols;
+    } presets[]
+    {
+        {
+            "Default ArcDPS Style",
+            "AACAPwAAgEAAAIBAAAAAQgAAAAAAAAAAAAAAAAAAAD8AAAAAAACAQAAAgEAAAAAAAACgQAAAQEAAAKBAAABAQAAAAAAAAAAAAADIQQAAwEAAABBBAAAAAAAAyEEAAAAAAAAAPwAAAD8AALBBAACwQQAAgEAAAIBAAQEAAAAAoD8=",
+            "zcxMP83MTD/helQ/AACAP4/CdT4fhWs+4XqUPgAAgD+PwnU9zcxMPSlcjz0AAEA/KVyPPSlcjz3sUbg9AAAAAClcjz0pXI897FG4PZqZWT8K1yM/hesRPzMzMz+PwnU+CtcjP1K4Hj8fhSs/AAAAAM3MzD3sUbg9j8L1PQAAQD+PwnU+H4VrPuF6lD4AAEA/KVwPPylcDz/hehQ/AABAP83MzD3sUbg9j8L1PZqZWT/NzMw97FG4PY/C9T2amVk/zczMPexRuD2PwvU9mplZP83MzD3sUbg9j8L1PTMzMz/NzMw97FG4PY/C9T3NzEw/H4XrPmZm5j7Xo/A+FK5HPx+FKz8fhSs/16MwPxSuRz8Urkc/FK5HP83MTD8Urkc/XI9CPuxROD49Clc+zcxMP83MTD/NzEw/4XpUP1K4nj7NzEw/zcxMP+F6VD9SuJ4+j8J1Pc3MTD0pXI89AACAP4/C9T2uR+E9mpkZPmZmZj8pXI8+cT2KPpqZmT5mZmY/ZmbmPq5H4T6PwvU+ZmZmP+xRuD7sUbg+XI/CPjMzMz/sUbg+7FG4PlyPwj4zM7M+7FG4PuxRuD5cj8I+MzMzP4/CdT4fhWs+4XqUPgAAgD+PwnU+H4VrPuF6lD4AAIA/j8J1Ph+Faz7hepQ+AACAPwAAAAAAAAAAAAAAAAAAAAApXA8/KVwPP+F6FD8AAIA/j8J1Pc3MTD0pXI89AACAP83MzD4Ursc+XI/CPgAAAADNzMw+FK7HPlyPwj4AAAAAzczMPhSuxz5cj8I+AAAAADMzMz97FC4/w/UoP4/C9T4AAIA+AACAPwAAAAAAAIA/MzMzP3sULj/D9Sg/j8L1PgAAgD4AAIA/AAAAAAAAgD/sUbg+7FG4PlyPwj4zM7M+AACAP0jhej8zM3M/SOE6Pw==",
+        },
+        {
+            "Default ArcDPS Style (1.80)",
+            "AACAPwAAgEAAAIBAAAAAAAAAAAAAAKBAAABAQAAAAAAAAAA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIBAAACAQAAAAAAAAAAAAACgQAAAQEAAAKBAAABAQAAAgEAAAABAAAAAAAAAAAAAAMhBAADAQAAAEEEAAAAAAADIQQAAAAAAAIBAAAAAAAAAAAAAAAAAAQAAAAAAAD8AAAA/AAAAAAAAAAAAAJhBAACYQQAAQEAAAEBAAACAPwEBAQAAAKA/zczMPw==",
+            "zcxMP83MTD/helQ/AACAP4/CdT4fhWs+4XqUPgAAgD+PwnU9zcxMPSlcjz0AAEA/KVyPPSlcjz3sUbg9AAAAAClcjz0pXI897FG4PZqZWT8K1yM/hesRPzMzMz/NzEw+CtcjP1K4Hj8fhSs/AAAAAFK4Hj+amRk/ZmYmP83MTD5SuB4/mpkZP2ZmJj8AAEA/KVwPPylcDz/hehQ/AABAP83MzD3sUbg9j8L1PZqZWT/NzMw97FG4PY/C9T2amVk/zczMPexRuD2PwvU9mplZP83MzD3sUbg9j8L1PTMzMz/NzMw97FG4PY/C9T3NzEw/H4XrPmZm5j7Xo/A+FK5HPx+FKz8fhSs/16MwPxSuRz8Urkc/FK5HP83MTD8Urkc/zcxMP83MTD/helQ/KVxPP83MTD/NzEw/4XpUP1K4nj6PwnU9zcxMPSlcjz0AAIA/UrgeP5qZGT9mZiY/mpmZPlK4Hj+amRk/ZmYmP5qZGT9SuB4/mpkZP2ZmJj9mZmY/7FG4PuxRuD5cj8I+MzMzP+xRuD7sUbg+XI/CPjMzsz7sUbg+7FG4PlyPwj4zMzM/AAAAPwAAAD8AAAA/mpkZP5qZGT+amRk/MzMzPwAAgD8zMzM/MzMzP2ZmZj8AAIA/AAAAAAAAAAAAAAAAAAAAAClcDz8pXA8/4XoUPwAAgD+PwnU9zcxMPSlcjz0AAIA/MzMzP3sULj/XozA/zczMPTMzMz97FC4/16MwP5qZmT4zMzM/exQuP9ejMD/2KNw+l/+QPpf/kD7hnBE/KjpSP6Fnsz6hZ7M+Qs8mP71SVj8zMzM/exQuP8P1KD8pXA8/AACAPgAAgD8AAAAAAACAPzMzMz97FC4/w/UoP4/C9T4AAIA+AACAPwAAAAAAAIA/cT2KPnE9ij5cj8I+AACAP1K4nj5SuJ4+ZmbmPgAAgD+4HoU+uB6FPilcjz4AAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPylcjz3sUbg+7FG4Pq5HYT/NzAw/AACAPwAAgD8AAAAAZmZmP2Zm5j5mZuY+ZmZmP83MTD8AAIA/AACAPwAAgD8zMzM/zcxMP83MTD/NzEw/zcxMPs3MTD7NzEw+zcxMPjMzsz4=",
+        },
+        {
+            "My ArcDPS Style",
+            "AACAPwAAwEAAAKBAAAAAQgAAAAAAAEBAAAAAAAAAAD8AAKBAAACAQAAAgEAAAABAAACgQAAAAEAAAKBAAABAQAAAAAAAAAAAAADIQQAAwEAAAHBBAADIQgAAoEAAAAAAAAAAPwAAAD8AALBBAACwQQAAgEAAAIBAAQEAAAAAoD8=",
+            "zcxMP83MTD/helQ/AACAP4/CdT4fhWs+4XqUPgAAgD8AAAAAAAAAAAAAAACamVk/KVyPPSlcjz3sUbg9AAAAAClcjz0pXI897FG4PZqZWT8K1yM/hesRPzMzMz+PwnU+CtcjP1K4Hj8fhSs/AAAAAAAAAAAAAAAAAAAAAAAAQD+PwnU+H4VrPuF6lD4AAEA/KVwPPylcDz/hehQ/AABAP83MzD3sUbg9j8L1PZqZWT/NzMw97FG4PY/C9T2amVk/zczMPexRuD2PwvU9mplZP83MzD3sUbg9j8L1PTMzMz/NzMw97FG4PY/C9T0AAAAAzcxMP83MTD/helQ/UriePuxRuD7sUbg+XI/CPhSuRz8fhes+ZmbmPtej8D4Urkc/XI9CPuxROD49Clc+zcxMP83MTD/NzEw/4XpUP1K4nj7NzEw/zcxMP+F6VD9SuJ4+j8J1Pc3MTD0pXI89AACAP4/C9T2uR+E9mpkZPmZmZj8pXI8+cT2KPpqZmT5mZmY/ZmbmPq5H4T6PwvU+ZmZmP+xRuD7sUbg+XI/CPjMzMz/sUbg+7FG4PlyPwj4zM7M+7FG4PuxRuD5cj8I+MzMzP4/CdT4fhWs+4XqUPgAAgD+PwnU+H4VrPuF6lD4AAIA/j8J1Ph+Faz7hepQ+AACAPwAAAAAAAAAAAAAAAAAAAAApXA8/KVwPP+F6FD8AAIA/j8J1Pc3MTD0pXI89AACAP83MzD4Ursc+XI/CPgAAAADNzMw+FK7HPlyPwj4AAIA/zczMPhSuxz5cj8I+AAAAADMzMz97FC4/w/UoP4/C9T4AAIA+AACAPwAAAAAAAIA/MzMzP3sULj/D9Sg/j8L1PgAAgD4AAIA/AAAAAAAAgD/sUbg+7FG4PlyPwj4zM7M+AACAP0jhej8zM3M/SOE6Pw==",
+        },
+    };
+    for (auto& preset : presets)
+    {
+        if (ImGui::Button(fmt::format("{}", preset.Name).c_str()))
+        {
+            std::vector<byte> vars = base64_decode(preset.Vars);
+            std::vector<byte> cols = base64_decode(preset.Cols);
+            if (vars.size() + cols.size() != sizeof(ImGuiStyle))
+                upgradeStyle_v150_v180(vars, cols);
+            std::copy_n(vars.begin(), sizeof(ImGuiStyle) - sizeof(ImVec4) * ImGuiCol_COUNT, (char*)&ImGui::GetStyle());
+            std::copy_n(cols.begin(),                      sizeof(ImVec4) * ImGuiCol_COUNT, (char*)&ImGui::GetStyle().Colors);
+            preset.Vars = base64_encode(vars.data(), (uint32_t)vars.size());
+            preset.Cols = base64_encode(cols.data(), (uint32_t)cols.size());
+        }
+        ImGui::InputText(fmt::format("Vars##{}Output", preset.Name).c_str(), preset.Vars.data(), preset.Vars.size(), ImGuiInputTextFlags_ReadOnly);
+        ImGui::InputText(fmt::format("Cols##{}Output", preset.Name).c_str(), preset.Cols.data(), preset.Cols.size(), ImGuiInputTextFlags_ReadOnly);
     }
     ImGui::End();
 #endif
     #pragma endregion
 
-    float const originalWindowTitleAlign = std::exchange(ImGui::GetStyle().WindowTitleAlign.x, 0.5f);
-    ImGui::PushStyleColor(ImGuiCol_ModalWindowDarkening, { 0, 0, 0, ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_ModalWindowDarkening)).w });
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowTitleAlign, { 0.5f, 0.5f });
+    ImGui::PushStyleColor(ImGuiCol_ModalWindowDimBg, { 0, 0, 0, ImGui::GetStyleColorVec4(ImGuiCol_ModalWindowDimBg).w });
 
     if (m_shown)
         RenderMainWindow(delta);
@@ -829,7 +1008,7 @@ void Handler::Update()
     if (m_arcdpsGearShown)
     {
         ImGui::SetNextWindowSizeConstraints({ 750px, 600px }, { 10000px, 10000px });
-        ImGui::SetNextWindowPosCenter(ImGuiSetCond_Appearing);
+        ImGui::SetNextWindowPos(ImGui::GetIO().DisplaySize / 2, ImGuiCond_Appearing, { 0.5f, 0.5f });
         ImGui::Begin("BuildPad##ArcDPSGear", &m_arcdpsGearShown, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings);
         ImGui::SetWindowFontScale(UI_SCALE);
         if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(VK_ESCAPE, false))
@@ -873,7 +1052,7 @@ void Handler::Update()
     }
 
     ImGui::PopStyleColor();
-    ImGui::GetStyle().WindowTitleAlign.x = originalWindowTitleAlign;
+    ImGui::PopStyleVar();
     ImGui::PopFont();
 }
 
@@ -883,7 +1062,7 @@ void Handler::UpdateOptions()
         return;
 
     if (TextureData const& icon = GetIcon(Icons::BuildPad);
-        ImGui::ImageButtonWithText(icon.Texture, "BuildPad ", { ImGui::GetContentRegionAvailWidth(), 0 }, icon.TrimmedSize() * 0.75f, icon.GetUV0(), icon.GetUV1(), -1, 3))
+        ImGui::ImageButtonWithText(icon.Texture, "BuildPad ", { ImGui::GetContentRegionAvailWidth(), 0 }, icon.TrimmedSize() * 0.75f, icon.GetUV0(), icon.GetUV1(), ImDrawCornerFlags_All, 3))
         m_shown ^= true;
 }
 
@@ -945,18 +1124,18 @@ void Handler::RenderMainWindow(Time const& delta)
         auto flags = (ImGuiWindowFlags_)(ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoFocusOnAppearing);
         if (m_config.LockWindowPosition)
         {
-            ImGui::SetNextWindowPos({ (float)m_config.WindowPositionX, (float)m_config.WindowPositionY }, ImGuiSetCond_Always);
+            ImGui::SetNextWindowPos({ (float)m_config.WindowPositionX, (float)m_config.WindowPositionY }, ImGuiCond_Always);
             flags = (ImGuiWindowFlags_)(flags | ImGuiWindowFlags_NoMove);
         }
         else
-            ImGui::SetNextWindowPosCenter(ImGuiSetCond_FirstUseEver);
+            ImGui::SetNextWindowPos(ImGui::GetIO().DisplaySize / 2, ImGuiCond_FirstUseEver, { 0.5f, 0.5f });
         if (m_config.LockWindowSize)
         {
-            ImGui::SetNextWindowSize({ (float)m_config.WindowSizeW, (float)m_config.WindowSizeH }, ImGuiSetCond_Always);
+            ImGui::SetNextWindowSize({ (float)m_config.WindowSizeW, (float)m_config.WindowSizeH }, ImGuiCond_Always);
             flags = (ImGuiWindowFlags_)(flags | ImGuiWindowFlags_NoResize);
         }
         else
-            ImGui::SetNextWindowSize({ 300px, 400px }, ImGuiSetCond_FirstUseEver);
+            ImGui::SetNextWindowSize({ 300px, 400px }, ImGuiCond_FirstUseEver);
         if (m_config.HideWindowHeader)
             flags = (ImGuiWindowFlags_)(flags | ImGuiWindowFlags_NoTitleBar);
         if (m_config.AutoWindowHeight)
@@ -975,7 +1154,7 @@ void Handler::RenderMainWindow(Time const& delta)
                 ImGui::GetWindowPos().y < 0 || ImGui::GetWindowPos().y + ImGui::GetWindowSize().y > ImGui::GetIO().DisplaySize.y)
             {
                 ImGui::SetWindowPos({ std::clamp<float>(ImGui::GetWindowPos().x, 0, std::max<float>(0, ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x)),
-                                      std::clamp<float>(ImGui::GetWindowPos().y, 0, std::max<float>(0, ImGui::GetIO().DisplaySize.y - ImGui::GetWindowSize().y)) }, ImGuiSetCond_Always);
+                                      std::clamp<float>(ImGui::GetWindowPos().y, 0, std::max<float>(0, ImGui::GetIO().DisplaySize.y - ImGui::GetWindowSize().y)) }, ImGuiCond_Always);
             }
         }
         m_config.WindowPositionX = (int32_t)ImGui::GetWindowPos().x;
@@ -989,7 +1168,7 @@ void Handler::RenderMainWindow(Time const& delta)
             if (ImGui::IsMouseHoveringRect(rect.Min, rect.Max, false))
                 ImGui::OpenPopup("##BuildPadContextMenu");
         }
-        if (ImGui::BeginPopup("##BuildPadContextMenu"))
+        if (ImGui::BeginPopup("##BuildPadContextMenu", ImGuiWindowFlags_NoMove))
         {
             ImGui::SetWindowFontScale(UI_SCALE);
             RenderSettings(true);
@@ -1008,7 +1187,7 @@ void Handler::RenderMainWindow(Time const& delta)
         ImGui::NewLine();
 
         ImVec2 const offset { 2px, 2px };
-        ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvailWidth(), ImGui::GetItemRectMax().y } +offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildWindowRounding);
+        ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvailWidth(), ImGui::GetItemRectMax().y } +offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildRounding);
     }
 
     if ((m_arcdpsMigrationAvailable || m_arcdpsGearAvailable) && !m_config.ArcDPSMigrationHintHidden)
@@ -1027,7 +1206,7 @@ void Handler::RenderMainWindow(Time const& delta)
         ImGui::NewLine();
 
         ImVec2 const offset { 2px, 2px };
-        ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvailWidth(), ImGui::GetItemRectMax().y } +offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildWindowRounding);
+        ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvailWidth(), ImGui::GetItemRectMax().y } +offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildRounding);
     }
 
     #pragma region Hidden Filter Hint
@@ -1056,7 +1235,7 @@ void Handler::RenderMainWindow(Time const& delta)
             ImGui::NewLine();
 
             ImVec2 const offset { 2px, 2px };
-            ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvailWidth(), ImGui::GetItemRectMax().y } + offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildWindowRounding);
+            ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvailWidth(), ImGui::GetItemRectMax().y } + offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildRounding);
         }
     }
     #pragma endregion
@@ -1106,11 +1285,7 @@ void Handler::RenderMainWindow(Time const& delta)
     auto const renderSettingsButton = [this](float spacing)
     {
         ImGui::SameLine(0, spacing);
-        bool on = []
-        {
-            ImGuiContext& g = *ImGui::GetCurrentContext();
-            return g.OpenPopupStack.Size > g.CurrentPopupStack.Size && g.OpenPopupStack[g.CurrentPopupStack.Size].PopupId == ImGui::GetCurrentWindow()->GetID("##BuildPadContextMenu");
-        }();
+        bool on = ImGui::IsPopupOpen("##BuildPadContextMenu");
         if (TextureData const& icon = GetIcon(Icons::Settings);
             ImGui::CheckboxImage(icon.Texture, "##Settings", &on, icon.GetUV0(), icon.GetUV1(), 0.4f, 0.6f, 0.5f, 0.9f, 1.0f, 0.95f))
             ImGui::OpenPopup("##BuildPadContextMenu");
@@ -1152,9 +1327,11 @@ void Handler::RenderMainWindow(Time const& delta)
         {
             float const x = ImGui::GetCursorPosX();
             auto buffer = util::to_buffer(storage.GetNameFilter());
-            if (ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() - WINDOW_PADDING.x - (storage.IsFilteringName() || m_config.ShowSettingsButton ? ITEM_INNER_SPACING.x + BUTTON_SIZE.x : 0));
-                ImGui::InputText("##FilterName", buffer.data(), buffer.size()))
+            if (ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() - WINDOW_PADDING.x - (storage.IsFilteringName() || m_config.ShowSettingsButton ? ITEM_INNER_SPACING.x + BUTTON_SIZE.x : 0)),
+                ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.25f));
+                ImGui::InputTextWithHint("##FilterName", "Search", buffer.data(), buffer.size()))
                 storage.SetNameFilter(buffer.data());
+            ImGui::PopStyleColor();
             ImGui::PopItemWidth();
             if (storage.IsFilteringName())
             {
@@ -1169,12 +1346,6 @@ void Handler::RenderMainWindow(Time const& delta)
             {
                 if (m_config.ShowSettingsButton)
                     renderSettingsButton(ITEM_INNER_SPACING.x);
-
-                // Name Filter Placeholder
-                ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-                color.w /= 4;
-                ImGui::SameLine(x, FRAME_PADDING.x);
-                ImGui::TextColored(color, "Search");
             }
             if (m_config.ShowFlagsFilter)
                 ImGui::NewLine();
@@ -1232,9 +1403,7 @@ void Handler::RenderMainWindow(Time const& delta)
                 {
                     ImGui::BeginTooltip();
                     ImGui::SetWindowFontScale(UI_SCALE);
-                    ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-                    color.w /= 2;
-                    ImGui::TextColored(color, "Show builds flagged as");
+                    ImGui::TextColored(ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.5f), "Show builds flagged as");
                     ImGui::Text("%s", info.Name.c_str());
                     ImGui::EndTooltip();
                 }
@@ -1248,7 +1417,7 @@ void Handler::RenderMainWindow(Time const& delta)
     #pragma endregion
 
     #pragma region Builds
-    ImGui::BeginChild("Builds", { 0, 0 }, true);
+    ImGui::BeginChild("Builds", { 0, 0 }, true, ImGuiWindowFlags_NoMove);
     ImGui::SetWindowFontScale(UI_SCALE);
 
     static Build::id_t newestAddedBuild { };
@@ -1278,7 +1447,7 @@ void Handler::RenderMainWindow(Time const& delta)
 
             ImVec2 const min = ImGui::GetWindowPos() + ImGui::GetCursorPos() - ImVec2 { ImGui::GetScrollX(), ImGui::GetScrollY() };
             ImVec2 const max = min +  ImVec2 { ImGui::GetContentRegionAvailWidth(), BUTTON_SIZE.y };
-            bool hovered = ImGui::IsMouseHoveringRect(min, max) && ImGui::IsMouseHoveringWindow();
+            bool hovered = ImGui::IsMouseHoveringRect(min, max) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
             #pragma region Build Dragging (Before)
             if (draggedBuild && ImGui::IsMouseHoveringRect(min - ImVec2 { 0, ITEM_SPACING.y }, max) && (!m_config.SortBuildsByProfession || build.GetParsedProfession() == draggedBuildProfession))
@@ -1316,9 +1485,9 @@ void Handler::RenderMainWindow(Time const& delta)
                     TextureData const& icon = edited.GetParsedSpecialization() != GW2::Specialization::None ? GetIcon(edited.GetParsedSpecialization()) : GetIcon(edited.GetParsedProfession());
 
                     auto buffer = util::to_buffer(edited.GetName());
-                    if (ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Button))),
-                        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Button))),
-                        ImGui::ImageButtonWithText(icon.Texture, "", BUTTON_SIZE, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, 1 | 8),
+                    if (ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_Button)),
+                        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_Button)),
+                        ImGui::ImageButtonWithText(icon.Texture, "", BUTTON_SIZE, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, ImDrawCornerFlags_Left),
                         hovered = ImGui::IsItemHovered(),
                         ImGui::PopStyleColor(2),
                         ImGui::SameLine(0, 2px),
@@ -1326,16 +1495,18 @@ void Handler::RenderMainWindow(Time const& delta)
                         ImGui::PushItemWidth(-1 - BUTTON_SIZE.x - 2px - BUTTON_SIZE.x - 2px),
                         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { FRAME_PADDING.x, (BUTTON_SIZE.y - LINE_SIZE.y) / 2 }),
                         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0),
+                        ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.25f)),
                         [&] { if (m_focusNewBuild == edited.GetID()) { ImGui::SetKeyboardFocusHere(); m_focusNewBuild = { }; } }();
-                        ImGui::InputText("##EditName", buffer.data(), buffer.size()))
+                        ImGui::InputTextWithHint("##EditName", "Build Name", buffer.data(), buffer.size()))
                         edited.SetName(buffer.data());
+                    ImGui::PopStyleColor();
                     ImGui::PopStyleVar(2);
                     ImGui::PopItemWidth();
                 }
                 #pragma endregion
                 #pragma region Build Edit Accept Button
                 if (ImGui::SameLine(0, 2px);
-                    ImGui::ImageButtonWithText(GetIcon(Icons::AcceptBuildEdit), fmt::format("##AcceptBuildEdit:{0}", build.GetID()).c_str(), BUTTON_SIZE, 0))
+                    ImGui::ImageButtonWithText(GetIcon(Icons::AcceptBuildEdit), fmt::format("##AcceptBuildEdit:{0}", build.GetID()).c_str(), BUTTON_SIZE, ImDrawCornerFlags_None))
                 {
                     if (auto const& context = util::find_if(m_editedBuilds, util::member_equals(&BuildEditContext::ID, edited.GetID())); context && context->BuildStorageEditedBuild)
                         CloseBuildEditor(edited);
@@ -1348,7 +1519,7 @@ void Handler::RenderMainWindow(Time const& delta)
                 #pragma endregion
                 #pragma region Build Edit Cancel Button
                 if (ImGui::SameLine(0, 2px);
-                    ImGui::ImageButtonWithText(GetIcon(Icons::CancelBuildEdit), fmt::format("##CancelBuildEdit:{0}", build.GetID()).c_str(), BUTTON_SIZE, 2 | 4))
+                    ImGui::ImageButtonWithText(GetIcon(Icons::CancelBuildEdit), fmt::format("##CancelBuildEdit:{0}", build.GetID()).c_str(), BUTTON_SIZE, ImDrawCornerFlags_Right))
                 {
                     if (auto const& context = util::find_if(m_editedBuilds, util::member_equals(&BuildEditContext::ID, edited.GetID())); context && context->BuildStorageEditedBuild)
                         CloseBuildEditor(edited);
@@ -1369,15 +1540,6 @@ void Handler::RenderMainWindow(Time const& delta)
                 if (ImGui::IsItemHovered())
                     ImGui::Tooltip("Cancel Changes");
                 #pragma endregion
-                #pragma region Build Name Input Placeholder
-                if (edited.GetName().empty())
-                {
-                    ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-                    color.w /= 4;
-                    ImGui::SameLine(x, FRAME_PADDING.x);
-                    ImGui::TextColored(color, "Build Name");
-                }
-                #pragma endregion
 
                 #pragma region Build Link Label
                 {
@@ -1397,9 +1559,7 @@ void Handler::RenderMainWindow(Time const& delta)
                     else
                         alpha = 0.0f;
 
-                    ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-                    color.w *= *alpha;
-                    ImGui::PushStyleColor(ImGuiCol_Text, color);
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, *alpha));
                 }
                 #pragma endregion
 
@@ -1410,9 +1570,11 @@ void Handler::RenderMainWindow(Time const& delta)
                     auto buffer = util::to_buffer(edited.GetLink());
                     if (ImGui::SameLine(x, 0),
                         ImGui::SetCursorPosY(ImGui::GetCursorPosY() - FRAME_PADDING.y),
-                        ImGui::PushItemWidth(canEdit ? -1 - (2px + BUTTON_SIZE.x + 2px + BUTTON_SIZE.x) : -1);
-                        ImGui::InputText("##EditLink", buffer.data(), buffer.size(), ImGuiInputTextFlags_AutoSelectAll))
+                        ImGui::PushItemWidth(canEdit ? -1 - (2px + BUTTON_SIZE.x + 2px + BUTTON_SIZE.x) : -1),
+                        ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.25f));
+                        ImGui::InputTextWithHint("##EditLink", "Chat Link", buffer.data(), buffer.size(), ImGuiInputTextFlags_AutoSelectAll))
                         edited.SetLink(buffer.data());
+                    ImGui::PopStyleColor();
                     ImGui::PopItemWidth();
                 }
                 #pragma endregion
@@ -1435,26 +1597,15 @@ void Handler::RenderMainWindow(Time const& delta)
                     ImGui::PopStyleColor(3);
                 }
                 #pragma endregion
-                #pragma region Build Link Input Placeholder
-                if (edited.GetLink().empty())
-                {
-                    ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-                    color.w /= 4;
-                    ImGui::SameLine(x, FRAME_PADDING.x);
-                    ImGui::TextColored(color, "Chat Link");
-                }
-                #pragma endregion
 
                 #pragma region Build Link Fade Text
                 if (alpha)
                 {
                     ImGui::PopStyleColor();
-                    ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-                    color.w *= 1 - *alpha;
                     ImVec2 const cursor = ImGui::GetCursorPos();
                     ImVec2 const size = ImGui::CalcTextSize("Pasted from clipboard");
                     float const space = ImGui::GetContentRegionAvailWidth();
-                    ImGui::PushStyleColor(ImGuiCol_Text, color);
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 1 - *alpha));
                     ImGui::SetCursorPos({ cursor.x + BUTTON_SIZE.x + (space - size.x - BUTTON_SIZE.x) / 2, cursor.y - ITEM_SPACING.y - BUTTON_SIZE.y + (BUTTON_SIZE.y - size.y) / 2 });
                     ImGui::PushClipRect(ImGui::GetCurrentWindow()->Pos - ImGui::GetCurrentWindow()->Scroll + ImVec2 { cursor.x + BUTTON_SIZE.x, ImGui::GetCursorPosY() }, ImGui::GetCurrentWindow()->Pos - ImGui::GetCurrentWindow()->Scroll + ImVec2 { cursor.x, ImGui::GetCursorPosY() } + ImVec2 { space, BUTTON_SIZE.y }, true);
                     ImGui::Text("Pasted from clipboard");
@@ -1464,32 +1615,23 @@ void Handler::RenderMainWindow(Time const& delta)
                 }
                 #pragma endregion
 
+                #pragma region Build Secondary Link Input
                 if (parsed.NeedsSecondaryLink)
                 {
-                    #pragma region Build Secondary Link Input
-                    {
-                        auto buffer = util::to_buffer(edited.GetSecondaryLink());
-                        if (ImGui::SetCursorPosX(ImGui::GetCursorPosX() - (ImGui::CalcTextSize("[*]").x - BUTTON_SIZE.x)),
-                            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + FRAME_PADDING.y),
-                            ImGui::Text("[*]"),
-                            ImGui::SameLine(x, 0),
-                            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - FRAME_PADDING.y),
-                            ImGui::PushItemWidth(-1);
-                            ImGui::InputText("##EditSecondaryLink", buffer.data(), buffer.size(), ImGuiInputTextFlags_AutoSelectAll))
-                            edited.SetSecondaryLink(buffer.data());
-                        ImGui::PopItemWidth();
-                    }
-                    #pragma endregion
-                    #pragma region Build Secondary Link Input Placeholder
-                    if (edited.GetSecondaryLink().empty())
-                    {
-                        ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-                        color.w /= 4;
-                        ImGui::SameLine(x, FRAME_PADDING.x);
-                        ImGui::TextColored(color, parsed.SecondaryLinkIsTraits ? "ArcDPS Traits Link" : "ArcDPS Skills Link");
-                    }
-                    #pragma endregion
+                    auto buffer = util::to_buffer(edited.GetSecondaryLink());
+                    if (ImGui::SetCursorPosX(ImGui::GetCursorPosX() - (ImGui::CalcTextSize("[*]").x - BUTTON_SIZE.x)),
+                        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + FRAME_PADDING.y),
+                        ImGui::Text("[*]"),
+                        ImGui::SameLine(x, 0),
+                        ImGui::SetCursorPosY(ImGui::GetCursorPosY() - FRAME_PADDING.y),
+                        ImGui::PushItemWidth(-1),
+                        ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.25f));
+                        ImGui::InputTextWithHint("##EditSecondaryLink", parsed.SecondaryLinkIsTraits ? "ArcDPS Traits Link" : "ArcDPS Skills Link", buffer.data(), buffer.size(), ImGuiInputTextFlags_AutoSelectAll))
+                        edited.SetSecondaryLink(buffer.data());
+                    ImGui::PopStyleColor();
+                    ImGui::PopItemWidth();
                 }
+                #pragma endregion
 
                 if (!parsed.Error.empty())
                 {
@@ -1501,12 +1643,10 @@ void Handler::RenderMainWindow(Time const& delta)
 
                 if (!parsed.Info.empty())
                 {
-                    ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-                    color.w /= 2;
                     ImGui::NewLine();
                     ImGui::SameLine(x, FRAME_PADDING.x);
                     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ITEM_SPACING.y / 2);
-                    ImGui::TextColored(color, "%s", parsed.Info.c_str());
+                    ImGui::TextColored(ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.5f), "%s", parsed.Info.c_str());
                 }
 
                 if (ImGui::NewLine(),
@@ -1590,9 +1730,7 @@ void Handler::RenderMainWindow(Time const& delta)
                     else
                         alpha = 0.0f;
 
-                    ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-                    color.w *= *alpha;
-                    ImGui::PushStyleColor(ImGuiCol_Text, color);
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, *alpha));
                 }
                 #pragma endregion
 
@@ -1614,7 +1752,7 @@ void Handler::RenderMainWindow(Time const& delta)
                             additionalIcons.emplace_back(&GetIcon(info.Flag));
 
                 if (TextureData const& icon = build.GetParsedSpecialization() != GW2::Specialization::None ? GetIcon(build.GetParsedSpecialization()) : GetIcon(build.GetParsedProfession());
-                    ImGui::ImageButtonWithText(icon.Texture, fmt::format(build.IsSaveNeeded() ? "{}*##{}" : "{}##{}", build.GetName(), build.GetID()).c_str(), { -1, BUTTON_SIZE.y }, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, hovered ? 1 | 8 : 1 | 2 | 4 | 8, 0, { 0, 0, 0, 0 }, { 1, 1, 1, 1 }, false, keyBindText.c_str(), additionalIcons)
+                    ImGui::ImageButtonWithText(icon.Texture, fmt::format(build.IsSaveNeeded() ? "{}*##{}" : "{}##{}", build.GetName(), build.GetID()).c_str(), { -1, BUTTON_SIZE.y }, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, hovered ? ImDrawCornerFlags_Left : ImDrawCornerFlags_All, 0, { 0, 0, 0, 0 }, { 1, 1, 1, 1 }, false, keyBindText.c_str(), additionalIcons)
                     && !draggedOverBuild)
                 {
                     ImGui::SetClipboardText(fmt::format("{}", build.GetLink()).c_str());
@@ -1627,7 +1765,7 @@ void Handler::RenderMainWindow(Time const& delta)
                 #pragma region Build Dragging
                 if (m_config.AllowBuildReordering)
                 {
-                    if (ImVec2 const drag = ImGui::GetMouseDragDelta(); ImGui::IsItemActive() && (drag.x || drag.y))
+                    if (ImVec2 const drag = ImGui::GetMouseDragDelta(); ImGui::IsItemActive() && (drag.x != 0 || drag.y != 0))
                     {
                         // Drag
                         draggedBuild = build.GetID();
@@ -1873,7 +2011,7 @@ void Handler::RenderMainWindow(Time const& delta)
                 if (hovered)
                 {
                     if (ImGui::SameLine(0, 0);
-                        ImGui::ImageButtonWithText(GetIcon(Icons::EditBuild), fmt::format("##EditBuild:{0}", build.GetID()).c_str(), BUTTON_SIZE, 2 | 4))
+                        ImGui::ImageButtonWithText(GetIcon(Icons::EditBuild), fmt::format("##EditBuild:{0}", build.GetID()).c_str(), BUTTON_SIZE, ImDrawCornerFlags_Right))
                     {
                         if (storage.IsEditingBuild())
                             if (auto const& context = util::find_if(m_editedBuilds, util::member_equals(&BuildEditContext::ID, storage.GetEditedBuild().GetID())); context && context->BuildStorageEditedBuild)
@@ -1900,12 +2038,10 @@ void Handler::RenderMainWindow(Time const& delta)
                 if (alpha)
                 {
                     ImGui::PopStyleColor();
-                    ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-                    color.w *= 1 - *alpha;
                     ImVec2 const cursor = ImGui::GetCursorPos();
                     ImVec2 const size = ImGui::CalcTextSize("Copied to clipboard");
                     float const space = ImGui::GetContentRegionAvailWidth();
-                    ImGui::PushStyleColor(ImGuiCol_Text, color);
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 1 - *alpha));
                     ImGui::SetCursorPos({ cursor.x + (space - size.x) / 2, cursor.y - ITEM_SPACING.y - BUTTON_SIZE.y + (BUTTON_SIZE.y - size.y) / 2 });
                     ImGui::PushClipRect(ImGui::GetCurrentWindow()->Pos - ImGui::GetCurrentWindow()->Scroll + ImVec2 { cursor.x, ImGui::GetCursorPosY() }, ImGui::GetCurrentWindow()->Pos - ImGui::GetCurrentWindow()->Scroll + ImVec2 { cursor.x, ImGui::GetCursorPosY() } + ImVec2 { space, BUTTON_SIZE.y }, true);
                     ImGui::Text("Copied to clipboard");
@@ -1989,11 +2125,7 @@ void Handler::RenderMainWindow(Time const& delta)
         bool on = true;
         static bool addBuildButtonHovered = false;
         if (!addBuildButtonHovered)
-        {
-            ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-            color.w *= 0.5f;
-            ImGui::PushStyleColor(ImGuiCol_Text, color);
-        }
+            ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.5f));
         if (TextureData const& icon = GetIcon(Icons::AddBuild);
             ImGui::CheckboxImage(icon.Texture, "Add Build", &on, icon.GetUV0(), icon.GetUV1(), 0, 0, 0, 0.5f, 1.0f, 0.75f))
         {
@@ -2121,7 +2253,7 @@ void Handler::RenderMainWindow(Time const& delta)
 
             float const phase = 3.141592653589f * (float)snowflake.Lifetime / 1000ms .count();
             snowflake.Lifetime += (uint32_t)delta.count();
-            snowflake.Position.x += drag.x * 0.1f * (float)(5 + snowflake.Seed % 5) + UI_SCALE * (float)( 5 + snowflake.Seed % 30) * perSecond * std::sin(phase) * (snowflake.Seed % 2 ? 1 : -1);
+            snowflake.Position.x += drag.x * 0.1f * (float)(5 + snowflake.Seed % 5) + UI_SCALE * (float)( 5 + snowflake.Seed % 30) * perSecond * std::sin(phase) * (snowflake.Seed % 2 ? 1.0f : -1.0f);
             snowflake.Position.y += drag.y * 0.1f * (float)(5 + snowflake.Seed % 5) + UI_SCALE * (float)(20 + snowflake.Seed % 10) * perSecond;
 
             float size;
@@ -2181,11 +2313,7 @@ void Handler::RenderSettings(bool menu)
     {
         bool const disabled = !IsSaveNeeded() && !BuildStorage::Instance().IsSaveNeeded();
         if (disabled)
-        {
-            ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Button));
-            color.x = color.y = color.z = (color.x + color.y + color.z) / 3;
-            ImGui::PushStyleColor(ImGuiCol_Button, color);
-        }
+            ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4Grayscale(ImGuiCol_Button));
         if (ImGui::ButtonEx("Save Builds & Settings", { ImGui::GetContentRegionAvailWidth() - ITEM_SPACING.x - (FRAME_PADDING.x + ImGui::CalcTextSize("Load").x + FRAME_PADDING.x), 0 }, disabled ? ImGuiButtonFlags_Disabled : 0))
             SaveConfig();
         if (ImGui::IsItemHovered())
@@ -2242,7 +2370,7 @@ void Handler::RenderSettings(bool menu)
         if (ImGui::IsItemHovered())
             ImGui::TooltipWithHeader("Enable to revert to the old flag filtering behavior", "Leaving this disabled allows you to filter builds by intersection between separate groups of flags.\n\nExample:\nIf you're filtering on Raid, Power, Condition flags... \n\nWhen enabled (old behavior): shows builds that have Raid OR Power OR Condition flags (or any combination of those).\n\nWhen disabled (new behavior): shows builds that have both Raid AND either Power OR Condition flags (or both).");
         ImGui::Checkbox("Clear Filters When Hidden", &m_config.ClearFiltersOnWindowClose);
-        if (ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_WindowBg)).w < 0.75f - 0.01f) // 0.75f in ImGuiExtensions.h, but there is some precision loss in U32<->float conversion
+        if (ImGui::GetStyleColorVec4(ImGuiCol_WindowBg).w < 0.75f - 0.01f) // 0.75f in ImGuiExtensions.h, but there is some precision loss in U32<->float conversion
             ImGui::Checkbox("Less Transparent Buttons", &m_config.LessTransparentButtons);
         if (m_config.HiddenFiltersHintHidden)
             ImGui::Checkbox("Hide warning about active hidden filters", &m_config.HiddenFiltersHintHidden);
@@ -2328,6 +2456,7 @@ void Handler::RenderSettings(bool menu)
         }
 
         bool columnsStarted = false;
+        bool tableStarted = false;
         for (Build::FlagInfo const& info : Build::GetFlagInfos())
         {
             bool on = !(m_config.HideFlagsMask & (uint32_t)info.Flag);
@@ -2337,13 +2466,10 @@ void Handler::RenderSettings(bool menu)
                 if (!columnsStarted)
                 {
                     columnsStarted = true;
-                    ImGui::Separator();
-                    ImGui::Columns((int)columns.size());
-                    for (size_t i = 0; i < columns.size(); ++i)
-                        ImGui::SetColumnOffset((int)i + 1, ImGui::GetColumnOffset((int)i) + columns[i]);
+                    tableStarted = ImGui::BeginTable("ToggleFlags", (int)columns.size() - 1, ImGuiTableFlags_Borders | ImGuiTableFlags_NoSavedSettings);
                 }
-                else
-                    ImGui::NextColumn();
+                else if (tableStarted)
+                    ImGui::TableNextColumn();
             }
             if (TextureData const& icon = GetIcon(info.Flag);
                 ImGui::CheckboxImage(icon.Texture, fmt::format("{}##{}", info.Name, (int)info.Flag).c_str(), &on, icon.GetUV0(), icon.GetUV1(), 0.4f, 0.6f, 0.5f, 0.9f, 1.0f, 0.95f))
@@ -2354,7 +2480,8 @@ void Handler::RenderSettings(bool menu)
                     m_config.HideFlagsMask |= (uint32_t)info.Flag;
             }
         }
-        ImGui::Columns(1);
+        if (tableStarted)
+            ImGui::EndTable();
     }
 
     ImGui::Separator();
@@ -2448,7 +2575,7 @@ void Handler::RenderKeyBindEditor()
     if (!m_keyBindEditing)
         return;
 
-    ImGui::SetNextWindowSizeConstraints({ 60px + ITEM_SPACING.x + 60px + ITEM_SPACING.x + 60px, 0 }, { 10000px, 10000px });
+    ImGui::SetNextWindowSizeConstraints({ WINDOW_PADDING.x + 60px + ITEM_SPACING.x + 60px + ITEM_SPACING.x + 60px + WINDOW_PADDING.x, 0 }, { 10000px, 10000px });
     if (ImGui::BeginPopupModal("BuildPad##KeyBindEditor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
         ImGui::SetWindowFontScale(UI_SCALE);
@@ -2473,9 +2600,8 @@ void Handler::RenderKeyBindEditor()
 
         ImGui::Text("Press the key you want to bind...");
 
-        ImVec4 active = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-        ImVec4 inactive = active;
-        inactive.w /= 4;
+        ImVec4 active = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+        ImVec4 inactive = ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.25f);
 
         ImGui::PushStyleColor(ImGuiCol_Text, m_keyBindEdited.Control ? active : inactive);
         if (ImGui::Button("Ctrl"))
@@ -2501,7 +2627,9 @@ void Handler::RenderKeyBindEditor()
         {
             auto buffer = util::to_buffer<20>(KeyBind::KeyToString(m_keyBindEdited.Key).value_or(""));
             ImGui::PushItemWidth(-1);
-            ImGui::InputTextEx("", buffer.data(), (int)buffer.size(), { -1, 0 }, ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_AutoSelectAll);
+            ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.25f));
+            ImGui::InputTextEx("", "Key", buffer.data(), (int)buffer.size(), { -1, 0 }, ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_AutoSelectAll);
+            ImGui::PopStyleColor();
             ImGui::PopItemWidth();
         }
 
@@ -2617,8 +2745,8 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
         {
             std::string guid = fmt::format("##Palette{}{}{}", context.Context, water ? "Water" : "Land", index);
             ImVec2 cursor = ImGui::GetCurrentWindow()->Pos + ImGui::GetCursorPos();
-            bool hovered = ImGui::IsMouseHoveringRect(cursor, cursor + ImVec2 { context.ButtonSize.x, GetIcon(Icons::SelectionChevron).TrimmedSize().y * UI_SCALE + context.ButtonSize.y }) && ImGui::IsMouseHoveringWindow();
-            bool active = ImGui::IsPopupOpenPublic(guid.c_str());
+            bool hovered = ImGui::IsMouseHoveringRect(cursor, cursor + ImVec2 { context.ButtonSize.x, GetIcon(Icons::SelectionChevron).TrimmedSize().y * UI_SCALE + context.ButtonSize.y }) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+            bool active = ImGui::IsPopupOpen(guid.c_str());
             float multiplier = context.EditTarget ? (active ? 0.25f : hovered ? 1.0f : 0.8f) : 1.0f;
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, { 0, 0 });
             ImGui::BeginGroup();
@@ -2627,8 +2755,8 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
                 auto const& icon = GetIcon(Icons::SelectionChevron);
                 ImGui::NewLine();
                 ImGui::SameLine(0, context.ButtonSize.x - icon.TrimmedSize().x * UI_SCALE);
-                ImGui::GetCurrentWindow()->DC.CurrentLineHeight = 0.0f;
-                ImGui::GetCurrentWindow()->DC.CurrentLineTextBaseOffset = 0.0f;
+                ImGui::GetCurrentWindow()->DC.CurrLineSize = { };
+                ImGui::GetCurrentWindow()->DC.CurrLineTextBaseOffset = 0.0f;
                 ImVec4 color = ImVec4 { 1.0f, 1.0f, 1.0f, 1.0f };
                 color.x *= multiplier;
                 color.y *= multiplier;
@@ -2658,7 +2786,7 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
                 if (ImGui::IsItemClicked() || ImGui::IsItemClicked(1))
                     ImGui::OpenPopup(guid.c_str());
             }
-            if (ImGui::IsPopupOpenPublic(guid.c_str()))
+            if (ImGui::IsPopupOpen(guid.c_str()))
             {
                 std::vector<InfoType const*> palette;
                 palette.reserve(context.PaletteSource.size());
@@ -2680,8 +2808,8 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
                     float const y = cursor.y + GetIcon(Icons::SelectionChevron).TrimmedSize().y * UI_SCALE + context.ButtonSize.y;
                     pos.y = y + (cursor.y - pos.y) < ImGui::GetIO().DisplaySize.y ? y : 0;
                 }
-                ImGui::SetNextWindowPos(pos, ImGuiSetCond_Always);
-                if (ImGui::BeginPopup(guid.c_str()))
+                ImGui::SetNextWindowPos(pos, ImGuiCond_Always);
+                if (ImGui::BeginPopup(guid.c_str(), ImGuiWindowFlags_NoMove))
                 {
                     ImGui::SetWindowFontScale(UI_SCALE);
                     std::optional<DataType> selection;
@@ -2702,7 +2830,7 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
                             auto const& api = APIType::Get(id);
                             auto const& icon = id ? (context.IconGetter ? context.IconGetter(data, true) : api.*context.APIIcon) : GetIcon(context.MissingAPIIcon);
                             cursor = ImGui::GetCurrentWindow()->Pos + ImGui::GetCursorPos();
-                            hovered = ImGui::IsMouseHoveringRect(cursor, cursor + context.PaletteSize) && ImGui::IsMouseHoveringWindow();
+                            hovered = ImGui::IsMouseHoveringRect(cursor, cursor + context.PaletteSize) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
                             active = id && context.PaletteActive(info, water, index);
                             bool const usable = !context.PaletteUsable || context.PaletteUsable(info, water, index);
                             multiplier = context.EditTarget ? (active ? (hovered ? 0.33f : 0.25f) : hovered ? 1.0f : 0.8f) : 1.0f;
@@ -2813,39 +2941,21 @@ void Handler::RenderBuildEditor(BuildEditContext& context) const
             break;
     }
     ImGui::SetNextWindowSizeConstraints({ 250px, 600px + extraSpace }, { 10000px, 10000px });
-    ImGui::SetNextWindowPosCenter(ImGuiSetCond_Appearing);
+    ImGui::SetNextWindowPos(ImGui::GetIO().DisplaySize / 2, ImGuiCond_Appearing, { 0.5f, 0.5f });
     ImGui::Begin(fmt::format("BuildPad##EditBuild{}", context.WindowID).c_str(), &open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings);
     ImGui::SetWindowFontScale(UI_SCALE);
 
     ImGui::PushItemWidth(-1);
+    ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.25f));
     auto buffer = util::to_buffer(editTarget.GetName());
-    if (ImGui::InputText("##EditBuildEditName", buffer.data(), buffer.size()))
+    if (ImGui::InputTextWithHint("##EditBuildEditName", "Build Name", buffer.data(), buffer.size()))
         editTarget.SetName(buffer.data());
-    ImGui::PopItemWidth();
 
-    if (editTarget.GetName().empty())
-    {
-        ImGui::SameLine(0, 0);
-        ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-        color.w /= 4;
-        ImGui::SameLine(-1, 1 + FRAME_PADDING.x);
-        ImGui::TextColored(color, "Build Name");
-    }
-
-    ImGui::PushItemWidth(-1);
     buffer = util::to_buffer(editTarget.GetLink());
-    if (ImGui::InputText("##EditBuildEditLink", buffer.data(), buffer.size(), ImGuiInputTextFlags_AutoSelectAll))
+    if (ImGui::InputTextWithHint("##EditBuildEditLink", "Chat Link", buffer.data(), buffer.size(), ImGuiInputTextFlags_AutoSelectAll))
         editTarget.SetLink(buffer.data());
+    ImGui::PopStyleColor();
     ImGui::PopItemWidth();
-
-    if (editTarget.GetLink().empty())
-    {
-        ImGui::SameLine(0, 0);
-        ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-        color.w /= 4;
-        ImGui::SameLine(-1, 1 + FRAME_PADDING.x);
-        ImGui::TextColored(color, "Chat Link");
-    }
 
     Build::ParsedInfo const& parsed = editTarget.GetParsedInfo();
     if (!parsed.Error.empty())
@@ -2858,17 +2968,15 @@ void Handler::RenderBuildEditor(BuildEditContext& context) const
 
     if (!parsed.Info.empty())
     {
-        ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-        color.w /= 2;
         ImGui::NewLine();
         ImGui::SameLine(-1, 1 + FRAME_PADDING.x);
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ITEM_SPACING.y / 2);
-        ImGui::TextColored(color, "%s", parsed.Info.c_str());
+        ImGui::TextColored(ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.5f), "%s", parsed.Info.c_str());
     }
 
     // TODO: Add flags
 
-    ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Border)), "Preview:");
+    ImGui::TextColored(ImGui::GetStyleColorVec4(ImGuiCol_Border), "Preview:");
     if (context.IsChanged())
     {
         ImGui::SameLine(0, 0);
@@ -2884,7 +2992,7 @@ void Handler::RenderBuildEditor(BuildEditContext& context) const
         ImGui::PopStyleVar();
     }
     ImGui::Separator();
-    ImGui::BeginChild("Preview##EditBuild", { 0, -(ITEM_SPACING.y + BUTTON_SIZE.y) });
+    ImGui::BeginChild("Preview##EditBuild", { 0, -(ITEM_SPACING.y + BUTTON_SIZE.y) }, false, ImGuiWindowFlags_NoMove);
     ImGui::SetWindowFontScale(UI_SCALE);
     RenderBuildTooltip(editTarget, false, false, &editTarget, true);
     ImGui::EndChild();
@@ -3353,7 +3461,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                 context.PaletteSpacing = { 0px, 0px };
                 context.PalettePerRow = 5;
                 context.ButtonTooltip = "Click to change specialization";
-                ImGui::BeginChild(fmt::format("SpecializationContainer{}", lineIndex).c_str(), { 48px, height });
+                ImGui::BeginChild(fmt::format("SpecializationContainer{}", lineIndex).c_str(), { 48px, height }, false, ImGuiWindowFlags_NoMove);
                 RenderPaletteBar(context);
                 ImGui::EndChild();
 
@@ -3383,7 +3491,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                     auto const& traitInfo = API::Trait::Get(trait);
                     auto const& icon = trait ? traitInfo.Icon : GetIcon(Icons::LoadingTrait);
                     ImVec2 cursor = ImGui::GetCurrentWindow()->Pos + ImGui::GetCursorPos();
-                    bool hovered = ImGui::IsMouseHoveringRect(cursor, cursor + ImVec2 { 24px, 24px }) && ImGui::IsMouseHoveringWindow();
+                    bool hovered = ImGui::IsMouseHoveringRect(cursor, cursor + ImVec2 { 24px, 24px }) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
                     float multiplier = editTarget ? (hovered ? 1.0f : 0.8f) : 1.0f;
                     multiplier *= line.Traits[i / 3] == i % 3 + 1 ? 1.0f : 0.25f;
                     ImVec4 color = ImVec4 { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -3507,9 +3615,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
         static Time blinkingPeriod;
         blinkingPeriod += delta;
         blinkingPeriod %= 1000;
-        ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Header));
-        color.w = std::abs((float)blinkingPeriod.count() / 500 - 1);
-        ImGui::PushStyleColor(ImGuiCol_Header, color);
+        ImGui::PushStyleColor(ImGuiCol_Header, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Header, std::abs((float)blinkingPeriod.count() / 500 - 1)));
     }
 
     if (ImGui::FixedCollapsingHeader("Read Me"))
@@ -3567,7 +3673,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0, 0, 0, 0 });
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0, 0, 0, 0 });
         ImGui::PushStyleColor(ImGuiCol_Text, color);
-        ImGui::ImageButtonWithText(GetIcon(Icons::AcceptBuildEdit), fmt::format("{} Build{} Converted!", convertedBuildsSuccessCount, convertedBuildsSuccessCount != 1 ? "s" : "").c_str(), { 0, 0 }, 0, -1, { 0, 0, 0, 0 }, { 1.0f, 1.0f, 1.0f, color.w });
+        ImGui::ImageButtonWithText(GetIcon(Icons::AcceptBuildEdit), fmt::format("{} Build{} Converted!", convertedBuildsSuccessCount, convertedBuildsSuccessCount != 1 ? "s" : "").c_str(), { 0, 0 }, ImDrawCornerFlags_None, -1, { 0, 0, 0, 0 }, { 1.0f, 1.0f, 1.0f, color.w });
         ImGui::PopStyleColor(4);
         if (util::find_if(m_arcdpsTraits, util::method_equals(&Build::GetParsedProfession, GW2::Profession::Ranger)) ||
             util::find_if(m_arcdpsSkills, util::method_equals(&Build::GetParsedProfession, GW2::Profession::Ranger)))
@@ -3626,21 +3732,19 @@ void Handler::RenderArcDPSMigration(Time const& delta)
                 {
                     ImGui::PushStyleColor(ImGuiCol_Text, ImGui::ColorConvertU32ToFloat4(0xFF44BBEE));
                     ImGui::PushStyleColor(ImGuiCol_Border, ImGui::ColorConvertU32ToFloat4(0xFF44BBEE));
+                    ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1);
                 }
-
                 if (exists || incompatible)
                 {
-                    ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Button));
-                    color.x = color.y = color.z = (color.x + color.y + color.z) / 3;
-                    ImGui::PushStyleColor(ImGuiCol_Button, color);
-                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, color);
-                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, color);
+                    ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4Grayscale(ImGuiCol_Button));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_Button));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_Button));
                     ImGui::PushStyleColor(ImGuiCol_Text, exists ? ImVec4 { 0, 0, 0, 1.0f } : ImVec4 { 0.25f, 0, 0, 1.0f });
                 }
 
                 ImGui::PushItemWidth(-1);
                 if (TextureData const& icon = build.GetParsedSpecialization() != GW2::Specialization::None ? GetIcon(build.GetParsedSpecialization()) : GetIcon(build.GetParsedProfession());
-                    ImGui::ImageButtonWithText(icon.Texture, fmt::format("{}##{}", build.GetName(), build.GetID()).c_str(), { -1, BUTTON_SIZE.y }, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, -1, 0, { 0, 0, 0, 0 }, exists ? ImVec4 { 0, 0, 0, 1.0f } : incompatible ? ImVec4 { 0.75f, 0, 0, 1.0f } : ImVec4 { 1.0f, 1.0f, 1.0f, 1.0f }, selected)
+                    ImGui::ImageButtonWithText(icon.Texture, fmt::format("{}##{}", build.GetName(), build.GetID()).c_str(), { -1, BUTTON_SIZE.y }, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, ImDrawCornerFlags_All, 0, { 0, 0, 0, 0 }, exists ? ImVec4 { 0, 0, 0, 1.0f } : incompatible ? ImVec4 { 0.75f, 0, 0, 1.0f } : ImVec4 { 1.0f, 1.0f, 1.0f, 1.0f }, selected)
                     && !exists && !incompatible)
                 {
                     if (selected)
@@ -3659,9 +3763,11 @@ void Handler::RenderArcDPSMigration(Time const& delta)
 
                 if (exists || incompatible)
                     ImGui::PopStyleColor(4);
-
                 if (selected)
+                {
+                    ImGui::PopStyleVar();
                     ImGui::PopStyleColor(2);
+                }
 
                 bool const hovered = ImGui::IsItemHovered();
                 if (m_tooltipBuild == build.GetID())
@@ -3712,7 +3818,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (ImGui::GetContentRegionAvailWidth() - ImGui::CalcTextSize("Traits").x) / 2);
     ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(0xFF44BBEE), "Traits");
-    ImGui::BeginChild("Traits##ArcDPSMigration", { 0, 0 });
+    ImGui::BeginChild("Traits##ArcDPSMigration", { 0, 0 }, false, ImGuiWindowFlags_NoMove);
     ImGui::SetWindowFontScale(UI_SCALE);
     buildList(m_arcdpsTraits, false);
     ImGui::EndChild();
@@ -3720,13 +3826,13 @@ void Handler::RenderArcDPSMigration(Time const& delta)
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (ImGui::GetContentRegionAvailWidth() - ImGui::CalcTextSize("Skills").x) / 2);
     ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(0xFF44BBEE), "Skills");
-    ImGui::BeginChild("Skills##ArcDPSMigration", { 0, 0 });
+    ImGui::BeginChild("Skills##ArcDPSMigration", { 0, 0 }, false, ImGuiWindowFlags_NoMove);
     ImGui::SetWindowFontScale(UI_SCALE);
     buildList(m_arcdpsSkills, true);
     ImGui::EndChild();
     ImGui::NextColumn();
 
-    ImGui::BeginChild("PreviewHeader##ArcDPSMigration", { 0, -1 });
+    ImGui::BeginChild("PreviewHeader##ArcDPSMigration", { 0, -1 }, false, ImGuiWindowFlags_NoMove);
     ImGui::SetWindowFontScale(UI_SCALE);
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (ImGui::GetContentRegionAvailWidth() - ImGui::CalcTextSize("Combined Build").x) / 2);
     ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(0xFF44BBEE), "Combined Build");
@@ -3801,19 +3907,12 @@ void Handler::RenderArcDPSMigration(Time const& delta)
     }
 
     ImGui::PushItemWidth(-1);
+    ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.25f));
     auto buffer = util::to_buffer(previewBuild.GetName());
-    if (ImGui::InputText("##ArcDPSMigrationEditName", buffer.data(), buffer.size(), ImGuiInputTextFlags_AutoSelectAll))
+    if (ImGui::InputTextWithHint("##ArcDPSMigrationEditName", "Build Name", buffer.data(), buffer.size(), ImGuiInputTextFlags_AutoSelectAll))
         previewBuild.SetName(buffer.data());
+    ImGui::PopStyleColor();
     ImGui::PopItemWidth();
-
-    if (previewBuild.GetName().empty())
-    {
-        ImGui::SameLine(0, 0);
-        ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-        color.w /= 4;
-        ImGui::SameLine(-1, 1 + FRAME_PADDING.x);
-        ImGui::TextColored(color, "Build Name");
-    }
 
     // TODO: Add flags
 
@@ -3828,18 +3927,16 @@ void Handler::RenderArcDPSMigration(Time const& delta)
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0, 0, 0, 0 });
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0, 0, 0, 0 });
         ImGui::PushStyleColor(ImGuiCol_Text, color);
-        ImGui::ImageButtonWithText(GetIcon(Icons::AcceptBuildEdit), "Build Saved!", { 0, 0 }, 0, -1, { 0, 0, 0, 0 }, { 1.0f, 1.0f, 1.0f, color.w });
+        ImGui::ImageButtonWithText(GetIcon(Icons::AcceptBuildEdit), "Build Saved!", { 0, 0 }, ImDrawCornerFlags_None, -1, { 0, 0, 0, 0 }, { 1.0f, 1.0f, 1.0f, color.w });
         ImGui::PopStyleColor(4);
     }
 
     bool const disabled = !selectedTraits || !selectedSkills;
     if (disabled)
     {
-        ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Button));
-        color.x = color.y = color.z = (color.x + color.y + color.z) / 3;
-        ImGui::PushStyleColor(ImGuiCol_Button, color);
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, color);
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, color);
+        ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4Grayscale(ImGuiCol_Button));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_Button));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_Button));
     }
 
     if (ImGui::SameLine(ImGui::GetContentRegionAvailWidth() - 1 - FRAME_PADDING.x - ImGui::CalcTextSize("Save").x - FRAME_PADDING.x, 0);
@@ -3861,7 +3958,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
     if (disabled)
         ImGui::PopStyleColor(3);
 
-    ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Border)), "Preview:");
+    ImGui::TextColored(ImGui::GetStyleColorVec4(ImGuiCol_Border), "Preview:");
     if (previewBuild.IsSaveNeeded())
     {
         ImGui::SameLine(0, 0);
@@ -3882,7 +3979,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
     ImGui::Separator();
     ImGui::GetCurrentWindowRead()->Size.y = ImGui::GetCursorPosY();
     ImGui::EndChild();
-    ImGui::BeginChild("Preview##ArcDPSMigration", { 0, 0 });
+    ImGui::BeginChild("Preview##ArcDPSMigration", { 0, 0 }, false, ImGuiWindowFlags_NoMove);
     ImGui::SetWindowFontScale(UI_SCALE);
     RenderBuildTooltip(previewBuild, false, true, &previewBuild);
     ImGui::EndChild();
@@ -4009,7 +4106,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
 
     ImGui::Columns(2);
 
-    ImGui::BeginChild("Gear##ArcDPSGear", { 0, 0 });
+    ImGui::BeginChild("Gear##ArcDPSGear", { 0, 0 }, false, ImGuiWindowFlags_NoMove);
     ImGui::SetWindowFontScale(UI_SCALE);
     bool firstVisibleTemplate = true;
     for (auto const& info : GW2::GetProfessionInfos())
@@ -4044,6 +4141,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
             {
                 ImGui::PushStyleColor(ImGuiCol_Text, ImGui::ColorConvertU32ToFloat4(0xFF44BBEE));
                 ImGui::PushStyleColor(ImGuiCol_Border, ImGui::ColorConvertU32ToFloat4(0xFF44BBEE));
+                ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1);
             }
 
             std::string name;
@@ -4054,7 +4152,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
 
             ImGui::PushItemWidth(-1);
             if (TextureData const& icon = GetIcon((GW2::Profession)base.Profession);
-                ImGui::ImageButtonWithText(icon.Texture, name.c_str(), { -1, BUTTON_SIZE.y }, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, -1, 0, { 0, 0, 0, 0 }, legendary ? ImGui::ColorConvertU32ToFloat4(0xFFFF3399) : ImVec4 { 1.0f, 1.0f, 1.0f, 1.0f }, selected))
+                ImGui::ImageButtonWithText(icon.Texture, name.c_str(), { -1, BUTTON_SIZE.y }, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, ImDrawCornerFlags_All, 0, { 0, 0, 0, 0 }, legendary ? ImGui::ColorConvertU32ToFloat4(0xFFFF3399) : ImVec4 { 1.0f, 1.0f, 1.0f, 1.0f }, selected))
             {
                 if (selected)
                     selection = { };
@@ -4066,7 +4164,10 @@ void Handler::RenderArcDPSGear(Time const& delta)
             if (legendary)
                 ImGui::PopStyleColor(3);
             if (selected)
+            {
+                ImGui::PopStyleVar();
                 ImGui::PopStyleColor(2);
+            }
 
             EndRenderBuildList(false);
             firstVisibleTemplate = false;
@@ -4075,7 +4176,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
     ImGui::EndChild();
     ImGui::NextColumn();
 
-    ImGui::BeginChild("Preview##ArcDPSGear", { 0, iconSets.size() > 1 ? -(ITEM_SPACING.y + BUTTON_SIZE.y) : 0 });
+    ImGui::BeginChild("Preview##ArcDPSGear", { 0, iconSets.size() > 1 ? -(ITEM_SPACING.y + BUTTON_SIZE.y) : 0 }, false, ImGuiWindowFlags_NoMove);
     ImGui::SetWindowFontScale(UI_SCALE);
     float const iconHeight = LINE_SIZE.y + ITEM_SPACING.y + LINE_SIZE.y + ITEM_SPACING.y + LINE_SIZE.y;
     ImVec2 const iconSize { iconHeight, iconHeight };
@@ -4279,7 +4380,7 @@ void Handler::VersionUpdate()
 void Handler::RenderVersionHistory(bool all)
 {
     ImGui::SetNextWindowSizeConstraints({ 400px, 300px }, { 10000px, 10000px });
-    ImGui::SetNextWindowPosCenter(ImGuiSetCond_Appearing);
+    ImGui::SetNextWindowPos(ImGui::GetIO().DisplaySize / 2, ImGuiCond_Appearing, { 0.5f, 0.5f });
     ImGui::Begin("BuildPad##VersionHistory", &m_versionHistoryShown, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings);
     ImGui::SetWindowFontScale(UI_SCALE);
     if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(VK_ESCAPE, false))
@@ -4321,7 +4422,7 @@ void Handler::RenderVersionHistory(bool all)
 void Handler::RenderAbout()
 {
     ImGui::SetNextWindowSizeConstraints({ 400px, 300px }, { 10000px, 10000px });
-    ImGui::SetNextWindowPosCenter(ImGuiSetCond_Appearing);
+    ImGui::SetNextWindowPos(ImGui::GetIO().DisplaySize / 2, ImGuiCond_Appearing, { 0.5f, 0.5f });
     ImGui::Begin("BuildPad##About", &m_aboutShown, ImGuiWindowFlags_NoSavedSettings);
     ImGui::SetWindowFontScale(UI_SCALE);
     if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(VK_ESCAPE, false))
@@ -4333,8 +4434,7 @@ void Handler::RenderAbout()
     ImGui::BeginGroup();
     ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(0xFF44BBEE), "BuildPad");
     ImGui::SameLine(0, 0);
-    ImVec4 color = ImGui::ColorConvertU32ToFloat4(ImGui::GetColorU32(ImGuiCol_Text));
-    color.w /= 2;
+    ImVec4 const color = ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.5f);
     ImGui::TextColored(color, " - version %s", m_versionCurrent.c_str());
 
     ImGui::TextColored(color, "By ");
@@ -4359,7 +4459,7 @@ void Handler::RenderAbout()
         std::string URL;
     } credits[]
     {
-        { "ImGui", "Copyright (c) 2014-2019 Omar Cornut", "https://github.com/ocornut/imgui" },
+        { "ImGui", "Copyright (c) 2014-2021 Omar Cornut", "https://github.com/ocornut/imgui" },
         { "{fmt}", "Copyright (c) 2012 - 2019, Victor Zverovich", "https://github.com/fmtlib/fmt" },
         { "JSON for Modern C++", "Copyright (c) 2013-2019 Niels Lohmann", "https://github.com/nlohmann/json" },
         { "cpp-base64", u8"Copyright (C) 2004-2017 René Nyffenegger", "https://github.com/ReneNyffenegger/cpp-base64" },

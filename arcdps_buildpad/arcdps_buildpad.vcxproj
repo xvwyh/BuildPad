@@ -175,10 +175,11 @@
     <ClInclude Include="dep\imgui\imconfig.h" />
     <ClInclude Include="dep\imgui\imgui.h" />
     <ClInclude Include="dep\imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="dep\imgui\imgui_impl_win32.h" />
     <ClInclude Include="dep\imgui\imgui_internal.h" />
-    <ClInclude Include="dep\imgui\stb_rect_pack.h" />
-    <ClInclude Include="dep\imgui\stb_textedit.h" />
-    <ClInclude Include="dep\imgui\stb_truetype.h" />
+    <ClInclude Include="dep\imgui\imstb_rectpack.h" />
+    <ClInclude Include="dep\imgui\imstb_textedit.h" />
+    <ClInclude Include="dep\imgui\imstb_truetype.h" />
     <ClInclude Include="auras\SetupWindow.h" />
     <ClInclude Include="dep\inih\INIReader.h" />
     <ClInclude Include="dep\json\json.hpp" />
@@ -222,6 +223,9 @@
     <ClCompile Include="dep\imgui\imgui.cpp" />
     <ClCompile Include="dep\imgui\imgui_demo.cpp" />
     <ClCompile Include="dep\imgui\imgui_draw.cpp" />
+    <ClCompile Include="dep\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="dep\imgui\imgui_tables.cpp" />
+    <ClCompile Include="dep\imgui\imgui_widgets.cpp" />
     <ClCompile Include="dep\imgui\imgui_impl_dx9.cpp" />
     <ClCompile Include="dep\spng\spng.c" />
     <ClCompile Include="Main.cpp" />

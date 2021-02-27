@@ -141,7 +141,8 @@ void mod_options()
 arcdps::arcdps_exports* mod_init()
 {
     arc_exports.size = sizeof(arcdps::arcdps_exports);
-    arc_exports.sig = (uintptr_t)0xAE12EF4E213CFFD2; // 0xA113CF72;
+    arc_exports.sig = 0x213CFFD2;
+    arc_exports.imguivers = IMGUI_VERSION_NUM;
     arc_exports.out_name = "buildpad";
     arc_exports.out_build = buildpad::BUILDPAD_VERSION;
     arc_exports.wnd_nofilter = (void*)&mod_wnd;
@@ -151,10 +152,11 @@ arcdps::arcdps_exports* mod_init()
 }
 
 /* export -- arcdps looks for this exported function and calls the address it returns */
-extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, IDirect3DDevice9* id3dd9)
+extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, IDirect3DDevice9* id3dd9, HANDLE arcdll, void* mallocfn, void* freefn)
 {
     arcvers = arcversionstr;
     ImGui::SetCurrentContext((ImGuiContext*)imguicontext);
+    ImGui::SetAllocatorFunctions((void *(*)(size_t, void*))mallocfn, (void(*)(void*, void*))freefn);
     d3ddevice = id3dd9;
     return (void*)&mod_init;
 }

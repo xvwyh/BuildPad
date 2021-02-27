@@ -1,7 +1,15 @@
 {
-  "latest": "2020-08-30",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-08-30.dll",
+  "latest": "2021-02-23",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-02-23.dll",
   "history": [
+    {
+      "version": "2021-02-23",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-02-23.dll",
+      "changes": [
+        { "type": "bug", "text": "Support for the new version of ArcDPS with transition to ImGui v1.80" },
+        { "type": "warning", "text": "Manual update necessary" }
+      ]
+    },
     {
       "version": "2020-08-30",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2020-08-30.dll",
