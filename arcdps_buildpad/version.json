@@ -1,7 +1,14 @@
 {
-  "latest": "2021-02-23",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-02-23.dll",
+  "latest": "2021-03-17",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-03-17.dll",
   "history": [
+    {
+      "version": "2021-03-17",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-03-17.dll",
+      "changes": [
+        { "type": "bug", "text": "Another fix to -mumble command line argument handling, fixes missing profession filter when Guild Wars 2 was started through GW2Launcher configured to use a custom mumble link name" }
+      ]
+    },
     {
       "version": "2021-02-23",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-02-23.dll",

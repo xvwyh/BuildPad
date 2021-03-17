@@ -57,8 +57,15 @@ std::wstring const& MumbleLink::GetMumbleLinkName()
             std::wstring commandLine = GetCommandLine();
             if (auto const index = commandLine.find(command); index != std::wstring::npos && index + command.size() < commandLine.length() && commandLine[index + command.size()] == ' ')
             {
-                auto const start = index + command.size() + 1;
-                auto const end = commandLine.find(' ', start);
+                auto start = index + command.size() + 1;
+                decltype(start) end;
+                if (commandLine[start] == '"')
+                {
+                    ++start;
+                    end = commandLine.find('"', start);
+                }
+                else
+                    end = commandLine.find(' ', start);
                 m_nameCache = commandLine.substr(start, (end != std::wstring::npos ? end : commandLine.length()) - start);
             }
         }

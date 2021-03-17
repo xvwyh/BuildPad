@@ -16,7 +16,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2021-02-23";
+char const* const BUILDPAD_VERSION = "2021-03-17";
 
 namespace resources
 {
