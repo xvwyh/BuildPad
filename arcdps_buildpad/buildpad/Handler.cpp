@@ -16,7 +16,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2021-03-17";
+char const* const BUILDPAD_VERSION = "2021-08-18";
 
 namespace resources
 {
@@ -60,6 +60,7 @@ namespace resources
 #include "resources/156794.h"
 #include "resources/157086.h"
 #include "resources/157121.h"
+#include "resources/157145.h"
 #include "resources/157262.h"
 #include "resources/157325.h"
 #include "resources/255430.h"
@@ -100,6 +101,9 @@ namespace resources
 #include "resources/1988170.h"
 #include "resources/1988171.h"
 #include "resources/2030307.h"
+#include "resources/2479354.h"
+#include "resources/2479358.h"
+#include "resources/2479362.h"
 #include "resources/ErrorItem.h"
 #include "resources/ErrorPet.h"
 #include "resources/ErrorSkill.h"
@@ -155,6 +159,7 @@ void Handler::LoadTextures()
     LoadIcon(Icons::LoadingPet, resources::texLoadingPet).Trim(52);
     LoadIcon(Icons::ErrorPet, resources::texErrorPet).Trim(52);
     LoadIcon(Icons::SelectionChevron, resources::tex156058).Trim(2, 4, 2, 3).FlipVertically();
+    LoadIcon(Icons::PaletteNotUnderwater, resources::tex157145);
     LoadIcon(Icons::CheckBoxChecked, resources::tex155919);
     LoadIcon(Icons::CheckBoxUnchecked, resources::tex155923);
     LoadIcon(GW2::Profession::None, resources::tex156675);
@@ -231,6 +236,9 @@ void Handler::LoadTextures()
     LoadIcon(GW2::Specialization::WarriorSpellbreaker, resources::tex1770223);
     LoadIcon(GW2::Specialization::GuardianFirebrand, resources::tex1770211);
     LoadIcon(GW2::Specialization::RevenantRenegade, resources::tex1770219);
+    LoadIcon(GW2::Specialization::NecromancerHarbinger, resources::tex2479362);
+    LoadIcon(GW2::Specialization::GuardianWillbender, resources::tex2479354);
+    LoadIcon(GW2::Specialization::MesmerVirtuoso, resources::tex2479358);
     LoadIcon(Build::Flags::Favorite, resources::tex523389).Trim(5);
     LoadIcon(Build::Flags::PvE, resources::tex157086).Trim(2);
     LoadIcon(Build::Flags::PvP, resources::tex157121).Trim(1);
@@ -2769,7 +2777,7 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
                 auto const& data = context.Getter(water, index);
                 auto const& id = context.DataToAPITransform(data, water, index);
                 auto const& api = APIType::Get(id);
-                auto const& icon = id ? (context.IconGetter ? context.IconGetter(data, false) : api.*context.APIIcon) : GetIcon(context.MissingAPIIcon);
+                auto const& icon = id ? (context.IconGetter ? context.IconGetter(data, false) : (api.*context.APIIcon).Get()) : GetIcon(context.MissingAPIIcon);
                 if (index < context.BarButtonCount / 2 ? context.DarkenFirstHalf : context.DarkenSecondHalf)
                     multiplier *= id ? 0.5f : 0.8f;
                 ImVec4 color { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -2828,7 +2836,7 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
                             auto const& data = context.InfoToDataTransform(info);
                             auto const& id = context.DataToAPITransform(data, water, index);
                             auto const& api = APIType::Get(id);
-                            auto const& icon = id ? (context.IconGetter ? context.IconGetter(data, true) : api.*context.APIIcon) : GetIcon(context.MissingAPIIcon);
+                            auto const& icon = id ? (context.IconGetter ? context.IconGetter(data, true) : (api.*context.APIIcon).Get()) : GetIcon(context.MissingAPIIcon);
                             cursor = ImGui::GetCurrentWindow()->Pos + ImGui::GetCursorPos();
                             hovered = ImGui::IsMouseHoveringRect(cursor, cursor + context.PaletteSize) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
                             active = id && context.PaletteActive(info, water, index);
@@ -2839,12 +2847,23 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
                             color.y *= multiplier;
                             color.z *= multiplier;
                             if (!usable)
-                                color = { 0.25f, 0.0f, 0.0f, color.w };
+                                color = { 0.5f, 0.0f, 0.0f, color.w };
                             ImGui::Image(icon.Texture, context.PaletteSize, icon.GetUV0(), icon.GetUV1(), color);
                             if (ImGui::IsItemHovered() && api)
                                 ImGui::TooltipWithHeader((api.*context.APIName).c_str(), !usable ? "Unavailable" : nullptr);
                             if (ImGui::IsItemClicked() && usable)
                                 selection = data;
+
+                            ImVec2 const overlayOutset { (context.PaletteSize / 128px) * 16px };
+                            if (!usable)
+                            {
+                                auto const& overlay = GetIcon(Icons::PaletteNotUnderwater);
+                                ImGui::StoreCursor();
+                                ImGui::SameLine(0, 0);
+                                ImGui::SetCursorPos(ImGui::GetCursorPos() - ImVec2 { context.PaletteSize.x, 0 } - overlayOutset);
+                                ImGui::Image(overlay.Texture, context.PaletteSize + overlayOutset * 2, overlay.GetUV0(), overlay.GetUV1());
+                                ImGui::RestoreCursor();
+                            }
                         }
                         else
                             ImGui::ItemSize(context.PaletteSize);
@@ -3376,7 +3395,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
             if (info.WeaponTrait)
             {
                 auto const& traitInfo = API::Trait::Get(info.WeaponTrait);
-                auto const& icon = traitInfo.Icon;
+                auto const& icon = traitInfo.Icon.Get();
                 ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::ceil((24px - ImGui::CalcTextSize(text.c_str()).y) / 2));
                 ImGui::TextColored({ 1.0f, 1.0f, 1.0f, 0.5f }, "%s", text.c_str());
                 ImGui::SameLine(0, 5);
@@ -3489,7 +3508,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                 else if (uint32_t const trait = info.MajorTraits[i])
                 {
                     auto const& traitInfo = API::Trait::Get(trait);
-                    auto const& icon = trait ? traitInfo.Icon : GetIcon(Icons::LoadingTrait);
+                    auto const& icon = trait ? traitInfo.Icon.Get() : GetIcon(Icons::LoadingTrait);
                     ImVec2 cursor = ImGui::GetCurrentWindow()->Pos + ImGui::GetCursorPos();
                     bool hovered = ImGui::IsMouseHoveringRect(cursor, cursor + ImVec2 { 24px, 24px }) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
                     float multiplier = editTarget ? (hovered ? 1.0f : 0.8f) : 1.0f;
@@ -4211,7 +4230,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
                 if (iconSet.Items)
                 {
                     ImGui::SameLine(0.001f);
-                    ImGui::Image(info.Icon.Texture, iconSize);
+                    ImGui::Image(info.Icon.Get().Texture, iconSize);
                 }
                 if (auto const icon = iconSet.GetIcon(item.Stats))
                 {
@@ -4243,7 +4262,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
                 }
                 if (!iconSet.Items)
                 {
-                    ImGui::Image(info.Icon.Texture, { LINE_SIZE.y, LINE_SIZE.y });
+                    ImGui::Image(info.Icon.Get().Texture, { LINE_SIZE.y, LINE_SIZE.y });
                     ImGui::SameLine();
                 }
                 ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(GW2::GetRarityInfo(info.Rarity).Color), "%s", info.Name.c_str());
@@ -4254,7 +4273,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
                     continue;
 
                 auto const& info = API::Item::Get(upgrade);
-                ImGui::Image(info.Icon.Texture, { LINE_SIZE.y, LINE_SIZE.y });
+                ImGui::Image(info.Icon.Get().Texture, { LINE_SIZE.y, LINE_SIZE.y });
                 ImGui::SameLine();
                 ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(GW2::GetRarityInfo(info.Rarity).Color), "%s", info.Name.c_str());
             }
@@ -4264,7 +4283,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
                     continue;
 
                 auto const& info = API::Item::Get(infusion);
-                ImGui::Image(info.Icon.Texture, { LINE_SIZE.y, LINE_SIZE.y });
+                ImGui::Image(info.Icon.Get().Texture, { LINE_SIZE.y, LINE_SIZE.y });
                 ImGui::SameLine();
                 ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(GW2::GetRarityInfo(info.Rarity).Color), "%s", info.Name.c_str());
             }

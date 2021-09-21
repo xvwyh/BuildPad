@@ -12,6 +12,7 @@ namespace buildpad
 extern char const* const BUILDPAD_VERSION;
 
 class Window;
+class StateIcon;
 
 class Handler : public Singleton<Handler>
 {
@@ -73,6 +74,7 @@ public:
         LoadingPet,
         ErrorPet,
         SelectionChevron,
+        PaletteNotUnderwater,
         CheckBoxUnchecked,
         CheckBoxChecked,
     };
@@ -163,7 +165,7 @@ private:
 
         Icons MissingAPIIcon;
         std::string APIType::*APIName;
-        TextureData APIType::*APIIcon;
+        StateIcon APIType::*APIIcon;
         std::function<TextureData const&(DataType const& selection, bool palette)> IconGetter;
         std::function<DataType(InfoType const& info)> InfoToDataTransform;
         std::function<uint32_t(DataType const& selection, bool water, uint8_t index)> DataToAPITransform;
@@ -185,7 +187,7 @@ private:
 
         std::string ButtonTooltip;
 
-        PaletteContext(std::string_view context, InfoSourceType const& paletteSource, std::string APIType::*apiName, TextureData APIType::*apiIcon) : Context(context), PaletteSource(paletteSource), APIName(apiName), APIIcon(apiIcon) { }
+        PaletteContext(std::string_view context, InfoSourceType const& paletteSource, std::string APIType::*apiName, StateIcon APIType::*apiIcon) : Context(context), PaletteSource(paletteSource), APIName(apiName), APIIcon(apiIcon) { }
     };
     template<typename DataType, typename InfoType, typename InfoSourceType, typename APIType>
     void RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType, APIType> const& context) const;
