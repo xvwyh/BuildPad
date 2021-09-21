@@ -321,7 +321,7 @@ std::optional<std::string> Build::ValidateParsedInfo(ParsedInfo& parsed)
     if (errors.empty())
         return { };
 
-    return format("{}", fmt::join(errors.begin(), errors.end(), "\n"));
+    return fmt::format("{}", fmt::join(errors.begin(), errors.end(), "\n"));
 }
 
 void Build::HandleMigration()

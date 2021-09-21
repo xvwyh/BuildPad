@@ -82,6 +82,10 @@ void API::LoadSkillData() const
                 SkillStorage::Instance().AddRevenantLegendSkills(id, skills);
             }
 
+            for (auto const& info : GW2::GetRevenantLegendInfos())
+                if (info.Legend != GW2::RevenantLegend::None && !SkillStorage::Instance().GetRevenantLegendSkills(info.Legend))
+                    throw std::exception();
+
             // Needed until the API contains palette assignments for all revenant legend skills (currently only Kalla is present)
             Web::Instance().Request(
                 "https://buildpad.gw2archive.eu/skillpalette.json",

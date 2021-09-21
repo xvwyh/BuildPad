@@ -6,7 +6,7 @@ A build storage plugin for ArcDPS
 This isn't the primary repo I'm working on, I will only be commiting here when releasing new versions.
 
 ## Build
-At least VS2017 is required to compile.
+At least VS2019 is required to compile.
 
 All the necessary libraries should be included, but if you need to recompile them - I cannot help you, good luck figuring that out on your own. Try vcpkg, I dunno.
 

@@ -16,7 +16,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2021-08-18";
+char const* const BUILDPAD_VERSION = "2021-09-22";
 
 namespace resources
 {
@@ -104,6 +104,9 @@ namespace resources
 #include "resources/2479354.h"
 #include "resources/2479358.h"
 #include "resources/2479362.h"
+#include "resources/2491558.h"
+#include "resources/2491562.h"
+#include "resources/2491566.h"
 #include "resources/ErrorItem.h"
 #include "resources/ErrorPet.h"
 #include "resources/ErrorSkill.h"
@@ -239,6 +242,9 @@ void Handler::LoadTextures()
     LoadIcon(GW2::Specialization::NecromancerHarbinger, resources::tex2479362);
     LoadIcon(GW2::Specialization::GuardianWillbender, resources::tex2479354);
     LoadIcon(GW2::Specialization::MesmerVirtuoso, resources::tex2479358);
+    LoadIcon(GW2::Specialization::ElementalistCatalyst, resources::tex2491558);
+    LoadIcon(GW2::Specialization::WarriorBladesworn, resources::tex2491566);
+    LoadIcon(GW2::Specialization::RevenantVindicator, resources::tex2491562);
     LoadIcon(Build::Flags::Favorite, resources::tex523389).Trim(5);
     LoadIcon(Build::Flags::PvE, resources::tex157086).Trim(2);
     LoadIcon(Build::Flags::PvP, resources::tex157121).Trim(1);
@@ -579,7 +585,7 @@ void Handler::SaveConfig()
             {
                 std::array<std::string, 10> values;
                 std::transform((m_config.*p).begin(), (m_config.*p).end(), values.begin(), [](uint32_t const& value) { return fmt::format("#{:X}", util::reverse_bytes(value)); });
-                return format("{}", fmt::join(values.begin(), values.end(), ","));
+                return fmt::format("{}", fmt::join(values.begin(), values.end(), ","));
             },
             [this](auto(Config::*p)) { return std::to_string(m_config.*p); }
         }, field));
@@ -782,195 +788,6 @@ void Handler::Update()
     ImGui::SliderInt("[TEST PROF]", &prof, 0, 9);
     storage.SetCurrentProfession((GW2::Profession)prof);
     UpdateOptions();
-    auto const upgradeStyle_v150_v180 = [](std::vector<byte>& vars, std::vector<byte>& cols)
-    {
-        struct v150
-        {
-            enum
-            {
-                ImGuiCol_Text,
-                ImGuiCol_TextDisabled,
-                ImGuiCol_WindowBg,              // Background of normal windows
-                ImGuiCol_ChildWindowBg,         // Background of child windows
-                ImGuiCol_PopupBg,               // Background of popups, menus, tooltips windows
-                ImGuiCol_Border,
-                ImGuiCol_BorderShadow,
-                ImGuiCol_FrameBg,               // Background of checkbox, radio button, plot, slider, text input
-                ImGuiCol_FrameBgHovered,
-                ImGuiCol_FrameBgActive,
-                ImGuiCol_TitleBg,
-                ImGuiCol_TitleBgCollapsed,
-                ImGuiCol_TitleBgActive,
-                ImGuiCol_MenuBarBg,
-                ImGuiCol_ScrollbarBg,
-                ImGuiCol_ScrollbarGrab,
-                ImGuiCol_ScrollbarGrabHovered,
-                ImGuiCol_ScrollbarGrabActive,
-                ImGuiCol_ComboBg,
-                ImGuiCol_CheckMark,
-                ImGuiCol_SliderGrab,
-                ImGuiCol_SliderGrabActive,
-                ImGuiCol_Button,
-                ImGuiCol_ButtonHovered,
-                ImGuiCol_ButtonActive,
-                ImGuiCol_Header,
-                ImGuiCol_HeaderHovered,
-                ImGuiCol_HeaderActive,
-                ImGuiCol_Column,
-                ImGuiCol_ColumnHovered,
-                ImGuiCol_ColumnActive,
-                ImGuiCol_ResizeGrip,
-                ImGuiCol_ResizeGripHovered,
-                ImGuiCol_ResizeGripActive,
-                ImGuiCol_CloseButton,
-                ImGuiCol_CloseButtonHovered,
-                ImGuiCol_CloseButtonActive,
-                ImGuiCol_PlotLines,
-                ImGuiCol_PlotLinesHovered,
-                ImGuiCol_PlotHistogram,
-                ImGuiCol_PlotHistogramHovered,
-                ImGuiCol_TextSelectedBg,
-                ImGuiCol_ModalWindowDarkening,  // darken entire screen when a modal window is active
-                ImGuiCol_COUNT
-            };
-            struct ImGuiStyle
-            {
-                float       Alpha;                      // Global alpha applies to everything in ImGui
-                ImVec2      WindowPadding;              // Padding within a window
-                ImVec2      WindowMinSize;              // Minimum window size
-                float       WindowRounding;             // Radius of window corners rounding. Set to 0.0f to have rectangular windows
-                ImVec2      WindowTitleAlign;           // Alignment for title bar text. Defaults to (0.0f,0.5f) for left-aligned,vertically centered.
-                float       ChildWindowRounding;        // Radius of child window corners rounding. Set to 0.0f to have rectangular windows
-                ImVec2      FramePadding;               // Padding within a framed rectangle (used by most widgets)
-                float       FrameRounding;              // Radius of frame corners rounding. Set to 0.0f to have rectangular frame (used by most widgets).
-                ImVec2      ItemSpacing;                // Horizontal and vertical spacing between widgets/lines
-                ImVec2      ItemInnerSpacing;           // Horizontal and vertical spacing between within elements of a composed widget (e.g. a slider and its label)
-                ImVec2      TouchExtraPadding;          // Expand reactive bounding box for touch-based system where touch position is not accurate enough. Unfortunately we don't sort widgets so priority on overlap will always be given to the first widget. So don't grow this too much!
-                float       IndentSpacing;              // Horizontal indentation when e.g. entering a tree node. Generally == (FontSize + FramePadding.x*2).
-                float       ColumnsMinSpacing;          // Minimum horizontal spacing between two columns
-                float       ScrollbarSize;              // Width of the vertical scrollbar, Height of the horizontal scrollbar
-                float       ScrollbarRounding;          // Radius of grab corners for scrollbar
-                float       GrabMinSize;                // Minimum width/height of a grab box for slider/scrollbar.
-                float       GrabRounding;               // Radius of grabs corners rounding. Set to 0.0f to have rectangular slider grabs.
-                ImVec2      ButtonTextAlign;            // Alignment of button text when button is larger than text. Defaults to (0.5f,0.5f) for horizontally+vertically centered.
-                ImVec2      DisplayWindowPadding;       // Window positions are clamped to be visible within the display area by at least this amount. Only covers regular windows.
-                ImVec2      DisplaySafeAreaPadding;     // If you cannot see the edge of your screen (e.g. on a TV) increase the safe area padding. Covers popups/tooltips as well regular windows.
-                bool        AntiAliasedLines;           // Enable anti-aliasing on lines/borders. Disable if you are really tight on CPU/GPU.
-                bool        AntiAliasedShapes;          // Enable anti-aliasing on filled shapes (rounded rectangles, circles, etc.)
-                float       CurveTessellationTol;       // Tessellation tolerance. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.
-                ImVec4      Colors[v150::ImGuiCol_COUNT];
-            };
-        };
-        v150::ImGuiStyle old;
-        std::copy_n(vars.begin(), sizeof(old) - sizeof(ImVec4) * v150::ImGuiCol_COUNT, (char*)&old);
-        std::copy_n(cols.begin(),               sizeof(ImVec4) * v150::ImGuiCol_COUNT, (char*)&old.Colors);
-        ImGuiStyle& style = ImGui::GetStyle();
-        style.Alpha                                 = old.Alpha;
-        style.WindowPadding                         = old.WindowPadding;
-        style.WindowMinSize                         = { std::max(1.0f, old.WindowMinSize.x), std::max(1.0f, old.WindowMinSize.y) };
-        style.WindowRounding                        = old.WindowRounding;
-        style.WindowTitleAlign                      = old.WindowTitleAlign;
-        style.ChildRounding                         = old.ChildWindowRounding;
-        style.FramePadding                          = old.FramePadding;
-        style.FrameRounding                         = old.FrameRounding;
-        style.ItemSpacing                           = old.ItemSpacing;
-        style.ItemInnerSpacing                      = old.ItemInnerSpacing;
-        style.TouchExtraPadding                     = old.TouchExtraPadding;
-        style.IndentSpacing                         = old.IndentSpacing;
-        style.ColumnsMinSpacing                     = old.ColumnsMinSpacing;
-        style.ScrollbarSize                         = old.ScrollbarSize;
-        style.ScrollbarRounding                     = old.ScrollbarRounding;
-        style.GrabMinSize                           = old.GrabMinSize;
-        style.GrabRounding                          = old.GrabRounding;
-        style.ButtonTextAlign                       = old.ButtonTextAlign;
-        style.DisplayWindowPadding                  = old.DisplayWindowPadding;
-        style.DisplaySafeAreaPadding                = old.DisplaySafeAreaPadding;
-        style.AntiAliasedLines                      = old.AntiAliasedLines;
-        style.AntiAliasedFill                       = old.AntiAliasedShapes;
-        style.CurveTessellationTol                  = old.CurveTessellationTol;
-        style.Colors[ImGuiCol_Text]                 = old.Colors[v150::ImGuiCol_Text];
-        style.Colors[ImGuiCol_TextDisabled]         = old.Colors[v150::ImGuiCol_TextDisabled];
-        style.Colors[ImGuiCol_WindowBg]             = old.Colors[v150::ImGuiCol_WindowBg];
-        style.Colors[ImGuiCol_ChildBg]              = old.Colors[v150::ImGuiCol_ChildWindowBg];
-        style.Colors[ImGuiCol_PopupBg]              = old.Colors[v150::ImGuiCol_PopupBg];
-        style.Colors[ImGuiCol_Border]               = old.Colors[v150::ImGuiCol_Border];
-        style.Colors[ImGuiCol_BorderShadow]         = old.Colors[v150::ImGuiCol_BorderShadow];
-        style.Colors[ImGuiCol_FrameBg]              = old.Colors[v150::ImGuiCol_FrameBg];
-        style.Colors[ImGuiCol_FrameBgHovered]       = old.Colors[v150::ImGuiCol_FrameBgHovered];
-        style.Colors[ImGuiCol_FrameBgActive]        = old.Colors[v150::ImGuiCol_FrameBgActive];
-        style.Colors[ImGuiCol_TitleBg]              = old.Colors[v150::ImGuiCol_TitleBg];
-        style.Colors[ImGuiCol_TitleBgCollapsed]     = old.Colors[v150::ImGuiCol_TitleBgCollapsed];
-        style.Colors[ImGuiCol_TitleBgActive]        = old.Colors[v150::ImGuiCol_TitleBgActive];
-        style.Colors[ImGuiCol_MenuBarBg]            = old.Colors[v150::ImGuiCol_MenuBarBg];
-        style.Colors[ImGuiCol_ScrollbarBg]          = old.Colors[v150::ImGuiCol_ScrollbarBg];
-        style.Colors[ImGuiCol_ScrollbarGrab]        = old.Colors[v150::ImGuiCol_ScrollbarGrab];
-        style.Colors[ImGuiCol_ScrollbarGrabHovered] = old.Colors[v150::ImGuiCol_ScrollbarGrabHovered];
-        style.Colors[ImGuiCol_ScrollbarGrabActive]  = old.Colors[v150::ImGuiCol_ScrollbarGrabActive];
-        style.Colors[ImGuiCol_CheckMark]            = old.Colors[v150::ImGuiCol_CheckMark];
-        style.Colors[ImGuiCol_SliderGrab]           = old.Colors[v150::ImGuiCol_SliderGrab];
-        style.Colors[ImGuiCol_SliderGrabActive]     = old.Colors[v150::ImGuiCol_SliderGrabActive];
-        style.Colors[ImGuiCol_Button]               = old.Colors[v150::ImGuiCol_Button];
-        style.Colors[ImGuiCol_ButtonHovered]        = old.Colors[v150::ImGuiCol_ButtonHovered];
-        style.Colors[ImGuiCol_ButtonActive]         = old.Colors[v150::ImGuiCol_ButtonActive];
-        style.Colors[ImGuiCol_Header]               = old.Colors[v150::ImGuiCol_Header];
-        style.Colors[ImGuiCol_HeaderHovered]        = old.Colors[v150::ImGuiCol_HeaderHovered];
-        style.Colors[ImGuiCol_HeaderActive]         = old.Colors[v150::ImGuiCol_HeaderActive];
-        style.Colors[ImGuiCol_Separator]            = old.Colors[v150::ImGuiCol_Column];
-        style.Colors[ImGuiCol_SeparatorHovered]     = old.Colors[v150::ImGuiCol_ColumnHovered];
-        style.Colors[ImGuiCol_SeparatorActive]      = old.Colors[v150::ImGuiCol_ColumnActive];
-        style.Colors[ImGuiCol_ResizeGrip]           = old.Colors[v150::ImGuiCol_ResizeGrip];
-        style.Colors[ImGuiCol_ResizeGripHovered]    = old.Colors[v150::ImGuiCol_ResizeGripHovered];
-        style.Colors[ImGuiCol_ResizeGripActive]     = old.Colors[v150::ImGuiCol_ResizeGripActive];
-        style.Colors[ImGuiCol_PlotLines]            = old.Colors[v150::ImGuiCol_PlotLines];
-        style.Colors[ImGuiCol_PlotLinesHovered]     = old.Colors[v150::ImGuiCol_PlotLinesHovered];
-        style.Colors[ImGuiCol_PlotHistogram]        = old.Colors[v150::ImGuiCol_PlotHistogram];
-        style.Colors[ImGuiCol_PlotHistogramHovered] = old.Colors[v150::ImGuiCol_PlotHistogramHovered];
-        style.Colors[ImGuiCol_TextSelectedBg]       = old.Colors[v150::ImGuiCol_TextSelectedBg];
-        style.Colors[ImGuiCol_ModalWindowDimBg]     = old.Colors[v150::ImGuiCol_ModalWindowDarkening];
-        vars.resize(sizeof(ImGuiStyle) - sizeof(ImVec4) * ImGuiCol_COUNT);
-        cols.resize(                     sizeof(ImVec4) * ImGuiCol_COUNT);
-        std::copy_n((char*)&style,        vars.size(), vars.begin());
-        std::copy_n((char*)&style.Colors, cols.size(), cols.begin());
-    };
-    static struct
-    {
-        std::string_view Name;
-        std::string Vars;
-        std::string Cols;
-    } presets[]
-    {
-        {
-            "Default ArcDPS Style",
-            "AACAPwAAgEAAAIBAAAAAQgAAAAAAAAAAAAAAAAAAAD8AAAAAAACAQAAAgEAAAAAAAACgQAAAQEAAAKBAAABAQAAAAAAAAAAAAADIQQAAwEAAABBBAAAAAAAAyEEAAAAAAAAAPwAAAD8AALBBAACwQQAAgEAAAIBAAQEAAAAAoD8=",
-            "zcxMP83MTD/helQ/AACAP4/CdT4fhWs+4XqUPgAAgD+PwnU9zcxMPSlcjz0AAEA/KVyPPSlcjz3sUbg9AAAAAClcjz0pXI897FG4PZqZWT8K1yM/hesRPzMzMz+PwnU+CtcjP1K4Hj8fhSs/AAAAAM3MzD3sUbg9j8L1PQAAQD+PwnU+H4VrPuF6lD4AAEA/KVwPPylcDz/hehQ/AABAP83MzD3sUbg9j8L1PZqZWT/NzMw97FG4PY/C9T2amVk/zczMPexRuD2PwvU9mplZP83MzD3sUbg9j8L1PTMzMz/NzMw97FG4PY/C9T3NzEw/H4XrPmZm5j7Xo/A+FK5HPx+FKz8fhSs/16MwPxSuRz8Urkc/FK5HP83MTD8Urkc/XI9CPuxROD49Clc+zcxMP83MTD/NzEw/4XpUP1K4nj7NzEw/zcxMP+F6VD9SuJ4+j8J1Pc3MTD0pXI89AACAP4/C9T2uR+E9mpkZPmZmZj8pXI8+cT2KPpqZmT5mZmY/ZmbmPq5H4T6PwvU+ZmZmP+xRuD7sUbg+XI/CPjMzMz/sUbg+7FG4PlyPwj4zM7M+7FG4PuxRuD5cj8I+MzMzP4/CdT4fhWs+4XqUPgAAgD+PwnU+H4VrPuF6lD4AAIA/j8J1Ph+Faz7hepQ+AACAPwAAAAAAAAAAAAAAAAAAAAApXA8/KVwPP+F6FD8AAIA/j8J1Pc3MTD0pXI89AACAP83MzD4Ursc+XI/CPgAAAADNzMw+FK7HPlyPwj4AAAAAzczMPhSuxz5cj8I+AAAAADMzMz97FC4/w/UoP4/C9T4AAIA+AACAPwAAAAAAAIA/MzMzP3sULj/D9Sg/j8L1PgAAgD4AAIA/AAAAAAAAgD/sUbg+7FG4PlyPwj4zM7M+AACAP0jhej8zM3M/SOE6Pw==",
-        },
-        {
-            "Default ArcDPS Style (1.80)",
-            "AACAPwAAgEAAAIBAAAAAAAAAAAAAAKBAAABAQAAAAAAAAAA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIBAAACAQAAAAAAAAAAAAACgQAAAQEAAAKBAAABAQAAAgEAAAABAAAAAAAAAAAAAAMhBAADAQAAAEEEAAAAAAADIQQAAAAAAAIBAAAAAAAAAAAAAAAAAAQAAAAAAAD8AAAA/AAAAAAAAAAAAAJhBAACYQQAAQEAAAEBAAACAPwEBAQAAAKA/zczMPw==",
-            "zcxMP83MTD/helQ/AACAP4/CdT4fhWs+4XqUPgAAgD+PwnU9zcxMPSlcjz0AAEA/KVyPPSlcjz3sUbg9AAAAAClcjz0pXI897FG4PZqZWT8K1yM/hesRPzMzMz/NzEw+CtcjP1K4Hj8fhSs/AAAAAFK4Hj+amRk/ZmYmP83MTD5SuB4/mpkZP2ZmJj8AAEA/KVwPPylcDz/hehQ/AABAP83MzD3sUbg9j8L1PZqZWT/NzMw97FG4PY/C9T2amVk/zczMPexRuD2PwvU9mplZP83MzD3sUbg9j8L1PTMzMz/NzMw97FG4PY/C9T3NzEw/H4XrPmZm5j7Xo/A+FK5HPx+FKz8fhSs/16MwPxSuRz8Urkc/FK5HP83MTD8Urkc/zcxMP83MTD/helQ/KVxPP83MTD/NzEw/4XpUP1K4nj6PwnU9zcxMPSlcjz0AAIA/UrgeP5qZGT9mZiY/mpmZPlK4Hj+amRk/ZmYmP5qZGT9SuB4/mpkZP2ZmJj9mZmY/7FG4PuxRuD5cj8I+MzMzP+xRuD7sUbg+XI/CPjMzsz7sUbg+7FG4PlyPwj4zMzM/AAAAPwAAAD8AAAA/mpkZP5qZGT+amRk/MzMzPwAAgD8zMzM/MzMzP2ZmZj8AAIA/AAAAAAAAAAAAAAAAAAAAAClcDz8pXA8/4XoUPwAAgD+PwnU9zcxMPSlcjz0AAIA/MzMzP3sULj/XozA/zczMPTMzMz97FC4/16MwP5qZmT4zMzM/exQuP9ejMD/2KNw+l/+QPpf/kD7hnBE/KjpSP6Fnsz6hZ7M+Qs8mP71SVj8zMzM/exQuP8P1KD8pXA8/AACAPgAAgD8AAAAAAACAPzMzMz97FC4/w/UoP4/C9T4AAIA+AACAPwAAAAAAAIA/cT2KPnE9ij5cj8I+AACAP1K4nj5SuJ4+ZmbmPgAAgD+4HoU+uB6FPilcjz4AAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPylcjz3sUbg+7FG4Pq5HYT/NzAw/AACAPwAAgD8AAAAAZmZmP2Zm5j5mZuY+ZmZmP83MTD8AAIA/AACAPwAAgD8zMzM/zcxMP83MTD/NzEw/zcxMPs3MTD7NzEw+zcxMPjMzsz4=",
-        },
-        {
-            "My ArcDPS Style",
-            "AACAPwAAwEAAAKBAAAAAQgAAAAAAAEBAAAAAAAAAAD8AAKBAAACAQAAAgEAAAABAAACgQAAAAEAAAKBAAABAQAAAAAAAAAAAAADIQQAAwEAAAHBBAADIQgAAoEAAAAAAAAAAPwAAAD8AALBBAACwQQAAgEAAAIBAAQEAAAAAoD8=",
-            "zcxMP83MTD/helQ/AACAP4/CdT4fhWs+4XqUPgAAgD8AAAAAAAAAAAAAAACamVk/KVyPPSlcjz3sUbg9AAAAAClcjz0pXI897FG4PZqZWT8K1yM/hesRPzMzMz+PwnU+CtcjP1K4Hj8fhSs/AAAAAAAAAAAAAAAAAAAAAAAAQD+PwnU+H4VrPuF6lD4AAEA/KVwPPylcDz/hehQ/AABAP83MzD3sUbg9j8L1PZqZWT/NzMw97FG4PY/C9T2amVk/zczMPexRuD2PwvU9mplZP83MzD3sUbg9j8L1PTMzMz/NzMw97FG4PY/C9T0AAAAAzcxMP83MTD/helQ/UriePuxRuD7sUbg+XI/CPhSuRz8fhes+ZmbmPtej8D4Urkc/XI9CPuxROD49Clc+zcxMP83MTD/NzEw/4XpUP1K4nj7NzEw/zcxMP+F6VD9SuJ4+j8J1Pc3MTD0pXI89AACAP4/C9T2uR+E9mpkZPmZmZj8pXI8+cT2KPpqZmT5mZmY/ZmbmPq5H4T6PwvU+ZmZmP+xRuD7sUbg+XI/CPjMzMz/sUbg+7FG4PlyPwj4zM7M+7FG4PuxRuD5cj8I+MzMzP4/CdT4fhWs+4XqUPgAAgD+PwnU+H4VrPuF6lD4AAIA/j8J1Ph+Faz7hepQ+AACAPwAAAAAAAAAAAAAAAAAAAAApXA8/KVwPP+F6FD8AAIA/j8J1Pc3MTD0pXI89AACAP83MzD4Ursc+XI/CPgAAAADNzMw+FK7HPlyPwj4AAIA/zczMPhSuxz5cj8I+AAAAADMzMz97FC4/w/UoP4/C9T4AAIA+AACAPwAAAAAAAIA/MzMzP3sULj/D9Sg/j8L1PgAAgD4AAIA/AAAAAAAAgD/sUbg+7FG4PlyPwj4zM7M+AACAP0jhej8zM3M/SOE6Pw==",
-        },
-    };
-    for (auto& preset : presets)
-    {
-        if (ImGui::Button(fmt::format("{}", preset.Name).c_str()))
-        {
-            std::vector<byte> vars = base64_decode(preset.Vars);
-            std::vector<byte> cols = base64_decode(preset.Cols);
-            if (vars.size() + cols.size() != sizeof(ImGuiStyle))
-                upgradeStyle_v150_v180(vars, cols);
-            std::copy_n(vars.begin(), sizeof(ImGuiStyle) - sizeof(ImVec4) * ImGuiCol_COUNT, (char*)&ImGui::GetStyle());
-            std::copy_n(cols.begin(),                      sizeof(ImVec4) * ImGuiCol_COUNT, (char*)&ImGui::GetStyle().Colors);
-            preset.Vars = base64_encode(vars.data(), (uint32_t)vars.size());
-            preset.Cols = base64_encode(cols.data(), (uint32_t)cols.size());
-        }
-        ImGui::InputText(fmt::format("Vars##{}Output", preset.Name).c_str(), preset.Vars.data(), preset.Vars.size(), ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputText(fmt::format("Cols##{}Output", preset.Name).c_str(), preset.Cols.data(), preset.Cols.size(), ImGuiInputTextFlags_ReadOnly);
-    }
     ImGui::End();
 #endif
     #pragma endregion
@@ -3342,7 +3159,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                 };
                 context.PaletteSorter = [](GW2::RevenantLegendInfo const* a, GW2::RevenantLegendInfo const* b)
                 {
-                    static std::array<GW2::RevenantLegend, 7> const legends
+                    static std::array<GW2::RevenantLegend, 8> const legends
                     {
                         GW2::RevenantLegend::Jallis,
                         GW2::RevenantLegend::Mallix,
@@ -3350,6 +3167,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                         GW2::RevenantLegend::Shiro,
                         GW2::RevenantLegend::Glint,
                         GW2::RevenantLegend::Kalla,
+                        GW2::RevenantLegend::Alliance,
                         GW2::RevenantLegend::None,
                     };
                     return std::find(legends.begin(), legends.end(), a->Legend)
@@ -4481,7 +4299,7 @@ void Handler::RenderAbout()
         { "ImGui", "Copyright (c) 2014-2021 Omar Cornut", "https://github.com/ocornut/imgui" },
         { "{fmt}", "Copyright (c) 2012 - 2019, Victor Zverovich", "https://github.com/fmtlib/fmt" },
         { "JSON for Modern C++", "Copyright (c) 2013-2019 Niels Lohmann", "https://github.com/nlohmann/json" },
-        { "cpp-base64", u8"Copyright (C) 2004-2017 René Nyffenegger", "https://github.com/ReneNyffenegger/cpp-base64" },
+        { "cpp-base64", (char const*)u8"Copyright (C) 2004-2017 René Nyffenegger", "https://github.com/ReneNyffenegger/cpp-base64" },
         { "INI Not Invented Here", "Copyright (c) 2009, Ben Hoyt", "https://github.com/jtilly/inih" },
         { "libspng", "Copyright (c) 2018-2019, Randy", "https://libspng.org" },
         { "curlpp", "Copyright (c) <2002-2004> <Jean-Philippe Barrette-LaPierre>", "http://www.curlpp.org" },

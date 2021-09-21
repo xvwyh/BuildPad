@@ -1,12 +1,21 @@
 {
-  "latest": "2021-08-18",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-08-18.dll",
+  "latest": "2021-09-22",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-09-22.dll",
   "history": [
+    {
+      "version": "2021-09-22",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-09-22.dll",
+      "changes": [
+        { "type": "feature", "text": "Added support for Catalyst, Bladesworn and Vindicator" }
+      ]
+    },
     {
       "version": "2021-08-18",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-08-18.dll",
       "changes": [
-        { "type": "feature", "text": "Added support for Harbinger, Willbender and Virtuoso. Because why not" }
+        { "type": "feature", "text": "Added support for Harbinger, Willbender and Virtuoso" },
+        { "type": "feature", "text": "Added in-game-like overlay to skills not usable underwater" },
+        { "type": "bug", "text": "Refactored API icons to avoid unloading shared textures and race condition in downloading textures" }
       ]
     },
     {
