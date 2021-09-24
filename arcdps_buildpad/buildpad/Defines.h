@@ -1,12 +1,20 @@
 #pragma once
 #include "../Common.h"
 
-typedef struct IDirect3DTexture9 *LPDIRECT3DTEXTURE9, *PDIRECT3DTEXTURE9;
+struct IDirect3DTexture9;
+struct ID3D11ShaderResourceView;
 
 namespace buildpad
 {
     using Time = std::chrono::milliseconds;
-    using TextureID = LPDIRECT3DTEXTURE9;
+    union TextureID
+    {
+        IDirect3DTexture9* D3D9;
+        ID3D11ShaderResourceView* D3D11;
+        void* Raw = nullptr;
+
+        operator ImTextureID() const { return Raw; }
+    };
     struct TextureData
     {
         TextureID Texture;

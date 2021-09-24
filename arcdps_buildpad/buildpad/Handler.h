@@ -6,6 +6,7 @@
 #include "ChatLink.h"
 #include "KeyBind.h"
 #include <d3d9.h>
+#include <d3d11.h>
 
 namespace buildpad
 {
@@ -92,7 +93,7 @@ public:
 
 private:
     bool m_loaded = false;
-    IDirect3DDevice9* m_d3dDevice = nullptr;
+    std::variant<IDirect3DDevice9*, ID3D11Device*> m_d3dDevice;
     KeyBind m_keyBindToggleBuilds;
     using Clock = std::chrono::high_resolution_clock;
     Clock::time_point m_previousUpdate { };

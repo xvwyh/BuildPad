@@ -6,6 +6,7 @@
 #include "Web.h"
 #include "../ImGuiExtensions.h"
 #include <imgui/imgui_impl_dx9.h>
+#include <imgui/imgui_impl_dx11.h>
 #include <inih/INIReader.h>
 #include <spng/spng.h>
 #include <curlpp/cURLpp.hpp>
@@ -16,7 +17,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2021-09-22";
+char const* const BUILDPAD_VERSION = "2021-09-24";
 
 namespace resources
 {
@@ -134,7 +135,10 @@ Handler::~Handler()
 
 void Handler::LoadTextures()
 {
-    m_d3dDevice = GetDirect3DDevice9();
+    if (auto device = GetDirect3DDevice9())
+        m_d3dDevice = device;
+    if (auto device = GetDirect3DDevice11())
+        m_d3dDevice = device;
     LoadIcon(Icons::BuildPad, resources::tex156721).Trim(2);
     LoadIcon(Icons::AddBuild, resources::tex155143);
     LoadIcon(Icons::EditBuild, resources::tex1293677).Trim(3);
@@ -1254,7 +1258,7 @@ void Handler::RenderMainWindow(Time const& delta)
     bool firstVisibleBuild = true;
 
     #pragma region Build List
-    auto const buildListPass = [&](auto&& builds, std::optional<GW2::Profession> const profession = { }, std::function<bool(Build const&)> const& filter = nullptr)
+    auto const buildListPass = [&](auto&& builds, std::optional<GW2::Profession> const profession = std::nullopt, std::function<bool(Build const&)> const& filter = nullptr)
     {
         bool firstSortedBuild = true;
         for (Build& build : builds)
@@ -4349,15 +4353,22 @@ std::tuple<std::vector<char>, uint32_t, uint32_t> Handler::LoadImageFile(std::va
         },
     }, source));
 
+    spng_format const format = std::visit(overloaded
+    {
+        [&](IDirect3DDevice9*) { return SPNG_FMT_BGRA8; },
+        [&](ID3D11Device*) { return SPNG_FMT_RGBA8; },
+        [](auto&&) { return SPNG_FMT_RGBA8; },
+    }, m_d3dDevice);
+
     spng_ctx* ctx = spng_ctx_new(0);
     auto guard = gsl::finally([ctx] { spng_ctx_free(ctx); });
     CHECK(spng_set_png_buffer(ctx, buffer.data(), buffer.size()));
     spng_ihdr header { };
     CHECK(spng_get_ihdr(ctx, &header));
     size_t size;
-    CHECK(spng_decoded_image_size(ctx, SPNG_FMT_BGRA8, &size));
+    CHECK(spng_decoded_image_size(ctx, format, &size));
     std::vector<char> out(size);
-    CHECK(spng_decode_image(ctx, (byte*)out.data(), out.size(), SPNG_FMT_BGRA8, 0));
+    CHECK(spng_decode_image(ctx, (byte*)out.data(), out.size(), format, 0));
     return { std::move(out), header.width, header.height };
 #undef CHECK
 }
@@ -4371,16 +4382,57 @@ std::optional<TextureData> Handler::LoadTexture(std::variant<fs::path, std::pair
             return { };
 
         TextureID texture;
-        if (m_d3dDevice->CreateTexture(width, height, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &texture, 0))
+        if (std::visit(overloaded
+        {
+            [&](IDirect3DDevice9* device)
+            {
+                if (HRESULT const result = device->CreateTexture(width, height, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &texture.D3D9, 0); result != S_OK)
+                    return result;
+
+                D3DLOCKED_RECT rect;
+                texture.D3D9->LockRect(0, &rect, nullptr, D3DLOCK_DISCARD);
+                memcpy(rect.pBits, data.data(), sizeof(char) * width * height * 4);
+                texture.D3D9->UnlockRect(0);
+                return S_OK;
+            },
+            [&](ID3D11Device* device)
+            {
+                D3D11_TEXTURE2D_DESC desc;
+                ZeroMemory(&desc, sizeof desc);
+                desc.Width = width;
+                desc.Height = height;
+                desc.MipLevels = 1;
+                desc.ArraySize = 1;
+                desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+                desc.SampleDesc.Count = 1;
+                desc.Usage = D3D11_USAGE_DEFAULT;
+                desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+                D3D11_SUBRESOURCE_DATA subResource;
+                ZeroMemory(&subResource, sizeof subResource);
+                subResource.pSysMem = data.data();
+                subResource.SysMemPitch = desc.Width * 4;
+                subResource.SysMemSlicePitch = 0;
+
+                ID3D11Texture2D* tex = nullptr;
+                if (HRESULT const result = device->CreateTexture2D(&desc, &subResource, &tex); result != S_OK)
+                    return result;
+                auto guard = gsl::finally([tex] { tex->Release(); });
+
+                D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+                ZeroMemory(&srvDesc, sizeof srvDesc);
+                srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+                srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+                srvDesc.Texture2D.MipLevels = desc.MipLevels;
+                srvDesc.Texture2D.MostDetailedMip = 0;
+                return device->CreateShaderResourceView(tex, &srvDesc, &texture.D3D11);
+            },
+            [](auto&&) { return S_OK; },
+        }, m_d3dDevice))
             return { };
 
         if (!texture)
             return { };
-
-        D3DLOCKED_RECT rect;
-        texture->LockRect(0, &rect, nullptr, D3DLOCK_DISCARD);
-        memcpy(rect.pBits, data.data(), sizeof(char) * width * height * 4);
-        texture->UnlockRect(0);
 
         m_loadedTextures.push_back(texture);
 
@@ -4393,7 +4445,12 @@ void Handler::UnloadTexture(TextureID const& texture)
 {
     if (texture)
     {
-        texture->Release();
+        std::visit(overloaded
+        {
+            [&](IDirect3DDevice9*) { texture.D3D9->Release(); },
+            [&](ID3D11Device*) { texture.D3D11->Release(); },
+            [](auto&&) { },
+        }, m_d3dDevice);
         m_loadedTextures.remove(texture);
     }
 }

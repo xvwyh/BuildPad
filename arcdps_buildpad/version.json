@@ -1,7 +1,14 @@
 {
-  "latest": "2021-09-22",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-09-22.dll",
+  "latest": "2021-09-24",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-09-24.dll",
   "history": [
+    {
+      "version": "2021-09-24",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-09-24.dll",
+      "changes": [
+        { "type": "feature", "text": "Added DirectX 11 support" }
+      ]
+    },
     {
       "version": "2021-09-22",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-09-22.dll",
@@ -15,7 +22,7 @@
       "changes": [
         { "type": "feature", "text": "Added support for Harbinger, Willbender and Virtuoso" },
         { "type": "feature", "text": "Added in-game-like overlay to skills not usable underwater" },
-        { "type": "bug", "text": "Refactored API icons to avoid unloading shared textures and race condition in downloading textures" }
+        { "type": "misc", "text": "Refactored API icons to avoid unloading shared textures and race condition in downloading textures" }
       ]
     },
     {

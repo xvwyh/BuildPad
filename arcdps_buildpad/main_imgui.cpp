@@ -1,18 +1,34 @@
 // This file exists to allow testing and debugging in stand-alone mode
 
 #ifndef DLL
+//#define DX9
 
 #include "dep/imgui/imgui.h"
-#include "dep/imgui/imgui_impl_dx9.h"
 #include "dep/imgui/imgui_impl_win32.h"
+#ifdef DX9
+#include "dep/imgui/imgui_impl_dx9.h"
 #include <d3d9.h>
+#else
+#include "dep/imgui/imgui_impl_dx11.h"
+#include <d3d11.h>
+#endif
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <tchar.h>
 
 // Data
+#ifdef DX9
 static LPDIRECT3DDEVICE9        g_pd3dDevice = NULL;
 static D3DPRESENT_PARAMETERS    g_d3dpp;
+#else
+static ID3D11Device*            g_pd3dDevice = NULL;
+static ID3D11DeviceContext*     g_pd3dDeviceContext = NULL;
+static IDXGISwapChain*          g_pSwapChain = NULL;
+static ID3D11RenderTargetView*  g_mainRenderTargetView = NULL;
+#endif
+
+#ifndef DLL
+#endif
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -25,6 +41,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_SIZE:
         if (g_pd3dDevice != NULL && wParam != SIZE_MINIMIZED)
         {
+#ifdef DX9
             ImGui_ImplDX9_InvalidateDeviceObjects();
             g_d3dpp.BackBufferWidth  = LOWORD(lParam);
             g_d3dpp.BackBufferHeight = HIWORD(lParam);
@@ -32,6 +49,14 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             if (hr == D3DERR_INVALIDCALL)
                 IM_ASSERT(0);
             ImGui_ImplDX9_CreateDeviceObjects();
+#else
+            if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = NULL; }
+            g_pSwapChain->ResizeBuffers(0, (UINT)LOWORD(lParam), (UINT)HIWORD(lParam), DXGI_FORMAT_UNKNOWN, 0);
+            ID3D11Texture2D* pBackBuffer;
+            g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+            g_pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &g_mainRenderTargetView);
+            pBackBuffer->Release();
+#endif
         }
         return 0;
     case WM_SYSCOMMAND:
@@ -54,6 +79,7 @@ int main(int, char**)
     // Create application window
     WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, LoadCursor(NULL, IDC_ARROW), NULL, NULL, _T("ImGui Example"), NULL };
     RegisterClassEx(&wc);
+#ifdef DX9
     HWND hwnd = CreateWindow(_T("ImGui Example"), _T("ImGui DirectX9 Example"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, NULL);
 
     // Initialize Direct3D
@@ -78,6 +104,38 @@ int main(int, char**)
         UnregisterClass(_T("ImGui Example"), wc.hInstance);
         return 0;
     }
+#else
+    HWND hwnd = CreateWindow(_T("ImGui Example"), _T("ImGui DirectX11 Example"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, NULL);
+
+    // Setup swap chain
+    DXGI_SWAP_CHAIN_DESC sd;
+    ZeroMemory(&sd, sizeof(sd));
+    sd.BufferCount = 2;
+    sd.BufferDesc.Width = 0;
+    sd.BufferDesc.Height = 0;
+    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    sd.BufferDesc.RefreshRate.Numerator = 60;
+    sd.BufferDesc.RefreshRate.Denominator = 1;
+    sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    sd.OutputWindow = hwnd;
+    sd.SampleDesc.Count = 1;
+    sd.SampleDesc.Quality = 0;
+    sd.Windowed = TRUE;
+    sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+
+    UINT createDeviceFlags = 0;
+    //createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+    D3D_FEATURE_LEVEL featureLevel;
+    const D3D_FEATURE_LEVEL featureLevelArray[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
+    if (D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &featureLevel, &g_pd3dDeviceContext) != S_OK)
+        return false;
+
+    ID3D11Texture2D* pBackBuffer;
+    g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+    g_pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &g_mainRenderTargetView);
+    pBackBuffer->Release();
+#endif
 
     // Show the window
     ShowWindow(hwnd, SW_SHOWDEFAULT);
@@ -93,7 +151,11 @@ int main(int, char**)
 
     // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(hwnd);
+#ifdef DX9
     ImGui_ImplDX9_Init(g_pd3dDevice);
+#else
+    ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
+#endif
 
     // Load Fonts
     // (there is a default font, this is only if you want to change it. see extra_fonts/README.txt for more details)
@@ -122,7 +184,11 @@ int main(int, char**)
             DispatchMessage(&msg);
             continue;
         }
+#ifdef DX9
         ImGui_ImplDX9_NewFrame();
+#else
+        ImGui_ImplDX11_NewFrame();
+#endif
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
@@ -136,6 +202,7 @@ int main(int, char**)
         }
 
         // Rendering
+#ifdef DX9
         ImGui::EndFrame();
         g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, false);
         g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
@@ -149,16 +216,36 @@ int main(int, char**)
             g_pd3dDevice->EndScene();
         }
         g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
+#else
+        ImGui::Render();
+        g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
+        g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, (float*)&clear_col);
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+        g_pSwapChain->Present(1, 0); // Present with vsync
+        //g_pSwapChain->Present(0, 0); // Present without vsync
+#endif
     }
 
     mod_release();
 
+#ifdef DX9
     ImGui_ImplDX9_Shutdown();
+#else
+    ImGui_ImplDX11_Shutdown();
+#endif
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 
+#ifdef DX9
     if (g_pd3dDevice) g_pd3dDevice->Release();
     if (pD3D) pD3D->Release();
+#else
+    if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = NULL; }
+    if (g_pSwapChain) { g_pSwapChain->Release(); g_pSwapChain = NULL; }
+    if (g_pd3dDeviceContext) { g_pd3dDeviceContext->Release(); g_pd3dDeviceContext = NULL; }
+    if (g_pd3dDevice) { g_pd3dDevice->Release(); g_pd3dDevice = NULL; }
+#endif
     DestroyWindow(hwnd);
     UnregisterClass(_T("ImGui Example"), wc.hInstance);
 

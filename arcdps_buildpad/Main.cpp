@@ -7,7 +7,8 @@
 /* proto/globals */
 arcdps::arcdps_exports arc_exports;
 char* arcvers;
-LPDIRECT3DDEVICE9 d3ddevice;
+IDirect3DDevice9* d3dDevice9 = nullptr;
+ID3D11Device* d3dDevice11 = nullptr;
 
 /* dll attach -- from winapi */
 bool dll_init(HANDLE hModule)
@@ -152,18 +153,36 @@ arcdps::arcdps_exports* mod_init()
 }
 
 /* export -- arcdps looks for this exported function and calls the address it returns */
-extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, IDirect3DDevice9* id3dd9, HANDLE arcdll, void* mallocfn, void* freefn)
+extern "C" __declspec(dllexport) void* get_init_addr(char* arcversion, ImGuiContext* imguictx, void* id3dptr, HANDLE arcdll, void* mallocfn, void* freefn, uint32_t d3dversion)
 {
-    arcvers = arcversionstr;
-    ImGui::SetCurrentContext((ImGuiContext*)imguicontext);
+    arcvers = arcversion;
+    ImGui::SetCurrentContext(imguictx);
     ImGui::SetAllocatorFunctions((void *(*)(size_t, void*))mallocfn, (void(*)(void*, void*))freefn);
-    d3ddevice = id3dd9;
+    switch (d3dversion)
+    {
+        case 9:
+        {
+            d3dDevice9 = static_cast<IDirect3DDevice9*>(id3dptr);
+            break;
+        }
+        case 11:
+        {
+            if (static_cast<IDXGISwapChain*>(id3dptr)->GetDevice(__uuidof(ID3D11Device), reinterpret_cast<void**>(&d3dDevice11)) != S_OK)
+                return nullptr;
+            break;
+        }
+        default: return nullptr;
+    }
     return (void*)&mod_init;
 }
 
 #ifdef DLL
 LPDIRECT3DDEVICE9 GetDirect3DDevice9()
 {
-    return d3ddevice;
+    return d3dDevice9;
+}
+ID3D11Device* GetDirect3DDevice11()
+{
+    return d3dDevice11;
 }
 #endif
