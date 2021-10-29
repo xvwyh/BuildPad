@@ -17,7 +17,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2021-09-24";
+char const* const BUILDPAD_VERSION = "2021-10-27";
 
 namespace resources
 {
@@ -108,6 +108,9 @@ namespace resources
 #include "resources/2491558.h"
 #include "resources/2491562.h"
 #include "resources/2491566.h"
+#include "resources/2503659.h"
+#include "resources/2503663.h"
+#include "resources/2503667.h"
 #include "resources/ErrorItem.h"
 #include "resources/ErrorPet.h"
 #include "resources/ErrorSkill.h"
@@ -249,6 +252,9 @@ void Handler::LoadTextures()
     LoadIcon(GW2::Specialization::ElementalistCatalyst, resources::tex2491558);
     LoadIcon(GW2::Specialization::WarriorBladesworn, resources::tex2491566);
     LoadIcon(GW2::Specialization::RevenantVindicator, resources::tex2491562);
+    LoadIcon(GW2::Specialization::EngineerMechanist, resources::tex2503659);
+    LoadIcon(GW2::Specialization::ThiefSpecter, resources::tex2503667);
+    LoadIcon(GW2::Specialization::RangerUntamed, resources::tex2503663);
     LoadIcon(Build::Flags::Favorite, resources::tex523389).Trim(5);
     LoadIcon(Build::Flags::PvE, resources::tex157086).Trim(2);
     LoadIcon(Build::Flags::PvP, resources::tex157121).Trim(1);

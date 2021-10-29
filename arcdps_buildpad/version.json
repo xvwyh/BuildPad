@@ -1,7 +1,14 @@
 {
-  "latest": "2021-09-24",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-09-24.dll",
+  "latest": "2021-10-27",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-10-27.dll",
   "history": [
+    {
+      "version": "2021-10-27",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-10-27.dll",
+      "changes": [
+        { "type": "feature", "text": "Added support for Mechanist, Specter and Untamed" }
+      ]
+    },
     {
       "version": "2021-09-24",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-09-24.dll",

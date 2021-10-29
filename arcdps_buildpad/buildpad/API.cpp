@@ -38,21 +38,25 @@ void API::LoadSkillData() const
                 }());
             }
 
-            auto specialization = specializations.begin();
             for (auto const& training : profession["training"])
             {
                 if (training["category"] == "Specializations" || training["category"] == "EliteSpecializations")
                 {
+                    GW2::Specialization specialization;
+                    if (auto const itr = util::find_if(GW2::GetSpecializationInfos(), util::member_equals(&GW2::SpecializationInfo::Training, training["id"])))
+                        specialization = itr->Specialization;
+                    else
+                        throw std::exception();
+
                     for (auto const& track : training["track"])
                     {
                         if (track["type"] == "Skill")
                         {
                             auto& skill = *SkillStorage::Instance().GetSkill(track["skill_id"]);
                             skill.Profession = id;
-                            skill.Specialization = *specialization;
+                            skill.Specialization = specialization;
                         }
                     }
-                    ++specialization;
                 }
             }
 

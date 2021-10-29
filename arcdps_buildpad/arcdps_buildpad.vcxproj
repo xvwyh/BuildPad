@@ -104,6 +104,9 @@
     <ClInclude Include="buildpad\resources\2491558.h" />
     <ClInclude Include="buildpad\resources\2491562.h" />
     <ClInclude Include="buildpad\resources\2491566.h" />
+    <ClInclude Include="buildpad\resources\2503659.h" />
+    <ClInclude Include="buildpad\resources\2503663.h" />
+    <ClInclude Include="buildpad\resources\2503667.h" />
     <ClInclude Include="buildpad\resources\255305.h" />
     <ClInclude Include="buildpad\resources\255430.h" />
     <ClInclude Include="buildpad\resources\523389.h" />
