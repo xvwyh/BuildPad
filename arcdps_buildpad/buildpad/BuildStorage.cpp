@@ -168,7 +168,7 @@ bool BuildStorage::Load(std::string_view section, std::string_view name, std::st
         Build& build = AddBuild();
 
         std::stringstream str { std::string { value } };
-        auto buffer = util::to_buffer({});
+        auto buffer = util::to_buffer<1001>({});
 
         uint32_t version;
         if (str.getline(buffer.data(), buffer.size(), '|'))

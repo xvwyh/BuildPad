@@ -2,6 +2,7 @@
 #include <optional>
 #include <variant>
 #include <string>
+#include <span>
 #include <array>
 #include <vector>
 #include <list>

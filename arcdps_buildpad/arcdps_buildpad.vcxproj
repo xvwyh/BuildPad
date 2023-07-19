@@ -87,6 +87,15 @@
     <ClInclude Include="buildpad\resources\1670506.h" />
     <ClInclude Include="buildpad\resources\1716667.h" />
     <ClInclude Include="buildpad\resources\1769850.h" />
+    <ClInclude Include="buildpad\resources\1770024.h" />
+    <ClInclude Include="buildpad\resources\1770025.h" />
+    <ClInclude Include="buildpad\resources\1770026.h" />
+    <ClInclude Include="buildpad\resources\1770027.h" />
+    <ClInclude Include="buildpad\resources\1770028.h" />
+    <ClInclude Include="buildpad\resources\1770029.h" />
+    <ClInclude Include="buildpad\resources\1770030.h" />
+    <ClInclude Include="buildpad\resources\1770031.h" />
+    <ClInclude Include="buildpad\resources\1770032.h" />
     <ClInclude Include="buildpad\resources\1770211.h" />
     <ClInclude Include="buildpad\resources\1770213.h" />
     <ClInclude Include="buildpad\resources\1770215.h" />
@@ -97,7 +106,18 @@
     <ClInclude Include="buildpad\resources\1770225.h" />
     <ClInclude Include="buildpad\resources\1988170.h" />
     <ClInclude Include="buildpad\resources\1988171.h" />
+    <ClInclude Include="buildpad\resources\2010284.h" />
+    <ClInclude Include="buildpad\resources\2010285.h" />
+    <ClInclude Include="buildpad\resources\2010286.h" />
     <ClInclude Include="buildpad\resources\2030307.h" />
+    <ClInclude Include="buildpad\resources\2192623.h" />
+    <ClInclude Include="buildpad\resources\2192624.h" />
+    <ClInclude Include="buildpad\resources\2192625.h" />
+    <ClInclude Include="buildpad\resources\2192626.h" />
+    <ClInclude Include="buildpad\resources\2192627.h" />
+    <ClInclude Include="buildpad\resources\2192628.h" />
+    <ClInclude Include="buildpad\resources\2192629.h" />
+    <ClInclude Include="buildpad\resources\2208353.h" />
     <ClInclude Include="buildpad\resources\2479354.h" />
     <ClInclude Include="buildpad\resources\2479358.h" />
     <ClInclude Include="buildpad\resources\2479362.h" />
@@ -312,7 +332,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DLL|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>d3d9_$(ProjectName)</TargetName>
     <ExternalIncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(DXSDK_DIR)Include</ExternalIncludePath>
     <IncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(DXSDK_DIR)Include</IncludePath>
     <LibraryPath>$(WindowsSDK_LibraryPath_x64);$(VC_LibraryPath_x64);$(DXSDK_DIR)Lib/x64</LibraryPath>

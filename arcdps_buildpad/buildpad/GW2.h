@@ -362,5 +362,72 @@ struct GW2
         return instance;
     }
     static SlotInfo const& GetSlotInfo(Slot slot) { return *util::find_if(GetSlotInfos(), util::member_equals(&SlotInfo::Slot, slot)); }
+
+    enum class Weapon : uint16_t
+    {
+        None,
+        Unk3 = 3,
+        Axe = 5,
+        Unk6,
+        Unk16 = 16,
+        Unk18 = 18,
+        Unk19,
+        Unk22 = 22,
+        Unk26 = 26,
+        Bow = 35,
+        Unk36,
+        Dagger = 47,
+        Focus = 49,
+        Greatsword,
+        Hammer,
+        Harpoon,
+        Mace,
+        Pistol,
+        Rifle = 85,
+        Scepter,
+        Shield,
+        Speargun,
+        Staff,
+        Sword,
+        Torch = 102,
+        Warhorn,
+        Shortbow = 107,
+        Trident, // Value unknown
+    };
+    struct WeaponInfo
+    {
+        Weapon Weapon = Weapon::None;
+        std::string_view Name;
+        std::string_view InternalName;
+        bool Aquatic = false;
+    };
+    static auto const& GetWeaponInfos()
+    {
+        constexpr static std::array<WeaponInfo, 20> instance
+        { {
+            { Weapon::None,         "None",         ""              },
+            { Weapon::Axe,          "Axe",          "Axe"           },
+            { Weapon::Bow,          "Longbow",      "Longbow"       },
+            { Weapon::Dagger,       "Dagger",       "Dagger"        },
+            { Weapon::Focus,        "Focus",        "Focus"         },
+            { Weapon::Greatsword,   "Greatsword",   "Greatsword"    },
+            { Weapon::Hammer,       "Hammer",       "Hammer"        },
+            { Weapon::Harpoon,      "Spear",        "Spear",        true },
+            { Weapon::Mace,         "Mace",         "Mace"          },
+            { Weapon::Pistol,       "Pistol",       "Pistol"        },
+            { Weapon::Rifle,        "Rifle",        "Rifle"         },
+            { Weapon::Scepter,      "Scepter",      "Scepter"       },
+            { Weapon::Shield,       "Shield",       "Shield"        },
+            { Weapon::Speargun,     "Harpoon Gun",  "Speargun",     true },
+            { Weapon::Staff,        "Staff",        "Staff"         },
+            { Weapon::Sword,        "Sword",        "Sword"         },
+            { Weapon::Torch,        "Torch",        "Torch"         },
+            { Weapon::Warhorn,      "Warhorn",      "Warhorn"       },
+            { Weapon::Shortbow,     "Short Bow",    "Shortbow"      },
+            { Weapon::Trident,      "Trident",      "Trident",      true },
+        } };
+        return instance;
+    }
+    static WeaponInfo const& GetWeaponInfo(Weapon weapon) { return *util::find_if(GetWeaponInfos(), util::member_equals(&WeaponInfo::Weapon, weapon)); }
 };
 }

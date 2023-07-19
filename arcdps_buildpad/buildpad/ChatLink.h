@@ -108,7 +108,7 @@ public:
             }
         }
     };
-    struct BuildTemplate
+    struct BuildTemplateV1
     {
         struct SpecializationData
         {
@@ -143,8 +143,8 @@ public:
             } Revenant;
         } ProfessionSpecific { };
 
-        BuildTemplate() = default;
-        BuildTemplate(ArcDPSCode<ArcDPSSkillTemplate> const& skills, ArcDPSCode<ArcDPSTraitTemplate> const& traits) : Profession((GW2::Profession)skills.Data.Profession)
+        BuildTemplateV1() = default;
+        BuildTemplateV1(ArcDPSCode<ArcDPSSkillTemplate> const& skills, ArcDPSCode<ArcDPSTraitTemplate> const& traits) : Profession((GW2::Profession)skills.Data.Profession)
         {
             assert(traits.Data.Profession == skills.Data.Profession);
             for (uint8_t i = 0; i < 3; ++i)
@@ -174,6 +174,20 @@ public:
             }
         }
     };
+    struct BuildTemplateV2 : BuildTemplateV1
+    {
+        static constexpr uint8_t MAX_WEAPONS = 8; // Only up to 8 are allowed, higher number breaks the link
+        static constexpr uint8_t MAX_WEAPON_SKILLS = 21; // Only up to 21 are visible, upper bound unknown, not enough space to test
+
+        std::vector<GW2::Weapon> Weapons;
+        std::vector<uint32_t> WeaponSkills;
+
+        using BuildTemplateV1::BuildTemplateV1;
+
+        [[nodiscard]] std::string Encode() const;
+        bool Decode(std::span<uint8_t> const& payload);
+    };
+    using BuildTemplate = BuildTemplateV2;
 #pragma pack(pop)
     using link_t = std::variant<BuildTemplate, ArcDPSCode<ArcDPSSkillTemplate>, ArcDPSCode<ArcDPSTraitTemplate>>;
 

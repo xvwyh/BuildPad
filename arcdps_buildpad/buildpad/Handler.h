@@ -74,6 +74,7 @@ public:
         MissingPet,
         LoadingPet,
         ErrorPet,
+        MissingWeapon,
         SelectionChevron,
         PaletteNotUnderwater,
         CheckBoxUnchecked,
@@ -123,20 +124,31 @@ private:
     TextureContainer<GW2::Profession> m_professionIcons;
     TextureContainer<GW2::Specialization> m_specializationIcons;
     TextureContainer<GW2::Slot> m_slotIcons;
+    TextureContainer<GW2::Weapon> m_weaponIcons;
     TextureContainer<Build::Flags> m_flagIcons;
     MumbleLink m_mumbleLink;
     Time m_mumbleLinkUpdateTimer { };
+
+    void BeginUI();
+    void EndUI();
 
     // Window Rendering
     void RenderMainWindow(Time const& delta);
     bool m_shown = false;
 
-    void RenderSettings(bool menu);
+    enum class RenderSettingsType
+    {
+        Menu,
+        Detached,
+        ArcDPS,
+    };
+    void RenderSettings(RenderSettingsType type);
     bool m_detachSettings = false;
 
     using KeyBindCallback = std::function<void(KeyBind const&)>;
     void EditKeyBind(KeyBind const& keyBind, KeyBindCallback&& callback);
     void RenderKeyBindEditor();
+    bool m_keyBindEditRequested = false;
     bool m_keyBindEditing = false;
     KeyBind m_keyBindEdited;
     KeyBindCallback m_keyBindCallback;
@@ -232,7 +244,6 @@ private:
     std::list<std::variant<ArcDPSGearTemplate, ArcDPSLegendaryTemplate>> m_arcdpsGear;
 
     void VersionCheck();
-    void VersionUpdate();
     void RenderVersionHistory(bool all = false);
     struct VersionInfo
     {
@@ -242,21 +253,13 @@ private:
     };
     std::mutex m_versionLock;
     std::string m_versionCurrent;
+    std::string m_versionLastViewedHistory;
     VersionInfo m_versionLatest;
     std::map<std::string, VersionInfo> m_versionHistory;
     std::map<std::string, uint32_t> m_versionHistoryColors;
     bool m_versionHistoryShown = false;
     bool m_versionHistoryShownAll = false;
     std::optional<bool> m_versionCheckResult;
-    bool m_needsUpdate = false;
-    enum class VersionUpdateState
-    {
-        Idle,
-        Downloading,
-        Done,
-        Error,
-    } m_versionUpdateState = VersionUpdateState::Idle;
-    std::string m_versionUpdateError;
 
     void RenderAbout();
     bool m_aboutShown = false;
@@ -273,7 +276,7 @@ private:
     struct Config
     {
         std::string LastLaunchedVersion;
-        std::string SkipUpdateVersion;
+        std::string LastViewedVersionHistory;
         bool ArcDPSMigrationHintHidden = false;
         std::string KeyBindToggleBuilds = "ALT+SHIFT+D";
         std::string APILocale = "en";
@@ -332,7 +335,7 @@ private:
             static std::vector<std::pair<std::string, field_t>> const instance
             {
                 FIELD(LastLaunchedVersion),
-                FIELD(SkipUpdateVersion),
+                FIELD(LastViewedVersionHistory),
                 FIELD(ArcDPSMigrationHintHidden),
                 FIELD(KeyBindToggleBuilds),
                 FIELD(APILocale),
@@ -374,6 +377,7 @@ private:
             return instance;
         }
     } m_config, m_savedConfig;
+    bool m_configLoaded = false;
     [[nodiscard]] static fs::path GetConfigPath();
     [[nodiscard]] bool IsSaveNeeded() const;
     bool Load(std::string_view section, std::string_view name, std::string_view value);
@@ -404,6 +408,8 @@ template<> inline auto Handler::GetIconContainer()       -> TextureContainer<GW2
 template<> inline auto Handler::GetIconContainer() const -> TextureContainer<GW2::Specialization> const& { return m_specializationIcons; }
 template<> inline auto Handler::GetIconContainer()       -> TextureContainer<GW2::Slot>      & { return m_slotIcons; }
 template<> inline auto Handler::GetIconContainer() const -> TextureContainer<GW2::Slot> const& { return m_slotIcons; }
+template<> inline auto Handler::GetIconContainer()       -> TextureContainer<GW2::Weapon>      & { return m_weaponIcons; }
+template<> inline auto Handler::GetIconContainer() const -> TextureContainer<GW2::Weapon> const& { return m_weaponIcons; }
 template<> inline auto Handler::GetIconContainer()       -> TextureContainer<Build::Flags>      & { return m_flagIcons; }
 template<> inline auto Handler::GetIconContainer() const -> TextureContainer<Build::Flags> const& { return m_flagIcons; }
 }

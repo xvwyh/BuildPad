@@ -87,6 +87,8 @@ public:
         std::array<uint32_t, 3> RevenantInactiveSkillsWater { 0, 0, 0 };
         std::array<uint8_t, 2> RangerPetsLand { 0, 0 };
         std::array<uint8_t, 2> RangerPetsWater { 0, 0 };
+        std::vector<GW2::Weapon> Weapons;
+        std::vector<uint32_t> WeaponSkills;
         std::string Error;
         std::string Info;
         bool NeedsSecondaryLink = false;

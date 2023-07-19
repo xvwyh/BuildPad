@@ -106,6 +106,12 @@ public:
         std::string Name;
         StateIcon Icon { Icons::LoadingPet, Icons::ErrorPet };
     };
+    struct Weapon : Info<Weapon> // Dummy type to work with PaletteBars, not available in the API
+    {
+        using Info::Info;
+        std::string Name;
+        StateIcon Icon { Icons::MissingWeapon, Icons::MissingWeapon };
+    };
 
     struct LanguageInfo
     {
@@ -144,11 +150,13 @@ public:
         UnloadContainer<Item>(&Item::Icon);
         UnloadContainer<ItemStats>();
         UnloadContainer<Pet>(&Pet::Icon);
+        UnloadContainer<Weapon>(&Weapon::Icon);
         m_professionsRequested = false;
     }
 
     void LoadSkillData() const;
     void PreloadAllPets();
+    void PreloadAllWeapons();
     void PreloadAllProfessions();
     void PreloadAllProfessionSkills(GW2::Profession profession);
     void PreloadAllProfessionSpecializations(GW2::Profession profession);
@@ -167,6 +175,7 @@ private:
     std::string m_schema = "2019-12-19T00:00:00.000Z";
 
     bool m_professionsRequested = false;
+    bool m_weaponsRequested = false;
     uint32_t m_generation = 0;
     InfoContainer<Profession> m_professions;
     InfoContainer<Specialization> m_specializations;
@@ -175,6 +184,7 @@ private:
     InfoContainer<Item> m_items;
     InfoContainer<ItemStats> m_itemStats;
     InfoContainer<Pet> m_pets;
+    InfoContainer<Weapon> m_weapons;
 
     template<typename T>
     void UnloadContainer() { GetInfoContainer<T>().clear(); }
@@ -239,6 +249,7 @@ template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContai
 template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContainer<Item>             const& { return m_items; }
 template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContainer<ItemStats>        const& { return m_itemStats; }
 template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContainer<Pet>              const& { return m_pets; }
+template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContainer<Weapon>           const& { return m_weapons; }
 
 template<> struct API::InfoHandlers<API::Profession>        { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/professions?lang={}&v={}&ids=all"; };
 template<> struct API::InfoHandlers<API::Specialization>    { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/specializations?lang={}&v={}&ids={}"; };

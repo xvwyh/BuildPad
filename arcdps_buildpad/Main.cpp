@@ -1,8 +1,12 @@
 #include "Common.h"
-#include "ArcDPSDefines.h"
+#include "ArcdpsDefines.h"
 #include "buildpad/Handler.h"
 #include <d3d9.h>
 #include <Windows.h>
+#include <curlpp/cURLpp.hpp>
+#include <curlpp/Options.hpp>
+#include <curlpp/Easy.hpp>
+#include "json/json.hpp"
 
 /* proto/globals */
 arcdps::arcdps_exports arc_exports;
@@ -10,42 +14,38 @@ char* arcvers;
 IDirect3DDevice9* d3dDevice9 = nullptr;
 ID3D11Device* d3dDevice11 = nullptr;
 
-/* dll attach -- from winapi */
-bool dll_init(HANDLE hModule)
+void CleanupPreviousVersions()
 {
-    fs::path const bin64path = "./bin64";
-    std::set<std::string> versionsFound;
     try
     {
-        if (exists(bin64path))
+        std::set<std::string> versionsFound;
+        if (fs::path const bin64path = "./bin64"; exists(bin64path))
             for (auto const& entry : fs::directory_iterator { bin64path })
                 if (entry.is_regular_file() && util::starts_with(entry.path().filename().string(), "d3d9_arcdps_buildpad_") && entry.path().extension() == ".dll")
                     versionsFound.emplace(entry.path().filename().replace_extension().string().substr("d3d9_arcdps_buildpad_"s.length()));
 
-        if (versionsFound.size() > 1)
+        // Delete all other versions
+        for (auto const& version : versionsFound)
         {
-            std::string const newestVersion = *versionsFound.rbegin();
-
-            // If we're not running the latest installed version, but there is a latest version DLL in bin64 folder - don't load this outdated version
-            if (buildpad::BUILDPAD_VERSION != newestVersion)
-                return false;
-
-            // If we're running the latest installed version - delete all other versions (they shouldn't be in use right now)
-            if (buildpad::BUILDPAD_VERSION == newestVersion)
-                for (auto const& version : versionsFound)
-                    if (version != newestVersion)
-                        if (fs::path path = fmt::format("./bin64/d3d9_arcdps_buildpad_{}.dll", version); exists(path))
-                            fs::remove(path);
-
-            // No longer using this file - remove it if previous BuildPad version have been deleted
-            fs::path const versionPath = "./addons/arcdps/arcdps.buildpad/version";
-            if (exists(versionPath))
-                fs::remove(versionPath);
+            try
+            {
+                if (fs::path path = fmt::format("./bin64/d3d9_arcdps_buildpad_{}.dll", version); exists(path))
+                    fs::remove(path);
+            }
+            catch (...) { }
         }
+
+        // No longer using this file - remove it if previous BuildPad version have been deleted
+        fs::path const versionPath = "./addons/arcdps/arcdps.buildpad/version";
+        if (exists(versionPath))
+            fs::remove(versionPath);
     }
     catch (...) { }
+}
 
-    return true;
+/* dll attach -- from winapi */
+void dll_init()
+{
 }
 
 /* dll detach -- from winapi */
@@ -58,7 +58,7 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD ulReasonForCall, LPVOID lpReserved)
 {
     switch (ulReasonForCall)
     {
-        case DLL_PROCESS_ATTACH: return dll_init(hModule);
+        case DLL_PROCESS_ATTACH: dll_init(); break;
         case DLL_PROCESS_DETACH: dll_exit(); break;
 
         case DLL_THREAD_ATTACH: break;
@@ -72,6 +72,17 @@ uintptr_t mod_release()
 {
     buildpad::Handler::Instance().SaveConfig();
     buildpad::Handler::Instance().Unload();
+
+    // Try to rename the currently running DLL
+    try
+    {
+        if (fs::path const path = fmt::format("./bin64/d3d9_arcdps_buildpad_{}.dll", buildpad::BUILDPAD_VERSION); exists(path))
+            fs::rename(path, "./bin64/arcdps_buildpad.dll");
+    }
+    catch (...) { }
+    // Then delete the remaining old versions, in case they failed to be deleted at startup
+    CleanupPreviousVersions();
+
     return 0;
 }
 
@@ -80,6 +91,32 @@ extern "C" __declspec(dllexport) void* get_release_addr()
 {
     arcvers = nullptr;
     return (void*)&mod_release;
+}
+
+extern "C" __declspec(dllexport) wchar_t* get_update_url()
+{
+    try
+    {
+        std::stringstream response;
+        curlpp::Cleanup clean;
+        curlpp::Easy request;
+        request.setOpt(new curlpp::options::Url("https://buildpad.gw2archive.eu/version.json"));
+        request.setOpt(new curlpp::options::WriteStream(&response));
+        request.perform();
+        std::string data = response.str();
+
+        auto json = nlohmann::json::parse(response, nullptr, false);
+        if (buildpad::BUILDPAD_VERSION < json["latest"])
+        {
+            std::string const url = json["url"];
+            static std::wstring wurl(MultiByteToWideChar(CP_UTF8, 0, url.c_str(), -1, nullptr, 0), L'\0');
+            MultiByteToWideChar(CP_UTF8, 0, url.c_str(), -1, wurl.data(), (int)wurl.length());
+            return wurl.data();
+        }
+    }
+    catch (...) { }
+
+    return nullptr;
 }
 
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
@@ -142,9 +179,9 @@ void mod_options()
 arcdps::arcdps_exports* mod_init()
 {
     arc_exports.size = sizeof(arcdps::arcdps_exports);
-    arc_exports.sig = 0x213CFFD2;
+    arc_exports.sig = 0x92F80465; // Old: 0x213CFFD2
     arc_exports.imguivers = IMGUI_VERSION_NUM;
-    arc_exports.out_name = "buildpad";
+    arc_exports.out_name = "BuildPad";
     arc_exports.out_build = buildpad::BUILDPAD_VERSION;
     arc_exports.wnd_nofilter = (void*)&mod_wnd;
     arc_exports.imgui = (void*)&mod_imgui;
@@ -155,6 +192,14 @@ arcdps::arcdps_exports* mod_init()
 /* export -- arcdps looks for this exported function and calls the address it returns */
 extern "C" __declspec(dllexport) void* get_init_addr(char* arcversion, ImGuiContext* imguictx, void* id3dptr, HANDLE arcdll, void* mallocfn, void* freefn, uint32_t d3dversion)
 {
+    // Try to unload the old version if it got loaded and delete its DLL
+    if (FARPROC freeExtension; (freeExtension = GetProcAddress((HMODULE)arcdll, "freeextension2")) || (freeExtension = GetProcAddress((HMODULE)arcdll, "removeextension2")))
+    {
+        std::this_thread::sleep_for(3s); // Artifical delay. Arcdps loads extensions asynchronously. If there's an old version present - we want to ensure that it has enough time to load
+        ((HINSTANCE(*)(uint32_t))freeExtension)(0x213CFFD2);
+    }
+    CleanupPreviousVersions();
+
     arcvers = arcversion;
     ImGui::SetCurrentContext(imguictx);
     ImGui::SetAllocatorFunctions((void *(*)(size_t, void*))mallocfn, (void(*)(void*, void*))freefn);

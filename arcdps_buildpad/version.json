@@ -1,12 +1,31 @@
 {
-  "latest": "2021-10-27",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-10-27.dll",
+  "latest": "2023-07-19",
+  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2023-07-19.dll",
   "history": [
+    {
+      "version": "2023-07-19",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2023-07-19.dll",
+      "changes": [
+        { "type": "feature", "text": "Added support for new build chat link format that includes data about weapons and weapon skill customizations" },
+        { "type": "feature", "text": "Added support for editing the list of weapons used in a build template (currently not used by the game, only to display tooltips and build inspect UI)" },
+        { "type": "feature", "text": "Transitioned to using ArcDPS's built-in autoupdater for extensions. BuildPad will now be silently updated upon launching Guild Wars 2" },
+        { "type": "warning", "text": "If you encounter issues when updating BuildPad to this version - delete all files in your /Guild Wars 2/bin64/ folder that start with either \"d3d9_arcdps_buildpad\" or \"arcdps_buildpad\" and manually download and install the new version from the website" },
+        { "type": "bug", "text": "Fixed loading builds with extra long descriptions" },
+        { "type": "bug", "text": "Fixed parsing builds if more than one chat code was pasted into the textbox" },
+        { "type": "bug", "text": "Better sanitization when pasting text from clipboard to avoid unexpected unicode characters breaking build saving" },
+        { "type": "bug", "text": "Build list will now be darkened while dragging builds around" },
+        { "type": "bug", "text": "Reorganized the settings panel and made it accessible from under ArcDPS extension settings tab" },
+        { "type": "misc", "text": "Starting with the next version BuildPad's DLL will be named \"arcdps_buildpad.dll\". This version will automatically rename itself after closing Guild Wars 2" },
+        { "type": "misc", "text": "Downloaded render cache will be automatically cleaned up when starting this version for the first time" },
+        { "type": "misc", "text": "ArcDPS extension signature changed to 0x92F80465" }
+      ]
+    },
     {
       "version": "2021-10-27",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2021-10-27.dll",
       "changes": [
-        { "type": "feature", "text": "Added support for Mechanist, Specter and Untamed" }
+        { "type": "feature", "text": "Added support for Mechanist, Specter and Untamed" },
+        { "type": "misc", "text": "2022-03-02 Notice: Serverside data updated for EoD's release. BuildPad update is not required, but you may want to empty your \\addons\\arcdps\\arcdps.buildpad\\rendercache\\ folder (or at least delete the files from 2479302 onwards) to download final art for new specializations, traits and skills" }
       ]
     },
     {

@@ -141,6 +141,10 @@ Build::ParsedInfo Build::ParseInfo(std::string_view code, std::optional<uint32_t
                     default:
                         break;
                 }
+
+                // V2
+                parsed.Weapons = link.Weapons;
+                parsed.WeaponSkills = link.WeaponSkills;
             },
             [&parsed](ChatLink::ArcDPSCode<ChatLink::ArcDPSSkillTemplate>& link)
             {
@@ -315,6 +319,8 @@ std::optional<std::string> Build::ValidateParsedInfo(ParsedInfo& parsed)
             }
             water = true;
         }
+
+        // TODO: Weapons and weapon skills validation
     }
     */
 

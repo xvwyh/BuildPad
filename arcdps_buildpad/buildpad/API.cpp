@@ -139,6 +139,21 @@ void API::PreloadAllPets()
     Request<Pet>(ids);
 }
 
+void API::PreloadAllWeapons()
+{
+    if (!m_weaponsRequested)
+    {
+        m_weaponsRequested = true;
+        for (auto const& info : GW2::GetWeaponInfos())
+        {
+            auto& weapon = Get<Weapon>((uint32_t)info.Weapon);
+            weapon.Name = info.Name;
+            weapon.Icon.Set(Handler::Instance().GetIcon(info.Weapon), false);
+            weapon.Loaded = true;
+        }
+    }
+}
+
 void API::PreloadAllProfessions()
 {
     if (!m_professionsRequested)
@@ -279,6 +294,17 @@ bool API::PreloadAllBuildInfos(Build const& build)
                 Request<Trait>(ids);
             }
         }
+    }
+
+    // V2: Weapons
+    PreloadAllWeapons();
+
+    // V2: Weapon Skills
+    {
+        std::set<uint32_t> ids;
+        for (auto const& id : parsed.WeaponSkills)
+            Reserve<Skill>(id, ids, result);
+        Request<Skill>(ids);
     }
 
     return result;

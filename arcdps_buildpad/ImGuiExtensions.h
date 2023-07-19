@@ -5,6 +5,14 @@
 
 namespace ImGui
 {
+[[nodiscard]] ImVec4 GetStyleColorVec4ModColor(ImGuiCol idx, float colorMultiplier)
+{
+    ImVec4 color = GetStyleColorVec4(idx);
+    color.x *= colorMultiplier;
+    color.y *= colorMultiplier;
+    color.z *= colorMultiplier;
+    return color;
+}
 [[nodiscard]] ImVec4 GetStyleColorVec4ModAlpha(ImGuiCol idx, float alphaMultiplier)
 {
     ImVec4 color = GetStyleColorVec4(idx);

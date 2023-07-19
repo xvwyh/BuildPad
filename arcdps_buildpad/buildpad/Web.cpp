@@ -87,4 +87,19 @@ void Web::Request(std::string_view url, std::function<void(std::string_view data
         }
     }));
 }
+
+void Web::ResetRenderCache() const
+{
+    if (m_renderCache.empty())
+        return;
+
+    std::vector<fs::path> toRemove;
+    for (auto const& entry : fs::directory_iterator { m_renderCache })
+        if (entry.path().extension() == ".png")
+            toRemove.push_back(entry.path());
+
+    for (auto const& path : toRemove)
+        try { fs::remove(path); }
+        catch (...) { }
+}
 }
