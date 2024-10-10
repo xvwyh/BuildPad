@@ -1,7 +1,17 @@
 {
-  "latest": "2023-07-19",
-  "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2023-07-19.dll",
+  "latest": "2024-10-10",
+  "url": "https://raw.githubusercontent.com/xvwyh/BuildPad/refs/heads/master/arcdps_buildpad.dll",
   "history": [
+    {
+      "version": "2024-10-10",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2024-10-10.dll",
+      "changes": [
+        { "type": "feature", "text": "Updated weapon and pet selection popups to Janthir Wilds" },
+        { "type": "bug", "text": "Fixed settings category selection panel becoming so narrow that it starts clipping \"Save\" and \"Load\" buttons" },
+        { "type": "bug", "text": "BuildPad will now attempt to load necessary data from GitHub as a fallback in case the main website is inaccessible" },
+        { "type": "misc", "text": "Added 10 seconds timeout to web requests" }
+      ]
+    },
     {
       "version": "2023-07-19",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2023-07-19.dll",

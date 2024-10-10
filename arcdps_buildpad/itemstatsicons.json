@@ -2,7 +2,7 @@
   {
     "name": "gw2skills.net",
     "items": false,
-    "atlas": "https://buildpad.gw2archive.eu/itemstatsicons/gw2skills.net.v1.png",
+    "atlas": "https://raw.githubusercontent.com/xvwyh/BuildPad/refs/heads/master/arcdps_buildpad/itemstatsicons/gw2skills.net.v1.png",
     "width": 44,
     "height": 44,
     "stats": [
@@ -54,7 +54,7 @@
   {
     "name": "metabattle.com",
     "items": false,
-    "atlas": "https://buildpad.gw2archive.eu/itemstatsicons/metabattle.com.v1.png",
+    "atlas": "https://raw.githubusercontent.com/xvwyh/BuildPad/refs/heads/master/arcdps_buildpad/itemstatsicons/metabattle.com.v1.png",
     "width": 25,
     "height": 25,
     "stats": [

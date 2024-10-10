@@ -1,6 +1,7 @@
 #include "Common.h"
 #include "ArcdpsDefines.h"
 #include "buildpad/Handler.h"
+#include "buildpad/Web.h"
 #include <d3d9.h>
 #include <Windows.h>
 #include <curlpp/cURLpp.hpp>
@@ -95,28 +96,24 @@ extern "C" __declspec(dllexport) void* get_release_addr()
 
 extern "C" __declspec(dllexport) wchar_t* get_update_url()
 {
-    try
+    static std::wstring wurl;
+    bool loaded = false;
+    buildpad::Web::Instance().RequestAny({ URL_WITH_FALLBACK("/version.json") }, [&](std::string_view const data)
     {
-        std::stringstream response;
-        curlpp::Cleanup clean;
-        curlpp::Easy request;
-        request.setOpt(new curlpp::options::Url("https://buildpad.gw2archive.eu/version.json"));
-        request.setOpt(new curlpp::options::WriteStream(&response));
-        request.perform();
-        std::string data = response.str();
-
-        auto json = nlohmann::json::parse(response, nullptr, false);
+        auto json = nlohmann::json::parse(data, nullptr, false);
         if (buildpad::BUILDPAD_VERSION < json["latest"])
         {
             std::string const url = json["url"];
-            static std::wstring wurl(MultiByteToWideChar(CP_UTF8, 0, url.c_str(), -1, nullptr, 0), L'\0');
+            wurl.assign(MultiByteToWideChar(CP_UTF8, 0, url.c_str(), -1, nullptr, 0), L'\0');
             MultiByteToWideChar(CP_UTF8, 0, url.c_str(), -1, wurl.data(), (int)wurl.length());
-            return wurl.data();
         }
-    }
-    catch (...) { }
+        loaded = true;
+    }, [&](auto&&) { loaded = true; }, false);
 
-    return nullptr;
+    while (!loaded)
+        std::this_thread::sleep_for(100ms);
+
+    return !wurl.empty() ? wurl.data() : nullptr;
 }
 
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */

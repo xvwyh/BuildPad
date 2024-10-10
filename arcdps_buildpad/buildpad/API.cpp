@@ -91,8 +91,7 @@ void API::LoadSkillData() const
                     throw std::exception();
 
             // Needed until the API contains palette assignments for all revenant legend skills (currently only Kalla is present)
-            Web::Instance().Request(
-                "https://buildpad.gw2archive.eu/skillpalette.json",
+            Web::Instance().RequestAny({ URL_WITH_FALLBACK("/skillpalette.json") },
                 [](std::string_view const data)
                 {
                     for (auto const& skill : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
@@ -104,28 +103,22 @@ void API::LoadSkillData() const
                 [](auto&&) { SkillStorage::Instance().SetLoadingState(SkillStorage::LoadingState::Failed); }, false);
         };
 
-        Web::Instance().Request(
-            fmt::format("https://api.guildwars2.com/v2/legends?lang={}&v={}&ids={}", GetLanguageInfos().front().Tag, m_schema, "all"),
+        Web::Instance().RequestAny(
+            {
+                fmt::format(API_URL "/v2/legends?lang={}&v={}&ids={}", GetLanguageInfos().front().Tag, m_schema, "all"),
+                URL_WITH_FALLBACK("/apifallback_legends.json"),
+            },
             loader,
-            [loader](auto&&)
-        {
-            Web::Instance().Request(
-                "https://buildpad.gw2archive.eu/apifallback_legends.json",
-                loader,
-                [](auto&&) { SkillStorage::Instance().SetLoadingState(SkillStorage::LoadingState::Failed); }, false);
-        }, false);
+            [](auto&&) { SkillStorage::Instance().SetLoadingState(SkillStorage::LoadingState::Failed); }, false);
     };
 
-    Web::Instance().Request(
-        fmt::format(InfoHandlers<Profession>::URL, GetLanguageInfos().front().Tag, m_schema, "all"),
-        loader,
-        [loader](auto&&)
+    Web::Instance().RequestAny(
         {
-            Web::Instance().Request(
-                "https://buildpad.gw2archive.eu/apifallback_professions.json",
-                loader,
-                [](auto&&) { SkillStorage::Instance().SetLoadingState(SkillStorage::LoadingState::Failed); }, false);
-        }, false);
+            fmt::format(InfoHandlers<Profession>::URL, GetLanguageInfos().front().Tag, m_schema, "all"),
+            URL_WITH_FALLBACK("/apifallback_professions.json"),
+        },
+        loader,
+        [](auto&&) { SkillStorage::Instance().SetLoadingState(SkillStorage::LoadingState::Failed); }, false);
 }
 
 void API::PreloadAllPets()

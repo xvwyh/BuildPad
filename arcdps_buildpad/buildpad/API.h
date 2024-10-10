@@ -5,6 +5,8 @@
 #include "Web.h"
 #include "StateIcon.h"
 
+#define API_URL "https://api.guildwars2.com"
+
 namespace buildpad
 {
 class Build;
@@ -251,11 +253,11 @@ template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContai
 template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContainer<Pet>              const& { return m_pets; }
 template<> [[nodiscard]] inline auto API::GetInfoContainer() const -> InfoContainer<Weapon>           const& { return m_weapons; }
 
-template<> struct API::InfoHandlers<API::Profession>        { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/professions?lang={}&v={}&ids=all"; };
-template<> struct API::InfoHandlers<API::Specialization>    { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/specializations?lang={}&v={}&ids={}"; };
-template<> struct API::InfoHandlers<API::Trait>             { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/traits?lang={}&v={}&ids={}"; };
-template<> struct API::InfoHandlers<API::Skill>             { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/skills?lang={}&v={}&ids={}"; };
-template<> struct API::InfoHandlers<API::Item>              { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/items?lang={}&v={}&ids={}"; };
-template<> struct API::InfoHandlers<API::ItemStats>         { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/itemstats?lang={}&v={}&ids={}"; };
-template<> struct API::InfoHandlers<API::Pet>               { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = "https://api.guildwars2.com/v2/pets?lang={}&v={}&ids={}"; };
+template<> struct API::InfoHandlers<API::Profession>        { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = API_URL "/v2/professions?lang={}&v={}&ids=all"; };
+template<> struct API::InfoHandlers<API::Specialization>    { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = API_URL "/v2/specializations?lang={}&v={}&ids={}"; };
+template<> struct API::InfoHandlers<API::Trait>             { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = API_URL "/v2/traits?lang={}&v={}&ids={}"; };
+template<> struct API::InfoHandlers<API::Skill>             { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = API_URL "/v2/skills?lang={}&v={}&ids={}"; };
+template<> struct API::InfoHandlers<API::Item>              { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = API_URL "/v2/items?lang={}&v={}&ids={}"; };
+template<> struct API::InfoHandlers<API::ItemStats>         { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = API_URL "/v2/itemstats?lang={}&v={}&ids={}"; };
+template<> struct API::InfoHandlers<API::Pet>               { static void Success(std::string_view data); static void Error(std::set<uint32_t> const& ids); inline static char const* URL = API_URL "/v2/pets?lang={}&v={}&ids={}"; };
 }

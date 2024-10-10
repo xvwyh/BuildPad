@@ -45,9 +45,9 @@ void Web::Request(std::string_view url, std::function<void(std::string_view data
             {
                 curlpp::Cleanup clean;
                 curlpp::Easy request;
-                request.setOpt(new curlpp::options::Url(url));
-
-                request.setOpt(new curlpp::options::WriteStream(&response));
+                request.setOpt(curlpp::options::Url(url));
+                request.setOpt(curlpp::options::WriteStream(&response));
+                request.setOpt(curlpp::options::Timeout(10));
 
                 request.perform();
 
@@ -86,6 +86,27 @@ void Web::Request(std::string_view url, std::function<void(std::string_view data
             }
         }
     }));
+}
+
+void Web::RequestAny(std::vector<std::string> urls, std::function<void(std::string_view data)>&& onSuccess, std::function<void(std::exception const& e)>&& onError, bool mainThreadCallback)
+{
+    if (urls.empty())
+    {
+        if (onError)
+        {
+            if (mainThreadCallback)
+                Handler::Instance().OnMainThread([onError = std::move(onError)] { onError(std::exception()); });
+            else
+                onError(std::exception());
+        }
+        return;
+    }
+
+    Request(urls.front(), std::move(onSuccess), [=](std::exception const&) mutable
+    {
+        if (!urls.empty())
+            Instance().RequestAny({ urls.begin() + 1, urls.end() }, std::move(onSuccess), std::move(onError), mainThreadCallback);
+    }, mainThreadCallback);
 }
 
 void Web::ResetRenderCache() const

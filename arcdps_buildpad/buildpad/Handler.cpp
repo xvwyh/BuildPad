@@ -17,7 +17,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2023-07-19";
+char const* const BUILDPAD_VERSION = "2024-10-10";
 
 namespace resources
 {
@@ -506,7 +506,7 @@ void Handler::LoadTextures()
             m_arcdpsGearAvailable = !m_arcdpsGear.empty();
         });
     } catch (...) { m_loaded = true; } });
-    Web::Instance().Request("https://buildpad.gw2archive.eu/pets.json", [this](std::string_view const data)
+    Web::Instance().RequestAny({ URL_WITH_FALLBACK("/pets.json") }, [this](std::string_view const data)
     {
         for (auto const& pet : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
         {
@@ -977,7 +977,10 @@ void Handler::Update()
 void Handler::UpdateOptions()
 {
     if (!m_loaded)
+    {
+        ImGui::TextUnformatted("Loading data from the web, please wait...");
         return;
+    }
 
     if (TextureData const& icon = GetIcon(Icons::BuildPad);
         ImGui::ImageButtonWithText(icon.Texture, "Toggle BuildPad ", { ImGui::GetContentRegionAvailWidth(), 0 }, icon.TrimmedSize() * 0.75f, icon.GetUV0(), icon.GetUV1(), ImDrawCornerFlags_All, 3))
@@ -1110,7 +1113,7 @@ void Handler::RenderMainWindow(Time const& delta)
     {
         ImGui::BeginGroup();
         ImGui::PushStyleColor(ImGuiCol_Text, { 1.0f, 0.0f, 0.0f, 1.0f });
-        ImGui::TextWrapped("Failed to load skill data from Guild Wars 2 API. The API might be unavailable, or BuildPad might need to be updated.\n\nSome functionality is disabled.\n\nRestart Guild Wars 2 to try again.");
+        ImGui::TextWrapped("Failed to load skill data from the web. Guild Wars 2 API or BuildPad website might be unavailable, or BuildPad might need to be updated.\n\nSome functionality is disabled.\n\nRestart Guild Wars 2 to try again.");
         ImGui::PopStyleColor();
         ImGui::EndGroup();
         ImGui::NewLine();
@@ -2274,7 +2277,7 @@ void Handler::RenderSettings(RenderSettingsType const type)
             }
         }
         ImGui::Spacing();
-        ImGui::InvisibleButton("BuildPadSettingsSaveLoadPlaceHolder", { -1, FRAME_PADDING.y + ImGui::CalcTextSize(" ").y + FRAME_PADDING.y }, ImGuiButtonFlags_Disabled);
+        ImGui::InvisibleButton("BuildPadSettingsSaveLoadPlaceHolder", { FRAME_PADDING.x + ImGui::CalcTextSize("Save").x + FRAME_PADDING.x + CELL_PADDING.x + 1 + CELL_PADDING.x + FRAME_PADDING.x + ImGui::CalcTextSize("Load").x + FRAME_PADDING.x, FRAME_PADDING.y + ImGui::CalcTextSize(" ").y + FRAME_PADDING.y }, ImGuiButtonFlags_Disabled);
         ImGui::EndGroup();
 
         ImGui::TableNextColumn();
@@ -3270,7 +3273,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                 context.ButtonSpacing = 0px;
                 context.PaletteSize = { 56px, 56px };
                 context.PaletteSpacing = { 0px, 0px };
-                context.PalettePerRow = 6;
+                context.PalettePerRow = 10;
                 context.ButtonTooltip = "Click to change pet";
                 ImGui::Spacing();
                 RenderPaletteBar(context);
@@ -3541,7 +3544,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
         context.PaletteSourceLoaded = true;
         context.PaletteFilter = [](GW2::WeaponInfo const& info, bool water, uint8_t index)
         {
-            return !info.Aquatic; // Aquatic weapons currently don't display in GW2 build tooltips/inspect
+            return info.Terrestrial; // Aquatic weapons currently don't display in GW2 build tooltips/inspect
         };
         context.PaletteActive = [&parsed](GW2::WeaponInfo const& info, bool water, uint8_t index)
         {
@@ -4158,7 +4161,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
     {
         iconSetsInited = true;
         iconSets.emplace_back();
-        Web::Instance().Request("https://buildpad.gw2archive.eu/itemstatsicons.json", [this](std::string_view const data)
+        Web::Instance().RequestAny({ URL_WITH_FALLBACK("/itemstatsicons.json") }, [this](std::string_view const data)
         {
             for (auto const& icons : nlohmann::json::parse(data.begin(), data.end(), nullptr, false))
             {
@@ -4412,7 +4415,7 @@ void Handler::VersionCheck()
         m_versionCheckResult.reset();
     }
 
-    Web::Instance().Request("https://buildpad.gw2archive.eu/version.json", [this](std::string_view const data)
+    Web::Instance().RequestAny({ URL_WITH_FALLBACK("/version.json") }, [this](std::string_view const data)
     {
         auto json = nlohmann::json::parse(data.begin(), data.end(), nullptr, false);
 

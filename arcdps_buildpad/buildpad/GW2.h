@@ -399,6 +399,7 @@ struct GW2
         Weapon Weapon = Weapon::None;
         std::string_view Name;
         std::string_view InternalName;
+        bool Terrestrial = true;
         bool Aquatic = false;
     };
     static auto const& GetWeaponInfos()
@@ -412,19 +413,19 @@ struct GW2
             { Weapon::Focus,        "Focus",        "Focus"         },
             { Weapon::Greatsword,   "Greatsword",   "Greatsword"    },
             { Weapon::Hammer,       "Hammer",       "Hammer"        },
-            { Weapon::Harpoon,      "Spear",        "Spear",        true },
+            { Weapon::Harpoon,      "Spear",        "Spear",        true, true },
             { Weapon::Mace,         "Mace",         "Mace"          },
             { Weapon::Pistol,       "Pistol",       "Pistol"        },
             { Weapon::Rifle,        "Rifle",        "Rifle"         },
             { Weapon::Scepter,      "Scepter",      "Scepter"       },
             { Weapon::Shield,       "Shield",       "Shield"        },
-            { Weapon::Speargun,     "Harpoon Gun",  "Speargun",     true },
+            { Weapon::Speargun,     "Harpoon Gun",  "Speargun",     false, true },
             { Weapon::Staff,        "Staff",        "Staff"         },
             { Weapon::Sword,        "Sword",        "Sword"         },
             { Weapon::Torch,        "Torch",        "Torch"         },
             { Weapon::Warhorn,      "Warhorn",      "Warhorn"       },
             { Weapon::Shortbow,     "Short Bow",    "Shortbow"      },
-            { Weapon::Trident,      "Trident",      "Trident",      true },
+            { Weapon::Trident,      "Trident",      "Trident",      false, true },
         } };
         return instance;
     }

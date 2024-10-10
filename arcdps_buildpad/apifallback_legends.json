@@ -1,0 +1,86 @@
+[
+  {
+    "id": "Legend1",
+    "code": 1,
+    "swap": 28085,
+    "heal": 27220,
+    "elite": 27760,
+    "utilities": [
+      28379,
+      27014,
+      26644
+    ]
+  },
+  {
+    "id": "Legend2",
+    "code": 2,
+    "swap": 28134,
+    "heal": 26937,
+    "elite": 28406,
+    "utilities": [
+      29209,
+      28231,
+      27107
+    ]
+  },
+  {
+    "id": "Legend3",
+    "code": 3,
+    "swap": 28419,
+    "heal": 27372,
+    "elite": 27975,
+    "utilities": [
+      28516,
+      26679,
+      26557
+    ]
+  },
+  {
+    "id": "Legend4",
+    "code": 4,
+    "swap": 28494,
+    "heal": 28219,
+    "elite": 28287,
+    "utilities": [
+      27322,
+      27505,
+      27917
+    ]
+  },
+  {
+    "id": "Legend5",
+    "code": 5,
+    "swap": 41858,
+    "heal": 45686,
+    "elite": 45773,
+    "utilities": [
+      42949,
+      40485,
+      41220
+    ]
+  },
+  {
+    "id": "Legend6",
+    "code": 6,
+    "swap": 28195,
+    "heal": 28427,
+    "elite": 27356,
+    "utilities": [
+      26821,
+      27025,
+      27715
+    ]
+  },
+  {
+    "id": "Legend7",
+    "code": 7,
+    "swap": 62749,
+    "heal": 62719,
+    "elite": 62942,
+    "utilities": [
+      62832,
+      62962,
+      62878
+    ]
+  }
+]

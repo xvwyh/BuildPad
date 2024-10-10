@@ -1,0 +1,734 @@
+[
+  {
+    "id": 1,
+    "name": "Juvenile Jungle Stalker",
+    "description": "Jungle stalkers rely on their power to take down prey. They enter battle with a mighty roar, inspiring allies as they lay into their victims with claws and teeth. They love tummy rubs. —Acht",
+    "icon": "https://render.guildwars2.com/file/EF1CBC60372CC60E420AD479A3504D90207A9A3F/52535.png",
+    "skills": [
+      {
+        "id": 12658
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Juvenile Boar",
+    "description": "This boar is a tough, strong fighter with wicked tusks. It's difficult for foes to stay on their feet against his charges. Though polite society may not appreciate his charms, a boar can be a ranger's best friend. —Acht",
+    "icon": "https://render.guildwars2.com/file/F4A7D5033C6BBB14F4EDE9F0946190047D2AA96F/52537.png",
+    "skills": [
+      {
+        "id": 12754
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Juvenile Lynx",
+    "description": "Lynx are tenacious hunters, capable of leaping long distances to chase down fleeing prey. When they feel especially comfortable and safe, they will sometimes roll onto their backs and stick their paws in the air. —Acht",
+    "icon": "https://render.guildwars2.com/file/6C1D64F7D34D073A7E1860B754A33DBCBFCC6CE6/52539.png",
+    "skills": [
+      {
+        "id": 12680
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Juvenile Krytan Drakehound",
+    "description": "This Krytan hound is a loyal, protective pet. It uses its great strength and toughness to fight for its master and can immobilize foes in fear with its howl. —Acht",
+    "icon": "https://render.guildwars2.com/file/76E6FF0DCD60DFC7287FB14542234EFAAA92194F/52541.png",
+    "skills": [
+      {
+        "id": 12715
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Juvenile Brown Bear",
+    "description": "Brown bears are tremendously strong and fiercely protective. They throw themselves into combat selflessly to distract attention from their masters and use their great strength to shrug off blows that would kill any other creature. —Acht",
+    "icon": "https://render.guildwars2.com/file/1B51DCA656B8ED7A2C1C48AC03A4BCD6EDA66901/52543.png",
+    "skills": [
+      {
+        "id": 12666
+      },
+      {
+        "id": 12691
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Juvenile Carrion Devourer",
+    "description": "This carrion devourer is a deadly, ruthless predator. It poisons its foes from a distance, hides underground to ambush them, and can bite them to replenish its health. —Acht",
+    "icon": "https://render.guildwars2.com/file/C608E0CA50E16897B1BB7FCD492703E7D20308C8/52545.png",
+    "skills": [
+      {
+        "id": 12675
+      },
+      {
+        "id": 12703
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Juvenile Salamander Drake",
+    "description": "Red salamander drakes are often hunted because of their similarity to the myth of dragons, though they are a different species. They continue to survive because their fire breath makes them deadly to hunters and prey alike. —Acht",
+    "icon": "https://render.guildwars2.com/file/5EF6FBFDD6E60258DDFDD5467071E4FB31503BAC/52547.png",
+    "skills": [
+      {
+        "id": 12670
+      },
+      {
+        "id": 12695
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Juvenile Alpine Wolf",
+    "description": "This snowy wolf is at home in the frigid lands of the north. Their howl chills their foes to the bone, leaving them vulnerable to their powerful claws and jaws. —Acht",
+    "icon": "https://render.guildwars2.com/file/9255640360EAAAF61A09284742E44A4626626339/52549.png",
+    "skills": [
+      {
+        "id": 12716
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Juvenile Snow Leopard",
+    "description": "Snow leopards have internalized the harsh climate they live in. Their pounce debilitates their victims with chilling cold, making it harder for them to escape. Though they're comfortable in freezing cold, snow leopards love a good sunbeam. —Acht",
+    "icon": "https://render.guildwars2.com/file/923714681AB4117A300E0946487CCB0F72E10921/52551.png",
+    "skills": [
+      {
+        "id": 12693
+      },
+      {
+        "id": 12656
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Juvenile Raven",
+    "description": "The raven is cunning and clever. Its intelligence makes them excellent scouts. In combat, they evade attacks and strike at their foes' eyes to blind them. —Acht",
+    "icon": "https://render.guildwars2.com/file/0BE49B5A5868FD4DAA02D2BE37DE5FC002A41E7D/52553.png",
+    "skills": [
+      {
+        "id": 12723
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Juvenile Jaguar",
+    "description": "The jaguar is a silent predator, capable of sneaking up on an unsuspecting foe and unleashing a deadly ambush. When not rending prey with their claws, jaguars also enjoy playing with colorful fabrics and shiny objects. —Acht",
+    "icon": "https://render.guildwars2.com/file/B90D0599D6F8B50AE1C24D140EFFC4F93303E62E/52555.png",
+    "skills": [
+      {
+        "id": 12681
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Juvenile Marsh Drake",
+    "description": "The standard diet of the swamp drake includes a variety of noxious marsh insects. The drake's digestive system isolates those unsavory poisons and enables them to breathe a venomous cloud to debilitate foes. —Acht",
+    "icon": "https://render.guildwars2.com/file/75D8EEA0425007A3D1AC0A01D2CCC17036D65D23/1128510.png",
+    "skills": [
+      {
+        "id": 12701
+      },
+      {
+        "id": 12700
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Juvenile Blue Moa",
+    "description": "Blue moas are protective and paternal to their flock. Their bright red crests make them easy to rally around, and many a flock has survived due to the presence of a blue moa. —Acht",
+    "icon": "https://render.guildwars2.com/file/9220AB4AD4B72194F22A9864B5B59CF8C518096A/52559.png",
+    "skills": [
+      {
+        "id": 12713
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Juvenile White Moa",
+    "description": "White moas are particularly ornery birds that assault their foes with chilling screeches, pecks, harmonic cries, and a frenzied attack style. —Acht",
+    "icon": "https://render.guildwars2.com/file/71DEFA80B950FA6C297AFD7A6BE1DA9726F57D94/52561.png",
+    "skills": [
+      {
+        "id": 12711
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Juvenile Pink Moa",
+    "description": "Pink moas are adorable but have a tendency to be annoying. They frequently poke other moas for attention and have a particularly aggravating screech, which disorients their enemies. —Acht",
+    "icon": "https://render.guildwars2.com/file/D4F01CBFF90D45E04C98B836E836280AB01A0BB1/52563.png",
+    "skills": [
+      {
+        "id": 12708
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Juvenile Black Moa",
+    "description": "The rare black moa is seen as a harbinger of death and plague by some cultures. That belief is misguided, as biologically, their only major difference from other moas is a particular fondness for acorns. —Acht",
+    "icon": "https://render.guildwars2.com/file/6B9111F0B1CF94B4A4052FF39FB4E5041702FCDF/52565.png",
+    "skills": [
+      {
+        "id": 12709
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Juvenile Red Moa",
+    "description": "Red moas are a fierce and aggressive breed of the bird. Their screech fills their allies with fury, energizing them as they fight. Despite their rough-and-tumble nature, though, red moas are very neat and compulsively groom themselves and other moas. —Acht",
+    "icon": "https://render.guildwars2.com/file/FCB3E7C150F206DE3CE9D53A247A1EDD01080F6E/52566.png",
+    "skills": [
+      {
+        "id": 12712
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Juvenile Ice Drake",
+    "description": "Ice drakes have a unique biology, considering they are a cold-blooded creature that lives in arctic climates. They can breathe ice to attack their prey. —Acht",
+    "icon": "https://render.guildwars2.com/file/FC57A3DA7DB01370A16DE0CAF09BDF0F5A6464A6/52568.png",
+    "skills": [
+      {
+        "id": 12696
+      },
+      {
+        "id": 12697
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Juvenile River Drake",
+    "description": "River drakes hunt by throwing foes into water then unleashing their electrical breath. Fortunately, they are immune to their own breath, but most prey cannot withstand its power. —Acht",
+    "icon": "https://render.guildwars2.com/file/0E0A036C030F8013556C0715CCC9B11C08B7926D/52570.png",
+    "skills": [
+      {
+        "id": 12698
+      },
+      {
+        "id": 12699
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Juvenile Murellow",
+    "description": "The elusive murellow's body courses with poisons, giving it a sickly appearance and causing its hair to fall out. Despite its gaunt frame, it is a fierce protector, spitting clouds of poison as it shrugs off attacks. —Acht",
+    "icon": "https://render.guildwars2.com/file/4AA07A3721C4050A92A9EA4D905366303E5AF4D4/52572.png",
+    "skills": [
+      {
+        "id": 12687
+      },
+      {
+        "id": 12690
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Juvenile Shark",
+    "description": "This is your pet shark. That's right. Your very own pet shark. It's your pet. And a shark. Awesome. Sharks rend their foes with powerful teeth and can even swallow foes whole. —Acht",
+    "icon": "https://render.guildwars2.com/file/24DC58C7D70FED79BF7E0D38D202479E3D2EB2F9/52574.png",
+    "skills": [
+      {
+        "id": 12757
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Juvenile Fern Hound",
+    "description": "Sylvari wetlands plant wolves are rare, magical creatures that share many characteristics with their mundane brothers. They fight fiercely for their pack, using their plant affinity to rapidly regenerate wounds.—Acht",
+    "icon": "https://render.guildwars2.com/file/5EBD4E7C03ABEC7EE648B30197559F660651BB00/52576.png",
+    "skills": [
+      {
+        "id": 12717
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Juvenile Black Bear",
+    "description": "Black bears are territorial and private animals, but they form strong bonds with their friends and selflessly intervene when their friends are threatened. Despite their fearsome appearance, they primarily eat berries, fruit, and fish. —Acht",
+    "icon": "https://render.guildwars2.com/file/750CA07BDEC1D16FE29BD1AE17EE0C22F366E16E/52578.png",
+    "skills": [
+      {
+        "id": 12688
+      },
+      {
+        "id": 12685
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Juvenile Polar Bear",
+    "description": "Found in the frozen north, polar bears are adapted to survive in the harshest conditions on Tyria. The most durable of pets, they can shrug off painful blows and weaken foes with their chilling bite. —Acht",
+    "icon": "https://render.guildwars2.com/file/A4FE067546F4AF76AE15B5A1A45447E4A3FB5AFC/52580.png",
+    "skills": [
+      {
+        "id": 12667
+      },
+      {
+        "id": 12689
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Juvenile Arctodus",
+    "description": "The arctodus is a mighty snow wolf-bear. Its wolf side gives it a strong pack mentality that makes it very protective of its companions. It can roar with arctic might, chilling opponents to the core and making it harder for them to move or act. —Acht",
+    "icon": "https://render.guildwars2.com/file/A54EA5421979C33E0F364301262416D4512D0DBF/52582.png",
+    "skills": [
+      {
+        "id": 12664
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "name": "Juvenile Whiptail Devourer",
+    "description": "Whiptail devourers are especially deadly ranged attackers, using poison and a volley of tail spikes to take down prey from a distance. —Acht",
+    "icon": "https://render.guildwars2.com/file/F350B25F6746B555B4A76BFC78CC0E94BF546A67/52584.png",
+    "skills": [
+      {
+        "id": 12702
+      },
+      {
+        "id": 12674
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "name": "Juvenile Lashtail Devourer",
+    "description": "Lashtail devourers are fortunately uncommon, as their tactic of ambushing foes and unleashing a flurry of tail strikes that immobilize their prey make them especially deadly. —Acht",
+    "icon": "https://render.guildwars2.com/file/E2E73A4428C6C566F1F551563167070D6F917173/52586.png",
+    "skills": [
+      {
+        "id": 12704
+      },
+      {
+        "id": 12679
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Juvenile Hyena",
+    "description": "This hyena is a wily, cunning combatant. A hyena's pack is never far away, and they can summon another hyena to fight alongside them. —Acht",
+    "icon": "https://render.guildwars2.com/file/31CCCCA90BAA6B09A80E2978D794DF2ED42B3779/52588.png",
+    "skills": [
+      {
+        "id": 12718
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Juvenile Wolf",
+    "description": "This wolf is a deadly predator, with powerful jaws and a howl that sends foes fleeing in terror. Pack is everything for a wolf, and they will fight tirelessly for their alpha. —Acht",
+    "icon": "https://render.guildwars2.com/file/D7E020A1FEDD31DB47F21E22A2217CA94C282A0C/52590.png",
+    "skills": [
+      {
+        "id": 12714
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Juvenile Owl",
+    "description": "This snowy white owl is a graceful and elegant pet. White owls are fiercely loyal to their friends and family. They unleash chilling cold and claw slashes on their foes while evading attacks in a flurry of wings. —Acht",
+    "icon": "https://render.guildwars2.com/file/5A4CB8FF3E02BE075877C6DE2309394FCE549054/52592.png",
+    "skills": [
+      {
+        "id": 12721
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "name": "Juvenile Eagle",
+    "description": "This mighty eagle is the most majestic of birds. They are strong, deadly predators, inflicting bleeding wounds with their claws and beak while evading counterattacks. —Acht",
+    "icon": "https://render.guildwars2.com/file/43495C762E04BEDDB5BB3EA467D63409F212F2CF/52594.png",
+    "skills": [
+      {
+        "id": 12722
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "name": "Juvenile White Raven",
+    "description": "White ravens are exceedingly rare. This exceptionally intelligent and elegant bird is nonetheless a deadly fighter, neutralizing foes by clawing at their eyes and blinding them while evading their counterattacks. —Acht",
+    "icon": "https://render.guildwars2.com/file/4C314B00DC20F50F2FCACC14615C91BB4F2262A3/52596.png",
+    "skills": [
+      {
+        "id": 12723
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "name": "Juvenile Forest Spider",
+    "description": "While other spiders use debilitating or paralyzing poison, forest-spider poison is simply corrosive and destructive. Fortunately they are immune to the acidic qualities of their own poison, but they do need to eat quickly. —Acht",
+    "icon": "https://render.guildwars2.com/file/46021B0706D37EEF1F3DE7090E5B0ACF0F927E7C/52598.png",
+    "skills": [
+      {
+        "id": 12731
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "name": "Juvenile Jungle Spider",
+    "description": "It takes a particular frame of mind to have a giant spider as a pet—especially a rare jungle spider. Fortunately, they're capable of feeding themselves, disabling foes with a poison spit that can paralyze foes temporarily. —Acht",
+    "icon": "https://render.guildwars2.com/file/227AF44EC32FC170BB76B5AA352DA0460374FB01/52600.png",
+    "skills": [
+      {
+        "id": 12729
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "name": "Juvenile Cave Spider",
+    "description": "The wily cave spider is a deadly predator that uses debilitating poison to weaken its foes' offenses and defenses as it brings them down. They make surprisingly affectionate pets, though rangers should not eat creatures they bring as gifts. —Acht",
+    "icon": "https://render.guildwars2.com/file/61567AC1D76EF13C4CD0D1D33018B09F7EA494D4/52602.png",
+    "skills": [
+      {
+        "id": 12730
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "name": "Juvenile Black Widow Spider",
+    "description": "The black widow is the rarest variety of spider. Like other spiders, they can throw poison and spin webs to immobilize their foes. Black widows can also use a special poison that paralyzes foes in their tracks. —Acht",
+    "icon": "https://render.guildwars2.com/file/07EA03060306A6D95752C70CA7D8931420069B0D/52604.png",
+    "skills": [
+      {
+        "id": 12729
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "name": "Juvenile Warthog",
+    "description": "This warthog is an ornery, tough creature that will never back down from a fight. Many foes have underestimated it, only to be undone by its tusks and powerful charge attacks. —Acht",
+    "icon": "https://render.guildwars2.com/file/DF96C29EFA4BDEC66C3149F280141490C20458D3/52606.png",
+    "skills": [
+      {
+        "id": 12755
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "name": "Juvenile Siamoth",
+    "description": "Though it may look bizarre, this tapir is a good-natured creature and an amiable companion. Its unassuming appearance hides a ferocious side, though, and siamoths are known for sending their opponents flying with a well-placed charge. —Acht",
+    "icon": "https://render.guildwars2.com/file/0471617BD371046C089D7CDDB9104E57C33DA391/52608.png",
+    "skills": [
+      {
+        "id": 12756
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "name": "Juvenile Pig",
+    "description": "This pig is one of the rarest, most exotic pets in all of Tyria. As you walk the land with this pig by your side, people will stare in wonder at the mysterious creature they have never seen before. Truly, this is a time of wonders. —Acht",
+    "icon": "https://render.guildwars2.com/file/CE671613E510096E1E0FA1ABCA6AD668900F03E1/52610.png",
+    "skills": [
+      {
+        "id": 12732
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "name": "Juvenile Armor Fish",
+    "description": "This durable fish's armor can withstand a tremendous amount of punishment. Armor fish overwhelm their foes with disorienting bash attacks while shrugging off their counterattacks. —Acht",
+    "icon": "https://render.guildwars2.com/file/F9A71C1308254B0544F40B9B5E05050EA87ED45B/52612.png",
+    "skills": [
+      {
+        "id": 12744
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "name": "Juvenile Blue Jellyfish",
+    "description": "Jellyfish can release a variety of clouds in the water to replenish themselves and disorient their enemies. Blue jellyfish can also chill foes with the ends of their tentacles. —Acht",
+    "icon": "https://render.guildwars2.com/file/ED9A2FD006BAED6DCAD87C5BD9479C66111DCD79/52614.png",
+    "skills": [
+      {
+        "id": 12748
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "name": "Juvenile Red Jellyfish",
+    "description": "Jellyfish can release a variety of clouds in the water to replenish themselves and disorient their enemies. Their tentacles immobilize their prey by disrupting their nervous system. —Acht",
+    "icon": "https://render.guildwars2.com/file/C7F8301C1B76B3B208A23B19C3AABF0BBED8CA4C/52616.png",
+    "skills": [
+      {
+        "id": 12749
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "name": "Juvenile Rainbow Jellyfish",
+    "description": "Jellyfish release a variety of clouds in the water to replenish themselves and disorient their enemies. Rainbow jellyfish can also chill foes with the ends of their tentacles.—Acht",
+    "icon": "https://render.guildwars2.com/file/ED9A2FD006BAED6DCAD87C5BD9479C66111DCD79/52614.png",
+    "skills": [
+      {
+        "id": 12748
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "name": "Juvenile Hawk",
+    "description": "This hawk is a crafty ally. He is a fierce and deadly predator that inflicts bleeding wounds with its claws and beak, while evading counterattacks.—Acht",
+    "icon": "https://render.guildwars2.com/file/70F79F793C0625969046DF0C00B548C50E17115B/543019.png",
+    "skills": [
+      {
+        "id": 20975
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "name": "Juvenile Reef Drake",
+    "description": "Reef drakes emit a high-pitched screech to disorient their foes. Don't let them confuse you; these drakes are dangerous.<br>—Acht",
+    "icon": "https://render.guildwars2.com/file/A90B47ECE2A57D71DB23384E23F5EFF7130176B4/511359.png",
+    "skills": [
+      {
+        "id": 16426
+      },
+      {
+        "id": 16427
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "name": "Juvenile Smokescale",
+    "description": "Smokescales have an ability to conceal themselves in smoke. These stealthy saurians emerge from their smoke cloud to ambush prey without warning.—Acht",
+    "icon": "https://render.guildwars2.com/file/9B1BB03EA406016DE343EBF4C733C05ADA7FD70D/1128512.png",
+    "skills": [
+      {
+        "id": 31568
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "name": "Juvenile Tiger",
+    "description": "Tigers are among the largest feline predators, with striped markings that help conceal them in heavy vegetation. Fierce hunters with tooth and claw, they spend most of their lives in solitude.—Acht",
+    "icon": "https://render.guildwars2.com/file/A41953A8682309700FA17601FE05DB040C6CD07B/1128514.png",
+    "skills": [
+      {
+        "id": 31451
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "name": "Juvenile Electric Wyvern",
+    "description": "Electric wyverns are a unique variant of their winged species that generate and channel electricity. They isolate and shock their prey with powerful electrical pulses.—Acht",
+    "icon": "https://render.guildwars2.com/file/E93F21BDA224010D2A7CF90B9297E3083C436BF7/1128506.png",
+    "skills": [
+      {
+        "id": 31639
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "name": "Juvenile Fire Wyvern",
+    "description": "Fire wyverns are winged relatives of the terrestrial drake. These voracious predators contain and then roast their prey with swaths of fiery breath.—Acht",
+    "icon": "https://render.guildwars2.com/file/AE90459E46D1F3E01C94A09A117FFA06ED2B54EB/1128508.png",
+    "skills": [
+      {
+        "id": 31459
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "name": "Juvenile Bristleback",
+    "description": "Bristlebacks are spiny saurians with thick hides and sharp claws. When provoked, they can eject their sharp dorsal spines at high velocity.—Acht",
+    "icon": "https://render.guildwars2.com/file/371C4E26DD3744CDEEEE5D45142519561E286FFE/1128504.png",
+    "skills": [
+      {
+        "id": 31367
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "name": "Juvenile Cheetah",
+    "description": "It's a blur, sir! The desert cheetah is rumored to travel faster than the eye can see, pouncing upon its victim with fang and claw. —Acht",
+    "icon": "https://render.guildwars2.com/file/1911090762244A310BD539B2C54A23F702F66D0A/1769877.png",
+    "skills": [
+      {
+        "id": 42963
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "name": "Juvenile Sand Lion",
+    "description": "Sand lions lay claim to massive dunes and viciously defend their territory from dozens of desert encroachers. —Acht",
+    "icon": "https://render.guildwars2.com/file/0D23EE67F7C4F4E300637D43B9A46F500FD4799C/1769879.png",
+    "skills": [
+      {
+        "id": 42180
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "name": "Juvenile Jacaranda",
+    "description": "Capable of calling lightning from the skies while blending into terrain. They are not standing still; they are lying in wait. —Acht",
+    "icon": "https://render.guildwars2.com/file/DFA4A1F6006A0769DAAD0C7909FB607A3A21693D/1769881.png",
+    "skills": [
+      {
+        "id": 44980
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "name": "Juvenile Rock Gazelle",
+    "description": "The elegant rock gazelle grazes on rocky outcroppings over its lifetime to enhance its impressive antlers. —Acht",
+    "icon": "https://render.guildwars2.com/file/F3EED35B2DD6B52FFCBFD7FCCA184EB7EBCF01A4/1769875.png",
+    "skills": [
+      {
+        "id": 43636
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "name": "Juvenile Fanged Iboga",
+    "description": "The fanged iboga is one of the most aggressive members of its family, actively seeking out prey and mercilessly dousing it in acid. —Acht",
+    "icon": "https://render.guildwars2.com/file/BE037F03F337204F7D9C99F1B94D7FA708AE00A7/1769883.png",
+    "skills": [
+      {
+        "id": 41156
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "name": "Juvenile White Tiger",
+    "description": "A Canthan variant of its orange-furred cousin, the white tiger is well known in the region as a fierce protector of its master. It is a symbol of wealth and power for a household to own one as a pet. —Acht",
+    "icon": "https://render.guildwars2.com/file/5F10BEA9C0919C6AD32FEB5F51143835060E4209/2604596.png",
+    "skills": [
+      {
+        "id": 65109
+      }
+    ]
+  },
+  {
+    "id": 64,
+    "name": "Juvenile Wallow",
+    "description": "Despite their ferocious appearance, wallows are actually quite docile and make for lovely companions. Canthan farmers use them to dig up truffles, as well as to protect themselves from hostile wildlife. —Acht",
+    "icon": "https://render.guildwars2.com/file/58AFDFDFDDB8325F5E076C2400C63D450C15EA09/2604592.png",
+    "skills": [
+      {
+        "id": 66622
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "name": "Juvenile Phoenix",
+    "description": "Boasting colorful plumage that rivals that of the rainbow moa, the phoenix is a regal avian considered by many to be the ruler of all birds. The largest phoenixes are owned by Canthan royalty. —Acht",
+    "icon": "https://render.guildwars2.com/file/E4090046CDB5069D7DF91DE605FBF3F2071CE946/2604594.png",
+    "skills": [
+      {
+        "id": 63716
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "name": "Juvenile Siege Turtle",
+    "description": "Giant turtles used by the Luxon Armada as mobile siege weapons. They are trained from a young age to carry heavy artillery on their backs to prepare them for battle. —Acht",
+    "icon": "https://render.guildwars2.com/file/090DAF0BC96523FF613BB30FF36F4A23EBFB49CD/2604598.png",
+    "skills": [
+      {
+        "id": 65418
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "name": "Juvenile Aether Hunter",
+    "description": "Imbued with ley-line energy, aether hunters can travel through the toughest of terrains with ease, unlike their sand-dwelling counterparts. —Acht",
+    "icon": "https://render.guildwars2.com/file/51F3981E290D556DC861953CF3A37FC2B306000D/3124863.png",
+    "skills": [
+      {
+        "id": 71002
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "name": "Juvenile Sky-Chak Striker",
+    "description": "Able to harness and control bursts of electricity, the sky-chak striker's ability to glide by attuning to ley-line energy allowed them to adapt to the floating islands of Skywatch Archipelago. —Acht",
+    "icon": "https://render.guildwars2.com/file/16B2200803B76ABEDEA8DB1A40E04D14FE7D99DC/3256314.png",
+    "skills": [
+      {
+        "id": 71688
+      }
+    ]
+  },
+  {
+    "id": 69,
+    "name": "Juvenile Spinegazer",
+    "description": "If you've explored the Realm of Dreams, you've likely experienced the terror of the spinegazer's stare; not only can it launch a barrage of ranged physical attacks, it also wages psychological warfare by planting tormenting visions in the minds of its enemies.—Acht",
+    "icon": "https://render.guildwars2.com/file/FB779ACEF8182B465916A693EEC471AEE6BB7C15/3307063.png",
+    "skills": [
+      {
+        "id": 72843
+      }
+    ]
+  },
+  {
+    "id": 70,
+    "name": "Juvenile Warclaw",
+    "description": "The warclaw has always been a very peculiar creature of study, previously thought to be Mists-locked and of an ethereal nature rather than biological. The warclaw of Janthir seem to be the origin of the creatures we know, possessing an untapped well of magic that manifests as immense speed and athletic ability. Occasionally, the feline will need to expel pent-up energies by running in a circle for minutes on end. —Acht",
+    "icon": "https://render.guildwars2.com/file/7C5A4035C51E9EB3CEBA7028240CEA9E5F5FC038/3378993.png",
+    "skills": [
+      {
+        "id": 74314
+      }
+    ]
+  }
+]
