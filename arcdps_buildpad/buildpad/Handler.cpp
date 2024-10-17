@@ -17,7 +17,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2024-10-10";
+char const* const BUILDPAD_VERSION = "2024-10-17";
 
 namespace resources
 {
@@ -316,33 +316,25 @@ void Handler::LoadTextures()
     LoadIcon(GW2::Slot::WeaponW1, resources::tex156313).Trim(36);
     LoadIcon(GW2::Slot::WeaponW2, resources::tex156313).Trim(36);
     LoadIcon(GW2::Weapon::None, resources::tex2208353);
-    LoadIcon(GW2::Weapon::Unk3, resources::tex1770024);
     LoadIcon(GW2::Weapon::Axe, resources::tex1770024);
-    LoadIcon(GW2::Weapon::Unk6, resources::tex1770024);
-    LoadIcon(GW2::Weapon::Unk16, resources::tex1770024);
-    LoadIcon(GW2::Weapon::Unk18, resources::tex1770024);
-    LoadIcon(GW2::Weapon::Unk19, resources::tex1770024);
-    LoadIcon(GW2::Weapon::Unk22, resources::tex1770024);
-    LoadIcon(GW2::Weapon::Unk26, resources::tex1770024);
-    LoadIcon(GW2::Weapon::Bow, resources::tex2010285);
-    LoadIcon(GW2::Weapon::Unk36, resources::tex1770024);
+    LoadIcon(GW2::Weapon::BowLong, resources::tex2010285);
     LoadIcon(GW2::Weapon::Dagger, resources::tex1770025);
     LoadIcon(GW2::Weapon::Focus, resources::tex2192623);
     LoadIcon(GW2::Weapon::Greatsword, resources::tex2010284);
     LoadIcon(GW2::Weapon::Hammer, resources::tex1770026);
-    LoadIcon(GW2::Weapon::Harpoon, resources::tex2192624);
     LoadIcon(GW2::Weapon::Mace, resources::tex2192625);
     LoadIcon(GW2::Weapon::Pistol, resources::tex2192626);
     LoadIcon(GW2::Weapon::Rifle, resources::tex1770027);
     LoadIcon(GW2::Weapon::Scepter, resources::tex2192627);
     LoadIcon(GW2::Weapon::Shield, resources::tex1770028);
-    LoadIcon(GW2::Weapon::Speargun, resources::tex2192628);
     LoadIcon(GW2::Weapon::Staff, resources::tex1770030);
     LoadIcon(GW2::Weapon::Sword, resources::tex1770031);
     LoadIcon(GW2::Weapon::Torch, resources::tex1770032);
     LoadIcon(GW2::Weapon::Warhorn, resources::tex2010286);
-    LoadIcon(GW2::Weapon::Shortbow, resources::tex1770029);
+    LoadIcon(GW2::Weapon::BowShort, resources::tex1770029);
     LoadIcon(GW2::Weapon::Trident, resources::tex2192629);
+    LoadIcon(GW2::Weapon::Spear, resources::tex2192624);
+    LoadIcon(GW2::Weapon::HarpoonGun, resources::tex2192628);
 
     VersionCheck();
     m_mumbleLink.Update();
@@ -592,6 +584,28 @@ void Handler::LoadConfig()
         if (m_config.LastLaunchedVersion < "2023-07-19")
         {
             Web::Instance().ResetRenderCache();
+        }
+        if (m_config.LastLaunchedVersion < "2024-10-17")
+        {
+            for (auto& build : BuildStorage::Instance().GetBuilds())
+            {
+                if (auto link = ChatLink::Decode(build.GetLink()); link && std::holds_alternative<ChatLink::BuildTemplate>(*link))
+                {
+                    auto& data = std::get<ChatLink::BuildTemplate>(*link);
+                    bool changed = false;
+                    for (auto& weapon : data.Weapons)
+                    {
+                        switch (weapon)
+                        {
+                            case (GW2::Weapon)108: weapon = GW2::Weapon::Trident;    changed = true; break;
+                            case (GW2::Weapon)52:  weapon = GW2::Weapon::Spear;      changed = true; break;
+                            case (GW2::Weapon)88:  weapon = GW2::Weapon::HarpoonGun; changed = true; break;
+                        }
+                    }
+                    if (changed)
+                        build.SetLink(ChatLink::Encode(data));
+                }
+            }
         }
 
         m_config.LastLaunchedVersion = m_versionCurrent;
@@ -1508,15 +1522,15 @@ void Handler::RenderMainWindow(Time const& delta)
                 if (alpha)
                 {
                     ImGui::PopStyleColor();
-                    ImVec2 const cursor = ImGui::GetCursorPos();
+                    ImVec2 const cursor = ImGui::GetCursorScreenPos();
                     ImVec2 const size = ImGui::CalcTextSize("Pasted from clipboard");
                     float const space = ImGui::GetContentRegionAvailWidth();
                     ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 1 - *alpha));
-                    ImGui::SetCursorPos({ cursor.x + BUTTON_SIZE.x + (space - size.x - BUTTON_SIZE.x) / 2, cursor.y - ITEM_SPACING.y - BUTTON_SIZE.y + (BUTTON_SIZE.y - size.y) / 2 });
-                    ImGui::PushClipRect(ImGui::GetCurrentWindow()->Pos - ImGui::GetCurrentWindow()->Scroll + ImVec2 { cursor.x + BUTTON_SIZE.x, ImGui::GetCursorPosY() }, ImGui::GetCurrentWindow()->Pos - ImGui::GetCurrentWindow()->Scroll + ImVec2 { cursor.x, ImGui::GetCursorPosY() } + ImVec2 { space, BUTTON_SIZE.y }, true);
+                    ImGui::SetCursorScreenPos({ cursor.x + BUTTON_SIZE.x + (space - size.x - BUTTON_SIZE.x) / 2, cursor.y - ITEM_SPACING.y - BUTTON_SIZE.y + (BUTTON_SIZE.y - size.y) / 2 });
+                    ImGui::PushClipRect({ cursor.x + BUTTON_SIZE.x, ImGui::GetCursorScreenPos().y }, { cursor.x + space, ImGui::GetCursorScreenPos().y + BUTTON_SIZE.y }, true);
                     ImGui::Text("Pasted from clipboard");
                     ImGui::PopClipRect();
-                    ImGui::SetCursorPos(cursor);
+                    ImGui::SetCursorScreenPos(cursor);
                     ImGui::PopStyleColor();
                 }
                 #pragma endregion
@@ -1944,15 +1958,15 @@ void Handler::RenderMainWindow(Time const& delta)
                 if (alpha)
                 {
                     ImGui::PopStyleColor();
-                    ImVec2 const cursor = ImGui::GetCursorPos();
+                    ImVec2 const cursor = ImGui::GetCursorScreenPos();
                     ImVec2 const size = ImGui::CalcTextSize("Copied to clipboard");
                     float const space = ImGui::GetContentRegionAvailWidth();
                     ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 1 - *alpha));
-                    ImGui::SetCursorPos({ cursor.x + (space - size.x) / 2, cursor.y - ITEM_SPACING.y - BUTTON_SIZE.y + (BUTTON_SIZE.y - size.y) / 2 });
-                    ImGui::PushClipRect(ImGui::GetCurrentWindow()->Pos - ImGui::GetCurrentWindow()->Scroll + ImVec2 { cursor.x, ImGui::GetCursorPosY() }, ImGui::GetCurrentWindow()->Pos - ImGui::GetCurrentWindow()->Scroll + ImVec2 { cursor.x, ImGui::GetCursorPosY() } + ImVec2 { space, BUTTON_SIZE.y }, true);
+                    ImGui::SetCursorScreenPos({ cursor.x + (space - size.x) / 2, cursor.y - ITEM_SPACING.y - BUTTON_SIZE.y + (BUTTON_SIZE.y - size.y) / 2 });
+                    ImGui::PushClipRect({ cursor.x, ImGui::GetCursorScreenPos().y }, { cursor.x + space, ImGui::GetCursorScreenPos().y + BUTTON_SIZE.y }, true);
                     ImGui::Text("Copied to clipboard");
                     ImGui::PopClipRect();
-                    ImGui::SetCursorPos(cursor);
+                    ImGui::SetCursorScreenPos(cursor);
                     ImGui::PopStyleColor();
                 }
                 #pragma endregion
@@ -2713,7 +2727,7 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
         for (uint8_t index = 0; index < context.BarButtonCount; ++index)
         {
             std::string guid = fmt::format("##Palette{}{}{}", context.Context, water ? "Water" : "Land", index);
-            ImVec2 cursor = ImGui::GetCurrentWindow()->Pos + ImGui::GetCursorPos();
+            ImVec2 cursor = ImGui::GetCursorScreenPos();
             bool hovered = ImGui::IsMouseHoveringRect(cursor, cursor + ImVec2 { context.ButtonSize.x, GetIcon(Icons::SelectionChevron).TrimmedSize().y * UI_SCALE + context.ButtonSize.y }) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
             bool active = ImGui::IsPopupOpen(guid.c_str());
             float multiplier = context.EditTarget ? (active ? 0.25f : hovered ? 1.0f : 0.8f) : 1.0f;
@@ -2798,7 +2812,7 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
                             auto const& id = context.DataToAPITransform(data, water, index);
                             auto const& api = APIType::Get(id);
                             auto const& icon = id ? (context.IconGetter ? context.IconGetter(data, true) : (api.*context.APIIcon).Get()) : GetIcon(context.MissingAPIIcon);
-                            cursor = ImGui::GetCurrentWindow()->Pos + ImGui::GetCursorPos();
+                            cursor = ImGui::GetCursorScreenPos();
                             hovered = ImGui::IsMouseHoveringRect(cursor, cursor + context.PaletteSize) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
                             active = id && context.PaletteActive(info, water, index);
                             bool const usable = !context.PaletteUsable || context.PaletteUsable(info, water, index);
@@ -2907,20 +2921,24 @@ void Handler::RenderBuildEditor(BuildEditContext& context) const
         editTarget.SetLink(ChatLink::Encode(ChatLink::BuildTemplate { }));
 
     bool open = true;
-    float extraSpace;
+    float const chevron = GetIcon(Icons::SelectionChevron).TrimmedSize().y * UI_SCALE;
+    float extraSpace = 0;
     switch (editTarget.GetParsedProfession())
     {
         case GW2::Profession::Ranger:
-            extraSpace = 40px;
+            extraSpace += ITEM_SPACING.y + 40px + chevron; // Pets
             break;
         case GW2::Profession::Revenant:
-            extraSpace = 40px + 40px + 32px;
-            break;
-        default:
-            extraSpace = 0px;
+            extraSpace += 40px + chevron; // Secondary Legend Land Skills
+            extraSpace += 40px + chevron; // Secondary Legend Water Skills
+            extraSpace += ITEM_SPACING.y + 32px + chevron; // Legends
             break;
     }
-    ImGui::SetNextWindowSizeConstraints({ 250px, 640px + extraSpace }, { 10000px, 10000px });
+    extraSpace += ITEM_SPACING.y + 24px + chevron; // V2: Weapons
+    if (!editTarget.GetParsedInfo().WeaponSkills.empty())
+        extraSpace += ITEM_SPACING.y + 24px + chevron; // V2: Weapon Skills
+
+    ImGui::SetNextWindowSizeConstraints({ 250px, 600px + extraSpace }, { 10000px, 10000px });
     ImGui::SetNextWindowPos(ImGui::GetIO().DisplaySize / 2, ImGuiCond_Appearing, { 0.5f, 0.5f });
     ImGui::Begin(fmt::format("BuildPad##EditBuild{}", context.WindowID).c_str(), &open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings);
     ImGui::SetWindowFontScale(UI_SCALE);
@@ -3472,7 +3490,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                 {
                     auto const& traitInfo = API::Trait::Get(trait);
                     auto const& icon = trait ? traitInfo.Icon.Get() : GetIcon(Icons::LoadingTrait);
-                    ImVec2 cursor = ImGui::GetCurrentWindow()->Pos + ImGui::GetCursorPos();
+                    ImVec2 cursor = ImGui::GetCursorScreenPos();
                     bool hovered = ImGui::IsMouseHoveringRect(cursor, cursor + ImVec2 { 24px, 24px }) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
                     float multiplier = editTarget ? (hovered ? 1.0f : 0.8f) : 1.0f;
                     multiplier *= line.Traits[i / 3] == i % 3 + 1 ? 1.0f : 0.25f;
@@ -3524,6 +3542,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
         ImGui::TextColored({ 1, 0, 0, 1 }, "No Traits Selected!");
 
     // V2: Weapons
+    if (!parsed.Weapons.empty() || editTarget)
     {
         PaletteContext<GW2::Weapon, GW2::WeaponInfo, decltype(GW2::GetWeaponInfos()), API::Weapon> context { "Weapon", GW2::GetWeaponInfos(), &API::Weapon::Name, &API::Weapon::Icon };
         context.EditTarget = editTarget;
@@ -3542,10 +3561,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                 data.Weapons.erase(data.Weapons.begin() + index);
         };
         context.PaletteSourceLoaded = true;
-        context.PaletteFilter = [](GW2::WeaponInfo const& info, bool water, uint8_t index)
-        {
-            return info.Terrestrial; // Aquatic weapons currently don't display in GW2 build tooltips/inspect
-        };
+        context.PaletteFilter = [](GW2::WeaponInfo const& info, bool water, uint8_t index) { return true; };
         context.PaletteActive = [&parsed](GW2::WeaponInfo const& info, bool water, uint8_t index)
         {
             return index < parsed.Weapons.size() && parsed.Weapons[index] == info.Weapon || info.Weapon == GW2::Weapon::None;
@@ -3559,8 +3575,9 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
         {
             if ((a->Weapon != GW2::Weapon::None) != (b->Weapon != GW2::Weapon::None))
                 return a->Weapon != GW2::Weapon::None;
-            if (a->Aquatic != b->Aquatic)
-                return a->Aquatic < b->Aquatic;
+            auto order = [](GW2::WeaponInfo const& info) { return !info.Aquatic ? 0 : info.Aquatic && info.Terrestrial ? 1 : !info.Terrestrial ? 2 : 3; };
+            if (auto const aOrder = order(*a), bOrder = order(*b); aOrder != bOrder)
+                return aOrder < bOrder;
             return a->Name < b->Name;
         };
         context.MissingAPIIcon = Icons::MissingWeapon;
@@ -3580,6 +3597,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
     }
 
     // V2: Weapon Skills
+    if (!parsed.WeaponSkills.empty() || editTarget)
     {
         PaletteContext<uint32_t, SkillStorage::Skill*, std::vector<SkillStorage::Skill*>, API::Skill> context { "WeaponSkill", SkillStorage::Instance().GetProfessionSkills(parsed.Profession), &API::Skill::Name, &API::Skill::Icon };
         context.EditTarget = editTarget;

@@ -363,36 +363,28 @@ struct GW2
     }
     static SlotInfo const& GetSlotInfo(Slot slot) { return *util::find_if(GetSlotInfos(), util::member_equals(&SlotInfo::Slot, slot)); }
 
-    enum class Weapon : uint16_t
+    enum class Weapon : uint16_t // SkillPaletteDef DataID
     {
         None,
-        Unk3 = 3,
-        Axe = 5,
-        Unk6,
-        Unk16 = 16,
-        Unk18 = 18,
-        Unk19,
-        Unk22 = 22,
-        Unk26 = 26,
-        Bow = 35,
-        Unk36,
-        Dagger = 47,
-        Focus = 49,
-        Greatsword,
-        Hammer,
-        Harpoon,
-        Mace,
-        Pistol,
-        Rifle = 85,
-        Scepter,
-        Shield,
-        Speargun,
-        Staff,
-        Sword,
-        Torch = 102,
-        Warhorn,
-        Shortbow = 107,
-        Trident, // Value unknown
+        Axe        = 5,   // Axe Player
+        BowLong    = 35,  // BowLong Player
+        Dagger     = 47,  // Dagger Player
+        Focus      = 49,  // Focus Player
+        Greatsword = 50,  // Greatsword Player
+        Hammer     = 51,  // Hammer Player
+        Mace       = 53,  // Mace Player
+        Pistol     = 54,  // Pistol Player
+        Rifle      = 85,  // Rifle Player
+        Scepter    = 86,  // Scepter Player
+        Shield     = 87,  // Shield Player
+        Staff      = 89,  // Staff Player
+        Sword      = 90,  // Sword Player
+        Torch      = 102, // Torch Player
+        Warhorn    = 103, // Warhorn Player
+        BowShort   = 107, // BowShort Player
+        Trident    = 258, // Trident Player
+        Spear      = 265, // Spear Player
+        HarpoonGun = 293, // Harpoon Gun Player
     };
     struct WeaponInfo
     {
@@ -408,24 +400,24 @@ struct GW2
         { {
             { Weapon::None,         "None",         ""              },
             { Weapon::Axe,          "Axe",          "Axe"           },
-            { Weapon::Bow,          "Longbow",      "Longbow"       },
+            { Weapon::BowLong,      "Longbow",      "Longbow"       },
             { Weapon::Dagger,       "Dagger",       "Dagger"        },
             { Weapon::Focus,        "Focus",        "Focus"         },
             { Weapon::Greatsword,   "Greatsword",   "Greatsword"    },
             { Weapon::Hammer,       "Hammer",       "Hammer"        },
-            { Weapon::Harpoon,      "Spear",        "Spear",        true, true },
             { Weapon::Mace,         "Mace",         "Mace"          },
             { Weapon::Pistol,       "Pistol",       "Pistol"        },
             { Weapon::Rifle,        "Rifle",        "Rifle"         },
             { Weapon::Scepter,      "Scepter",      "Scepter"       },
             { Weapon::Shield,       "Shield",       "Shield"        },
-            { Weapon::Speargun,     "Harpoon Gun",  "Speargun",     false, true },
             { Weapon::Staff,        "Staff",        "Staff"         },
             { Weapon::Sword,        "Sword",        "Sword"         },
             { Weapon::Torch,        "Torch",        "Torch"         },
             { Weapon::Warhorn,      "Warhorn",      "Warhorn"       },
-            { Weapon::Shortbow,     "Short Bow",    "Shortbow"      },
+            { Weapon::BowShort,     "Short Bow",    "Shortbow"      },
             { Weapon::Trident,      "Trident",      "Trident",      false, true },
+            { Weapon::Spear,        "Spear",        "Harpoon",      true,  true },
+            { Weapon::HarpoonGun,   "Harpoon Gun",  "Speargun",     false, true },
         } };
         return instance;
     }

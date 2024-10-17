@@ -1,7 +1,16 @@
 {
-  "latest": "2024-10-10",
+  "latest": "2024-10-17",
   "url": "https://raw.githubusercontent.com/xvwyh/BuildPad/refs/heads/master/arcdps_buildpad.dll",
   "history": [
+    {
+      "version": "2024-10-17",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2024-10-17.dll",
+      "changes": [
+        { "type": "feature", "text": "Underwater weapons can now be selected when editing builds" },
+        { "type": "bug", "text": "Fixed incorrectly implemented spear. Builds saved in the previous version will automatically be updated" },
+        { "type": "misc", "text": "Reduced empty space near the bottom of build tooltips and build editor" }
+      ]
+    },
     {
       "version": "2024-10-10",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2024-10-10.dll",
