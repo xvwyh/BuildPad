@@ -154,6 +154,7 @@ public:
         UnloadContainer<Pet>(&Pet::Icon);
         UnloadContainer<Weapon>(&Weapon::Icon);
         m_professionsRequested = false;
+        m_weaponsRequested = false;
     }
 
     void LoadSkillData() const;

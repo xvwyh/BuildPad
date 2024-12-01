@@ -1,7 +1,14 @@
 {
-  "latest": "2024-10-17",
+  "latest": "2024-12-01",
   "url": "https://raw.githubusercontent.com/xvwyh/BuildPad/refs/heads/master/arcdps_buildpad.dll",
   "history": [
+    {
+      "version": "2024-12-01",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2024-12-01.dll",
+      "changes": [
+        { "type": "bug", "text": "Fixed weapon icons when editing builds disappearing after switching the API language" }
+      ]
+    },
     {
       "version": "2024-10-17",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2024-10-17.dll",
