@@ -172,6 +172,14 @@ void mod_options()
     buildpad::Handler::Instance().UpdateOptions();
 }
 
+bool mod_options_windows(char const* windowname)
+{
+    if (!windowname)
+        buildpad::Handler::Instance().UpdateOptionsWindows();
+
+    return false;
+}
+
 /* initialize mod -- return table that arcdps will use for callbacks */
 arcdps::arcdps_exports* mod_init()
 {
@@ -183,6 +191,7 @@ arcdps::arcdps_exports* mod_init()
     arc_exports.wnd_nofilter = (void*)&mod_wnd;
     arc_exports.imgui = (void*)&mod_imgui;
     arc_exports.options = (void*)&mod_options;
+    arc_exports.options_windows = (void*)&mod_options_windows;
     return &arc_exports;
 }
 

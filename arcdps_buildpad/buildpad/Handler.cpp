@@ -17,7 +17,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2024-12-01";
+char const* const BUILDPAD_VERSION = "2025-04-30";
 
 namespace resources
 {
@@ -764,7 +764,6 @@ float operator"" px(unsigned long long int const value) { return (float)(signed 
 
 void Handler::BeginUI()
 {
-    ImGui::PushFont(ImGui::GetIO().Fonts->Fonts.back());
     UI_SCALE = GetUIScale();
     LINE_SIZE = ImGui::CalcTextSize("") * UI_SCALE;
     WINDOW_PADDING = ImGui::GetStyle().WindowPadding;
@@ -786,7 +785,6 @@ void Handler::EndUI()
 {
     ImGui::PopStyleColor();
     ImGui::PopStyleVar();
-    ImGui::PopFont();
 }
 
 bool Handler::HandleKeyBinds()
@@ -1008,6 +1006,11 @@ void Handler::UpdateOptions()
         RenderSettings(RenderSettingsType::ArcDPS);
 
     EndUI();
+}
+
+void Handler::UpdateOptionsWindows()
+{
+    ImGui::Checkbox(m_loaded ? "BuildPad" : "BuildPad (loading...)", &m_shown);
 }
 
 void Handler::RenderMainWindow(Time const& delta)

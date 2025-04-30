@@ -30,6 +30,7 @@ public:
     bool HandleKeyBinds();
     void Update();
     void UpdateOptions();
+    void UpdateOptionsWindows();
 
     void OnMainThread(std::function<void()>&& function)
     {

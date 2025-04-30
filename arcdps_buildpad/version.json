@@ -1,7 +1,15 @@
 {
-  "latest": "2024-12-01",
+  "latest": "2025-04-30",
   "url": "https://raw.githubusercontent.com/xvwyh/BuildPad/refs/heads/master/arcdps_buildpad.dll",
   "history": [
+    {
+      "version": "2025-04-30",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2025-04-30.dll",
+      "changes": [
+        { "type": "feature", "text": "Added a checkbox to toggle BuildPad under \"Extension Windows\" in ArcDPS options" },
+        { "type": "bug", "text": "Removed outdated font compatibility fix for SCT plugin, which was now causing a wrong font to be used if any other addons were loading their custom fonts after BuildPad" }
+      ]
+    },
     {
       "version": "2024-12-01",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2024-12-01.dll",
