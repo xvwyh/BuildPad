@@ -129,6 +129,15 @@
     <ClInclude Include="buildpad\resources\2503667.h" />
     <ClInclude Include="buildpad\resources\255305.h" />
     <ClInclude Include="buildpad\resources\255430.h" />
+    <ClInclude Include="buildpad\resources\3680061.h" />
+    <ClInclude Include="buildpad\resources\3680065.h" />
+    <ClInclude Include="buildpad\resources\3680069.h" />
+    <ClInclude Include="buildpad\resources\3680073.h" />
+    <ClInclude Include="buildpad\resources\3680077.h" />
+    <ClInclude Include="buildpad\resources\3680081.h" />
+    <ClInclude Include="buildpad\resources\3680085.h" />
+    <ClInclude Include="buildpad\resources\3680089.h" />
+    <ClInclude Include="buildpad\resources\3680093.h" />
     <ClInclude Include="buildpad\resources\523389.h" />
     <ClInclude Include="buildpad\resources\536048.h" />
     <ClInclude Include="buildpad\resources\536052.h" />

@@ -24,7 +24,7 @@ struct GW2
         Profession Profession = Profession::None;
         std::string_view Name;
         std::array<float, 4> Color;
-        std::array<Specialization, 8> Specializations;
+        std::array<Specialization, 9> Specializations;
 
         [[nodiscard]] ImVec4 GetDefaultButtonColor() const { return { Color[0], Color[1], Color[2], Color[3] * 0.5f }; }
         [[nodiscard]] bool IsProfessionSpecialization(Specialization specialization) const { return std::find(Specializations.begin(), Specializations.end(), specialization) != Specializations.end(); }
@@ -34,15 +34,15 @@ struct GW2
         constexpr static std::array<ProfessionInfo, 10> instance
         { {
             { Profession::None,         "",             { 0.34f, 0.30f, 0.36f, 1.00f }, { Specialization::None, Specialization::None, Specialization::None, Specialization::None, Specialization::None, Specialization::None, Specialization::None } },
-            { Profession::Guardian,     "Guardian",     { 0.04f, 0.87f, 1.00f, 1.00f }, { Specialization::GuardianZeal, Specialization::GuardianRadiance, Specialization::GuardianValor, Specialization::GuardianHonor, Specialization::GuardianVirtues, Specialization::GuardianDragonhunter, Specialization::GuardianFirebrand, Specialization::GuardianWillbender } },
-            { Profession::Warrior,      "Warrior",      { 1.00f, 0.83f, 0.24f, 1.00f }, { Specialization::WarriorStrength, Specialization::WarriorArms, Specialization::WarriorDefense, Specialization::WarriorTactics, Specialization::WarriorDiscipline, Specialization::WarriorBerserker, Specialization::WarriorSpellbreaker, Specialization::WarriorBladesworn } },
-            { Profession::Engineer,     "Engineer",     { 0.89f, 0.45f, 0.16f, 1.00f }, { Specialization::EngineerExplosives, Specialization::EngineerFirearms, Specialization::EngineerInventions, Specialization::EngineerAlchemy, Specialization::EngineerTools, Specialization::EngineerScrapper, Specialization::EngineerHolosmith, Specialization::EngineerMechanist } },
-            { Profession::Ranger,       "Ranger",       { 0.53f, 0.87f, 0.04f, 1.00f }, { Specialization::RangerMarksmanship, Specialization::RangerSkirmishing, Specialization::RangerWildernessSurvival, Specialization::RangerNatureMagic, Specialization::RangerBeastmastery, Specialization::RangerDruid, Specialization::RangerSoulbeast, Specialization::RangerUntamed } },
-            { Profession::Thief,        "Thief",        { 0.80f, 0.37f, 0.45f, 1.00f }, { Specialization::ThiefDeadlyArts, Specialization::ThiefCriticalStrikes, Specialization::ThiefShadowArts, Specialization::ThiefAcrobatics, Specialization::ThiefTrickery, Specialization::ThiefDaredevil, Specialization::ThiefDeadeye, Specialization::ThiefSpecter } },
-            { Profession::Elementalist, "Elementalist", { 0.97f, 0.22f, 0.22f, 1.00f }, { Specialization::ElementalistFire, Specialization::ElementalistAir, Specialization::ElementalistEarth, Specialization::ElementalistWater, Specialization::ElementalistArcane, Specialization::ElementalistTempest, Specialization::ElementalistWeaver, Specialization::ElementalistCatalyst } },
-            { Profession::Mesmer,       "Mesmer",       { 0.80f, 0.23f, 0.82f, 1.00f }, { Specialization::MesmerDomination, Specialization::MesmerDueling, Specialization::MesmerChaos, Specialization::MesmerInspiration, Specialization::MesmerIllusions, Specialization::MesmerChronomancer, Specialization::MesmerMirage, Specialization::MesmerVirtuoso } },
-            { Profession::Necromancer,  "Necromancer",  { 0.02f, 0.89f, 0.49f, 1.00f }, { Specialization::NecromancerSpite, Specialization::NecromancerCurses, Specialization::NecromancerDeathMagic, Specialization::NecromancerBloodMagic, Specialization::NecromancerSoulReaping, Specialization::NecromancerReaper, Specialization::NecromancerScourge, Specialization::NecromancerHarbinger } },
-            { Profession::Revenant,     "Revenant",     { 0.63f, 0.16f, 0.16f, 1.00f }, { Specialization::RevenantCorruption, Specialization::RevenantRetribution, Specialization::RevenantSalvation, Specialization::RevenantDevastation, Specialization::RevenantInvocation, Specialization::RevenantHerald, Specialization::RevenantRenegade, Specialization::RevenantVindicator } },
+            { Profession::Guardian,     "Guardian",     { 0.04f, 0.87f, 1.00f, 1.00f }, { Specialization::GuardianZeal, Specialization::GuardianRadiance, Specialization::GuardianValor, Specialization::GuardianHonor, Specialization::GuardianVirtues, Specialization::GuardianDragonhunter, Specialization::GuardianFirebrand, Specialization::GuardianWillbender, Specialization::GuardianLuminary } },
+            { Profession::Warrior,      "Warrior",      { 1.00f, 0.83f, 0.24f, 1.00f }, { Specialization::WarriorStrength, Specialization::WarriorArms, Specialization::WarriorDefense, Specialization::WarriorTactics, Specialization::WarriorDiscipline, Specialization::WarriorBerserker, Specialization::WarriorSpellbreaker, Specialization::WarriorBladesworn, Specialization::WarriorParagon } },
+            { Profession::Engineer,     "Engineer",     { 0.89f, 0.45f, 0.16f, 1.00f }, { Specialization::EngineerExplosives, Specialization::EngineerFirearms, Specialization::EngineerInventions, Specialization::EngineerAlchemy, Specialization::EngineerTools, Specialization::EngineerScrapper, Specialization::EngineerHolosmith, Specialization::EngineerMechanist, Specialization::EngineerAmalgam } },
+            { Profession::Ranger,       "Ranger",       { 0.53f, 0.87f, 0.04f, 1.00f }, { Specialization::RangerMarksmanship, Specialization::RangerSkirmishing, Specialization::RangerWildernessSurvival, Specialization::RangerNatureMagic, Specialization::RangerBeastmastery, Specialization::RangerDruid, Specialization::RangerSoulbeast, Specialization::RangerUntamed, Specialization::RangerGaleshot } },
+            { Profession::Thief,        "Thief",        { 0.80f, 0.37f, 0.45f, 1.00f }, { Specialization::ThiefDeadlyArts, Specialization::ThiefCriticalStrikes, Specialization::ThiefShadowArts, Specialization::ThiefAcrobatics, Specialization::ThiefTrickery, Specialization::ThiefDaredevil, Specialization::ThiefDeadeye, Specialization::ThiefSpecter, Specialization::ThiefAntiquary } },
+            { Profession::Elementalist, "Elementalist", { 0.97f, 0.22f, 0.22f, 1.00f }, { Specialization::ElementalistFire, Specialization::ElementalistAir, Specialization::ElementalistEarth, Specialization::ElementalistWater, Specialization::ElementalistArcane, Specialization::ElementalistTempest, Specialization::ElementalistWeaver, Specialization::ElementalistCatalyst, Specialization::ElementalistEvoker } },
+            { Profession::Mesmer,       "Mesmer",       { 0.80f, 0.23f, 0.82f, 1.00f }, { Specialization::MesmerDomination, Specialization::MesmerDueling, Specialization::MesmerChaos, Specialization::MesmerInspiration, Specialization::MesmerIllusions, Specialization::MesmerChronomancer, Specialization::MesmerMirage, Specialization::MesmerVirtuoso, Specialization::MesmerTroubadour } },
+            { Profession::Necromancer,  "Necromancer",  { 0.02f, 0.89f, 0.49f, 1.00f }, { Specialization::NecromancerSpite, Specialization::NecromancerCurses, Specialization::NecromancerDeathMagic, Specialization::NecromancerBloodMagic, Specialization::NecromancerSoulReaping, Specialization::NecromancerReaper, Specialization::NecromancerScourge, Specialization::NecromancerHarbinger, Specialization::NecromancerRitualist } },
+            { Profession::Revenant,     "Revenant",     { 0.63f, 0.16f, 0.16f, 1.00f }, { Specialization::RevenantCorruption, Specialization::RevenantRetribution, Specialization::RevenantSalvation, Specialization::RevenantDevastation, Specialization::RevenantInvocation, Specialization::RevenantHerald, Specialization::RevenantRenegade, Specialization::RevenantVindicator, Specialization::RevenantConduit } },
         } };
         return instance;
     }
@@ -123,6 +123,15 @@ struct GW2
         EngineerMechanist,
         ThiefSpecter,
         RangerUntamed,
+        MesmerTroubadour,
+        WarriorParagon,
+        EngineerAmalgam,
+        NecromancerRitualist,
+        ThiefAntiquary,
+        RangerGaleshot,
+        RevenantConduit,
+        ElementalistEvoker,
+        GuardianLuminary,
     };
     struct SpecializationInfo
     {
@@ -146,7 +155,7 @@ struct GW2
     };
     static auto const& GetSpecializationInfos()
     {
-        constexpr static std::array<SpecializationInfo, 73> instance
+        constexpr static std::array<SpecializationInfo, 82> instance
         { {
             { Specialization::None,                     "",                     { { { 0,    0,    0,    0 }, { 0,    0,    0,    0 }, { 0,    0,    0,    0 } } }, Profession::None,              0 },
             { Specialization::MesmerDueling,            "Dueling",              { { { 0,  701,  705,  700 }, { 0, 1889, 1960,  708 }, { 0,  692, 1950,  704 } } }, Profession::Mesmer,           88 },
@@ -221,6 +230,15 @@ struct GW2
             { Specialization::EngineerMechanist,        "Mechanist",            { { { 0, 2282, 2296, 2279 }, { 0, 2270, 2276, 2294 }, { 0, 2292, 2281, 2298 } } }, Profession::Engineer,        470, true },
             { Specialization::ThiefSpecter,             "Specter",              { { { 0, 2284, 2299, 2275 }, { 0, 2290, 2288, 2285 }, { 0, 2264, 2300, 2289 } } }, Profession::Thief,           472, true },
             { Specialization::RangerUntamed,            "Untamed",              { { { 0, 2297, 2277, 2301 }, { 0, 2263, 2287, 2278 }, { 0, 2271, 2283, 2274 } } }, Profession::Ranger,          471, true },
+            { Specialization::MesmerTroubadour,         "Troubadour",           { { { 0, 2427, 2326, 2432 }, { 0, 2343, 2367, 2422 }, { 0, 2353, 2414, 2441 } } }, Profession::Mesmer,          522, true },
+            { Specialization::WarriorParagon,           "Paragon",              { { { 0, 2345, 2433, 2357 }, { 0, 2385, 2426, 2399 }, { 0, 2369, 2375, 2428 } } }, Profession::Warrior,         518, true },
+            { Specialization::EngineerAmalgam,          "Amalgam",              { { { 0, 2366, 2395, 2434 }, { 0, 2383, 2420, 2349 }, { 0, 2406, 2387, 2334 } } }, Profession::Engineer,        517, true },
+            { Specialization::NecromancerRitualist,     "Ritualist",            { { { 0, 2327, 2378, 2339 }, { 0, 2384, 2405, 2421 }, { 0, 2376, 2333, 2392 } } }, Profession::Necromancer,     520, true },
+            { Specialization::ThiefAntiquary,           "Antiquary",            { { { 0, 2423, 2365, 2346 }, { 0, 2400, 2431, 2350 }, { 0, 2409, 2393, 2348 } } }, Profession::Thief,           523, true },
+            { Specialization::RangerGaleshot,           "Galeshot",             { { { 0, 2402, 2370, 2360 }, { 0, 2408, 2413, 2396 }, { 0, 2425, 2336, 2372 } } }, Profession::Ranger,          525, true },
+            { Specialization::RevenantConduit,          "Conduit",              { { { 0, 2390, 2355, 2407 }, { 0, 2411, 2358, 2416 }, { 0, 2429, 2379, 2352 } } }, Profession::Revenant,        524, true },
+            { Specialization::ElementalistEvoker,       "Evoker",               { { { 0, 2391, 2415, 2354 }, { 0, 2342, 2380, 2438 }, { 0, 2335, 2436, 2437 } } }, Profession::Elementalist,    519, true },
+            { Specialization::GuardianLuminary,         "Luminary",             { { { 0, 2410, 2417, 2329 }, { 0, 2330, 2401, 2419 }, { 0, 2368, 2328, 2388 } } }, Profession::Guardian,        521, true },
         } };
         return instance;
     }
@@ -231,11 +249,12 @@ struct GW2
         None,
         Glint,
         Shiro,
-        Jallis,
-        Mallix,
+        Jalis,
+        Mallyx,
         Kalla,
         Ventari,
         Alliance,
+        Razah,
     };
     struct RevenantLegendInfo
     {
@@ -259,16 +278,17 @@ struct GW2
     };
     static auto const& GetRevenantLegendInfos()
     {
-        constexpr static std::array<RevenantLegendInfo, 8> instance
+        constexpr static std::array<RevenantLegendInfo, 9> instance
         { {
             { RevenantLegend::None,    Specialization::None,                            },
             { RevenantLegend::Glint,   Specialization::RevenantHerald,                  },
             { RevenantLegend::Shiro,   Specialization::None,                            },
-            { RevenantLegend::Jallis,  Specialization::None,                            },
-            { RevenantLegend::Mallix,  Specialization::None,                            },
+            { RevenantLegend::Jalis,   Specialization::None,                            },
+            { RevenantLegend::Mallyx,  Specialization::None,                            },
             { RevenantLegend::Kalla,   Specialization::RevenantRenegade,    true, false },
             { RevenantLegend::Ventari, Specialization::None,                true, false },
             { RevenantLegend::Alliance,Specialization::RevenantVindicator,  true, false },
+            { RevenantLegend::Razah,   Specialization::RevenantConduit,     true, true  },
         } };
         return instance;
     }

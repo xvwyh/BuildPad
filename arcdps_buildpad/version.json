@@ -1,7 +1,15 @@
 {
-  "latest": "2025-04-30",
+  "latest": "2025-08-24",
   "url": "https://raw.githubusercontent.com/xvwyh/BuildPad/refs/heads/master/arcdps_buildpad.dll",
   "history": [
+    {
+      "version": "2025-08-24",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2025-08-24.dll",
+      "changes": [
+        { "type": "feature", "text": "Added support for Visions of Eternity elite specializations" },
+        { "type": "feature", "text": "Updated ranger pets" }
+      ]
+    },
     {
       "version": "2025-04-30",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2025-04-30.dll",

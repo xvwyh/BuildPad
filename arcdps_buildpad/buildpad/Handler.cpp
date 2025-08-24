@@ -17,7 +17,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2025-04-30";
+char const* const BUILDPAD_VERSION = "2025-08-24";
 
 namespace resources
 {
@@ -131,6 +131,15 @@ namespace resources
 #include "resources/2503659.h"
 #include "resources/2503663.h"
 #include "resources/2503667.h"
+#include "resources/3680061.h"
+#include "resources/3680065.h"
+#include "resources/3680069.h"
+#include "resources/3680073.h"
+#include "resources/3680077.h"
+#include "resources/3680081.h"
+#include "resources/3680085.h"
+#include "resources/3680089.h"
+#include "resources/3680093.h"
 #include "resources/ErrorItem.h"
 #include "resources/ErrorPet.h"
 #include "resources/ErrorSkill.h"
@@ -276,6 +285,15 @@ void Handler::LoadTextures()
     LoadIcon(GW2::Specialization::EngineerMechanist, resources::tex2503659);
     LoadIcon(GW2::Specialization::ThiefSpecter, resources::tex2503667);
     LoadIcon(GW2::Specialization::RangerUntamed, resources::tex2503663);
+    LoadIcon(GW2::Specialization::MesmerTroubadour, resources::tex3680073);
+    LoadIcon(GW2::Specialization::WarriorParagon, resources::tex3680093);
+    LoadIcon(GW2::Specialization::EngineerAmalgam, resources::tex3680065);
+    LoadIcon(GW2::Specialization::NecromancerRitualist, resources::tex3680077);
+    LoadIcon(GW2::Specialization::ThiefAntiquary, resources::tex3680089);
+    LoadIcon(GW2::Specialization::RangerGaleshot, resources::tex3680081);
+    LoadIcon(GW2::Specialization::RevenantConduit, resources::tex3680085);
+    LoadIcon(GW2::Specialization::ElementalistEvoker, resources::tex3680061);
+    LoadIcon(GW2::Specialization::GuardianLuminary, resources::tex3680069);
     LoadIcon(Build::Flags::Favorite, resources::tex523389).Trim(5);
     LoadIcon(Build::Flags::PvE, resources::tex157086).Trim(2);
     LoadIcon(Build::Flags::PvP, resources::tex157121).Trim(1);
@@ -3325,15 +3343,16 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                 };
                 context.PaletteSorter = [](GW2::RevenantLegendInfo const* a, GW2::RevenantLegendInfo const* b)
                 {
-                    static std::array<GW2::RevenantLegend, 8> const legends
+                    static std::array const legends
                     {
-                        GW2::RevenantLegend::Jallis,
-                        GW2::RevenantLegend::Mallix,
+                        GW2::RevenantLegend::Jalis,
+                        GW2::RevenantLegend::Mallyx,
                         GW2::RevenantLegend::Ventari,
                         GW2::RevenantLegend::Shiro,
                         GW2::RevenantLegend::Glint,
                         GW2::RevenantLegend::Kalla,
                         GW2::RevenantLegend::Alliance,
+                        GW2::RevenantLegend::Razah,
                         GW2::RevenantLegend::None,
                     };
                     return std::find(legends.begin(), legends.end(), a->Legend)

@@ -730,5 +730,16 @@
         "id": 74314
       }
     ]
+  },
+  {
+    "id": 71,
+    "name": "Juvenile Janthiri Bee",
+    "description": "The honeybees of Janthir are an incredibly pragmatic subspecies. When bonded to an individual, or the hive's queen as they most often are, the bees are incredibly chivalrous toward their proprietor. However, I'd be remiss if I didn't mention their stingers. Likely adapted to protect themselves from the treacherous nature of the region, the Janthiri bee's ovipositor is markedly durable and even more hazardous. The lowland kodan often coat their weapons in bee venom before a challenging hunt. —Acht",
+    "icon": "https://render.guildwars2.com/file/03BF0B1C079C06B359E0CE520E747AC5E878F395/3594054.png",
+    "skills": [
+      {
+        "id": 75783
+      }
+    ]
   }
 ]

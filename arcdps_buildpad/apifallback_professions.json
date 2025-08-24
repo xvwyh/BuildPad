@@ -13,7 +13,8 @@
       46,
       27,
       62,
-      65
+      65,
+      81
     ],
     "weapons": {
       "Axe": {
@@ -646,6 +647,36 @@
         "id": 62648,
         "slot": "Profession_3",
         "type": "Profession"
+      },
+      {
+        "id": 76621,
+        "slot": "Heal",
+        "type": "Heal"
+      },
+      {
+        "id": 76687,
+        "slot": "Elite",
+        "type": "Elite"
+      },
+      {
+        "id": 77321,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77078,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76813,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77300,
+        "slot": "Utility",
+        "type": "Utility"
       }
     ],
     "training": [
@@ -1454,6 +1485,103 @@
             "skill_id": 62561
           }
         ]
+      },
+      {
+        "id": 521,
+        "category": "EliteSpecializations",
+        "name": "Luminary",
+        "track": [
+          {
+            "cost": 40,
+            "type": "Trait",
+            "trait_id": 2381
+          },
+          {
+            "cost": 50,
+            "type": "Trait",
+            "trait_id": 2417
+          },
+          {
+            "cost": 60,
+            "type": "Trait",
+            "trait_id": 2394
+          },
+          {
+            "cost": 70,
+            "type": "Trait",
+            "trait_id": 2401
+          },
+          {
+            "cost": 80,
+            "type": "Trait",
+            "trait_id": 2435
+          },
+          {
+            "cost": 90,
+            "type": "Trait",
+            "trait_id": 2328
+          },
+          {
+            "cost": 105,
+            "type": "Skill",
+            "skill_id": 76621
+          },
+          {
+            "cost": 120,
+            "type": "Skill",
+            "skill_id": 77321
+          },
+          {
+            "cost": 130,
+            "type": "Trait",
+            "trait_id": 2410
+          },
+          {
+            "cost": 140,
+            "type": "Trait",
+            "trait_id": 2330
+          },
+          {
+            "cost": 150,
+            "type": "Trait",
+            "trait_id": 2368
+          },
+          {
+            "cost": 165,
+            "type": "Skill",
+            "skill_id": 77078
+          },
+          {
+            "cost": 180,
+            "type": "Skill",
+            "skill_id": 76813
+          },
+          {
+            "cost": 190,
+            "type": "Trait",
+            "trait_id": 2329
+          },
+          {
+            "cost": 200,
+            "type": "Trait",
+            "trait_id": 2419
+          },
+          {
+            "cost": 210,
+            "type": "Trait",
+            "trait_id": 2388
+          },
+          {
+            "cost": 225,
+            "type": "Skill",
+            "skill_id": 77300
+          },
+          {
+            "cost": 250,
+            "type": "Skill",
+            "skill_id": 76687
+          }
+        ]
       }
     ],
     "skills_by_palette": [
@@ -1551,7 +1679,7 @@
       ],
       [
         32,
-        5939
+        5813
       ],
       [
         33,
@@ -1655,7 +1783,7 @@
       ],
       [
         253,
-        9118
+        77073
       ],
       [
         254,
@@ -1799,7 +1927,7 @@
       ],
       [
         402,
-        6159
+        5929
       ],
       [
         441,
@@ -2200,6 +2328,38 @@
       [
         7420,
         74314
+      ],
+      [
+        7461,
+        75783
+      ],
+      [
+        7510,
+        76813
+      ],
+      [
+        7511,
+        77321
+      ],
+      [
+        7517,
+        77078
+      ],
+      [
+        7521,
+        76621
+      ],
+      [
+        7527,
+        76687
+      ],
+      [
+        7534,
+        77197
+      ],
+      [
+        7544,
+        77300
       ]
     ]
   },
@@ -2217,7 +2377,8 @@
       51,
       18,
       61,
-      68
+      68,
+      74
     ],
     "weapons": {
       "Axe": {
@@ -3098,6 +3259,51 @@
         "id": 72089,
         "slot": "Profession_1",
         "type": "Profession"
+      },
+      {
+        "id": 76755,
+        "slot": "Heal",
+        "type": "Heal"
+      },
+      {
+        "id": 76562,
+        "slot": "Elite",
+        "type": "Elite"
+      },
+      {
+        "id": 77040,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76769,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76934,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77114,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77342,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76782,
+        "slot": "Profession_3",
+        "type": "Profession"
+      },
+      {
+        "id": 77155,
+        "slot": "Profession_4",
+        "type": "Profession"
       }
     ],
     "training": [
@@ -3906,6 +4112,103 @@
             "skill_id": 62901
           }
         ]
+      },
+      {
+        "id": 518,
+        "category": "EliteSpecializations",
+        "name": "Paragon",
+        "track": [
+          {
+            "cost": 40,
+            "type": "Trait",
+            "trait_id": 2373
+          },
+          {
+            "cost": 50,
+            "type": "Trait",
+            "trait_id": 2433
+          },
+          {
+            "cost": 60,
+            "type": "Trait",
+            "trait_id": 2418
+          },
+          {
+            "cost": 70,
+            "type": "Trait",
+            "trait_id": 2426
+          },
+          {
+            "cost": 80,
+            "type": "Trait",
+            "trait_id": 2340
+          },
+          {
+            "cost": 90,
+            "type": "Trait",
+            "trait_id": 2375
+          },
+          {
+            "cost": 105,
+            "type": "Skill",
+            "skill_id": 76755
+          },
+          {
+            "cost": 120,
+            "type": "Skill",
+            "skill_id": 77040
+          },
+          {
+            "cost": 130,
+            "type": "Trait",
+            "trait_id": 2345
+          },
+          {
+            "cost": 140,
+            "type": "Trait",
+            "trait_id": 2385
+          },
+          {
+            "cost": 150,
+            "type": "Trait",
+            "trait_id": 2369
+          },
+          {
+            "cost": 165,
+            "type": "Skill",
+            "skill_id": 76769
+          },
+          {
+            "cost": 180,
+            "type": "Skill",
+            "skill_id": 76934
+          },
+          {
+            "cost": 190,
+            "type": "Trait",
+            "trait_id": 2357
+          },
+          {
+            "cost": 200,
+            "type": "Trait",
+            "trait_id": 2399
+          },
+          {
+            "cost": 210,
+            "type": "Trait",
+            "trait_id": 2428
+          },
+          {
+            "cost": 225,
+            "type": "Skill",
+            "skill_id": 77114
+          },
+          {
+            "cost": 250,
+            "type": "Skill",
+            "skill_id": 76562
+          }
+        ]
       }
     ],
     "skills_by_palette": [
@@ -4007,7 +4310,7 @@
       ],
       [
         32,
-        5939
+        5813
       ],
       [
         33,
@@ -4255,7 +4558,7 @@
       ],
       [
         402,
-        6159
+        5929
       ],
       [
         418,
@@ -4656,6 +4959,34 @@
       [
         7420,
         74314
+      ],
+      [
+        7461,
+        75783
+      ],
+      [
+        7529,
+        77114
+      ],
+      [
+        7539,
+        76562
+      ],
+      [
+        7542,
+        76769
+      ],
+      [
+        7545,
+        76755
+      ],
+      [
+        7550,
+        76934
+      ],
+      [
+        7558,
+        77040
       ]
     ]
   },
@@ -4673,7 +5004,8 @@
       21,
       43,
       57,
-      70
+      70,
+      75
     ],
     "weapons": {
       "Hammer": {
@@ -4715,7 +5047,7 @@
             "slot": "Weapon_1"
           },
           {
-            "id": 72898,
+            "id": 73122,
             "slot": "Weapon_2"
           },
           {
@@ -5171,6 +5503,56 @@
       },
       {
         "id": 72103,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 76738,
+        "slot": "Heal",
+        "type": "Heal"
+      },
+      {
+        "id": 76993,
+        "slot": "Elite",
+        "type": "Elite"
+      },
+      {
+        "id": 77069,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76908,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77018,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77209,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77388,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76790,
+        "slot": "Profession_3",
+        "type": "Profession"
+      },
+      {
+        "id": 77107,
+        "slot": "Profession_4",
+        "type": "Profession"
+      },
+      {
+        "id": 76642,
         "slot": "Profession_5",
         "type": "Profession"
       }
@@ -5974,6 +6356,103 @@
             "skill_id": 63095
           }
         ]
+      },
+      {
+        "id": 517,
+        "category": "EliteSpecializations",
+        "name": "Amalgam",
+        "track": [
+          {
+            "cost": 40,
+            "type": "Trait",
+            "trait_id": 2377
+          },
+          {
+            "cost": 50,
+            "type": "Trait",
+            "trait_id": 2366
+          },
+          {
+            "cost": 60,
+            "type": "Trait",
+            "trait_id": 2389
+          },
+          {
+            "cost": 70,
+            "type": "Trait",
+            "trait_id": 2383
+          },
+          {
+            "cost": 80,
+            "type": "Trait",
+            "trait_id": 2356
+          },
+          {
+            "cost": 90,
+            "type": "Trait",
+            "trait_id": 2406
+          },
+          {
+            "cost": 105,
+            "type": "Skill",
+            "skill_id": 76738
+          },
+          {
+            "cost": 120,
+            "type": "Skill",
+            "skill_id": 77069
+          },
+          {
+            "cost": 130,
+            "type": "Trait",
+            "trait_id": 2395
+          },
+          {
+            "cost": 140,
+            "type": "Trait",
+            "trait_id": 2420
+          },
+          {
+            "cost": 150,
+            "type": "Trait",
+            "trait_id": 2387
+          },
+          {
+            "cost": 165,
+            "type": "Skill",
+            "skill_id": 76908
+          },
+          {
+            "cost": 180,
+            "type": "Skill",
+            "skill_id": 77018
+          },
+          {
+            "cost": 190,
+            "type": "Trait",
+            "trait_id": 2434
+          },
+          {
+            "cost": 200,
+            "type": "Trait",
+            "trait_id": 2349
+          },
+          {
+            "cost": 210,
+            "type": "Trait",
+            "trait_id": 2334
+          },
+          {
+            "cost": 225,
+            "type": "Skill",
+            "skill_id": 77209
+          },
+          {
+            "cost": 250,
+            "type": "Skill",
+            "skill_id": 76993
+          }
+        ]
       }
     ],
     "skills_by_palette": [
@@ -6067,7 +6546,7 @@
       ],
       [
         32,
-        5939
+        5813
       ],
       [
         33,
@@ -6307,7 +6786,7 @@
       ],
       [
         402,
-        6159
+        5929
       ],
       [
         403,
@@ -6760,6 +7239,38 @@
       [
         7420,
         74314
+      ],
+      [
+        7461,
+        75783
+      ],
+      [
+        7499,
+        30262
+      ],
+      [
+        7512,
+        77018
+      ],
+      [
+        7514,
+        77209
+      ],
+      [
+        7547,
+        76993
+      ],
+      [
+        7552,
+        76738
+      ],
+      [
+        7554,
+        76908
+      ],
+      [
+        7557,
+        77069
       ]
     ]
   },
@@ -6777,7 +7288,8 @@
       32,
       5,
       55,
-      72
+      72,
+      78
     ],
     "weapons": {
       "Axe": {
@@ -7674,6 +8186,56 @@
         "id": 73938,
         "slot": "Profession_2",
         "type": "Profession"
+      },
+      {
+        "id": 77271,
+        "slot": "Heal",
+        "type": "Heal"
+      },
+      {
+        "id": 76979,
+        "slot": "Elite",
+        "type": "Elite"
+      },
+      {
+        "id": 77264,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77211,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76619,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76757,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 75771,
+        "slot": "Profession_1",
+        "type": "Profession"
+      },
+      {
+        "id": 75814,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76787,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 77213,
+        "slot": "Profession_5",
+        "type": "Profession"
       }
     ],
     "training": [
@@ -8482,6 +9044,103 @@
             "skill_id": 63163
           }
         ]
+      },
+      {
+        "id": 525,
+        "category": "EliteSpecializations",
+        "name": "Galeshot",
+        "track": [
+          {
+            "cost": 40,
+            "type": "Trait",
+            "trait_id": 2359
+          },
+          {
+            "cost": 50,
+            "type": "Trait",
+            "trait_id": 2370
+          },
+          {
+            "cost": 60,
+            "type": "Trait",
+            "trait_id": 2363
+          },
+          {
+            "cost": 70,
+            "type": "Trait",
+            "trait_id": 2413
+          },
+          {
+            "cost": 80,
+            "type": "Trait",
+            "trait_id": 2341
+          },
+          {
+            "cost": 90,
+            "type": "Trait",
+            "trait_id": 2336
+          },
+          {
+            "cost": 105,
+            "type": "Skill",
+            "skill_id": 77271
+          },
+          {
+            "cost": 120,
+            "type": "Skill",
+            "skill_id": 77264
+          },
+          {
+            "cost": 130,
+            "type": "Trait",
+            "trait_id": 2402
+          },
+          {
+            "cost": 140,
+            "type": "Trait",
+            "trait_id": 2408
+          },
+          {
+            "cost": 150,
+            "type": "Trait",
+            "trait_id": 2425
+          },
+          {
+            "cost": 165,
+            "type": "Skill",
+            "skill_id": 77211
+          },
+          {
+            "cost": 180,
+            "type": "Skill",
+            "skill_id": 76619
+          },
+          {
+            "cost": 190,
+            "type": "Trait",
+            "trait_id": 2360
+          },
+          {
+            "cost": 200,
+            "type": "Trait",
+            "trait_id": 2396
+          },
+          {
+            "cost": 210,
+            "type": "Trait",
+            "trait_id": 2372
+          },
+          {
+            "cost": 225,
+            "type": "Skill",
+            "skill_id": 76757
+          },
+          {
+            "cost": 250,
+            "type": "Skill",
+            "skill_id": 76979
+          }
+        ]
       }
     ],
     "skills_by_palette": [
@@ -8583,7 +9242,7 @@
       ],
       [
         32,
-        5939
+        5813
       ],
       [
         33,
@@ -8811,7 +9470,7 @@
       ],
       [
         402,
-        6159
+        5929
       ],
       [
         406,
@@ -9472,6 +10131,42 @@
       [
         7420,
         74314
+      ],
+      [
+        7453,
+        40588
+      ],
+      [
+        7461,
+        75783
+      ],
+      [
+        7508,
+        77271
+      ],
+      [
+        7515,
+        76979
+      ],
+      [
+        7516,
+        76757
+      ],
+      [
+        7518,
+        77174
+      ],
+      [
+        7540,
+        77211
+      ],
+      [
+        7541,
+        76619
+      ],
+      [
+        7555,
+        77264
       ]
     ]
   },
@@ -9489,7 +10184,8 @@
       44,
       7,
       58,
-      71
+      71,
+      77
     ],
     "weapons": {
       "Axe": {
@@ -10055,6 +10751,86 @@
         "id": 63276,
         "slot": "Utility",
         "type": "Utility"
+      },
+      {
+        "id": 76886,
+        "slot": "Heal",
+        "type": "Heal"
+      },
+      {
+        "id": 77255,
+        "slot": "Elite",
+        "type": "Elite"
+      },
+      {
+        "id": 76725,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76808,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77230,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76879,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77397,
+        "slot": "Profession_1",
+        "type": "Profession"
+      },
+      {
+        "id": 76601,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76633,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76550,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76800,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 77192,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76900,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 77277,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 77288,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76966,
+        "slot": "Profession_4",
+        "type": "Profession"
       },
       {
         "id": 1131,
@@ -10989,6 +11765,103 @@
             "skill_id": 63275
           }
         ]
+      },
+      {
+        "id": 523,
+        "category": "EliteSpecializations",
+        "name": "Antiquary",
+        "track": [
+          {
+            "cost": 40,
+            "type": "Trait",
+            "trait_id": 2403
+          },
+          {
+            "cost": 50,
+            "type": "Trait",
+            "trait_id": 2365
+          },
+          {
+            "cost": 60,
+            "type": "Trait",
+            "trait_id": 2337
+          },
+          {
+            "cost": 70,
+            "type": "Trait",
+            "trait_id": 2431
+          },
+          {
+            "cost": 80,
+            "type": "Trait",
+            "trait_id": 2362
+          },
+          {
+            "cost": 90,
+            "type": "Trait",
+            "trait_id": 2393
+          },
+          {
+            "cost": 105,
+            "type": "Skill",
+            "skill_id": 76886
+          },
+          {
+            "cost": 120,
+            "type": "Skill",
+            "skill_id": 76725
+          },
+          {
+            "cost": 130,
+            "type": "Trait",
+            "trait_id": 2423
+          },
+          {
+            "cost": 140,
+            "type": "Trait",
+            "trait_id": 2400
+          },
+          {
+            "cost": 150,
+            "type": "Trait",
+            "trait_id": 2409
+          },
+          {
+            "cost": 165,
+            "type": "Skill",
+            "skill_id": 76808
+          },
+          {
+            "cost": 180,
+            "type": "Skill",
+            "skill_id": 77230
+          },
+          {
+            "cost": 190,
+            "type": "Trait",
+            "trait_id": 2346
+          },
+          {
+            "cost": 200,
+            "type": "Trait",
+            "trait_id": 2350
+          },
+          {
+            "cost": 210,
+            "type": "Trait",
+            "trait_id": 2348
+          },
+          {
+            "cost": 225,
+            "type": "Skill",
+            "skill_id": 76879
+          },
+          {
+            "cost": 250,
+            "type": "Skill",
+            "skill_id": 77255
+          }
+        ]
       }
     ],
     "skills_by_palette": [
@@ -11086,7 +11959,7 @@
       ],
       [
         32,
-        5939
+        5813
       ],
       [
         33,
@@ -11322,7 +12195,7 @@
       ],
       [
         402,
-        6159
+        5929
       ],
       [
         415,
@@ -11723,6 +12596,38 @@
       [
         7420,
         74314
+      ],
+      [
+        7461,
+        75783
+      ],
+      [
+        7513,
+        76725
+      ],
+      [
+        7520,
+        77230
+      ],
+      [
+        7528,
+        76879
+      ],
+      [
+        7532,
+        76674
+      ],
+      [
+        7535,
+        76886
+      ],
+      [
+        7548,
+        77255
+      ],
+      [
+        7564,
+        76808
       ]
     ]
   },
@@ -11740,7 +12645,8 @@
       37,
       48,
       56,
-      67
+      67,
+      80
     ],
     "weapons": {
       "Dagger": {
@@ -13162,6 +14068,125 @@
         "id": 63472,
         "slot": "Profession_5",
         "type": "Profession"
+      },
+      {
+        "id": 76634,
+        "slot": "Heal",
+        "type": "Heal"
+      },
+      {
+        "id": 76841,
+        "slot": "Elite",
+        "type": "Elite"
+      },
+      {
+        "id": 76711,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77190,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77038,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77320,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76643,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 75399,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 75394,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 75391,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 75395,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 75406,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 75392,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 75405,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 75407,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 76580,
+        "slot": "Profession_1",
+        "type": "Profession",
+        "attunement": "Fire"
+      },
+      {
+        "id": 76988,
+        "slot": "Profession_1",
+        "type": "Profession",
+        "attunement": "Fire"
+      },
+      {
+        "id": 76703,
+        "slot": "Profession_2",
+        "type": "Profession",
+        "attunement": "Water"
+      },
+      {
+        "id": 77082,
+        "slot": "Profession_1",
+        "type": "Profession",
+        "attunement": "Fire"
+      },
+      {
+        "id": 76585,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 76811,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 77089,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 76707,
+        "slot": "Profession_5",
+        "type": "Profession"
       }
     ],
     "training": [
@@ -13970,6 +14995,103 @@
             "skill_id": 62725
           }
         ]
+      },
+      {
+        "id": 519,
+        "category": "EliteSpecializations",
+        "name": "Evoker",
+        "track": [
+          {
+            "cost": 40,
+            "type": "Trait",
+            "trait_id": 2344
+          },
+          {
+            "cost": 50,
+            "type": "Trait",
+            "trait_id": 2415
+          },
+          {
+            "cost": 60,
+            "type": "Trait",
+            "trait_id": 2382
+          },
+          {
+            "cost": 70,
+            "type": "Trait",
+            "trait_id": 2380
+          },
+          {
+            "cost": 80,
+            "type": "Trait",
+            "trait_id": 2351
+          },
+          {
+            "cost": 90,
+            "type": "Trait",
+            "trait_id": 2436
+          },
+          {
+            "cost": 105,
+            "type": "Skill",
+            "skill_id": 76634
+          },
+          {
+            "cost": 120,
+            "type": "Skill",
+            "skill_id": 76711
+          },
+          {
+            "cost": 130,
+            "type": "Trait",
+            "trait_id": 2391
+          },
+          {
+            "cost": 140,
+            "type": "Trait",
+            "trait_id": 2342
+          },
+          {
+            "cost": 150,
+            "type": "Trait",
+            "trait_id": 2335
+          },
+          {
+            "cost": 165,
+            "type": "Skill",
+            "skill_id": 77190
+          },
+          {
+            "cost": 180,
+            "type": "Skill",
+            "skill_id": 77038
+          },
+          {
+            "cost": 190,
+            "type": "Trait",
+            "trait_id": 2354
+          },
+          {
+            "cost": 200,
+            "type": "Trait",
+            "trait_id": 2438
+          },
+          {
+            "cost": 210,
+            "type": "Trait",
+            "trait_id": 2437
+          },
+          {
+            "cost": 225,
+            "type": "Skill",
+            "skill_id": 77320
+          },
+          {
+            "cost": 250,
+            "type": "Skill",
+            "skill_id": 76841
+          }
+        ]
       }
     ],
     "skills_by_palette": [
@@ -14063,7 +15185,7 @@
       ],
       [
         32,
-        5939
+        5813
       ],
       [
         33,
@@ -14303,7 +15425,7 @@
       ],
       [
         402,
-        6159
+        5929
       ],
       [
         446,
@@ -14696,6 +15818,34 @@
       [
         7420,
         74314
+      ],
+      [
+        7461,
+        75783
+      ],
+      [
+        7522,
+        76634
+      ],
+      [
+        7530,
+        76841
+      ],
+      [
+        7537,
+        77038
+      ],
+      [
+        7538,
+        77320
+      ],
+      [
+        7543,
+        76711
+      ],
+      [
+        7563,
+        77190
       ]
     ]
   },
@@ -14713,7 +15863,8 @@
       24,
       40,
       59,
-      66
+      66,
+      73
     ],
     "weapons": {
       "Axe": {
@@ -14731,8 +15882,16 @@
             "slot": "Weapon_2"
           },
           {
+            "id": 69344,
+            "slot": "Weapon_2"
+          },
+          {
             "id": 45243,
             "slot": "Weapon_2"
+          },
+          {
+            "id": 69385,
+            "slot": "Weapon_3"
           },
           {
             "id": 69385,
@@ -14753,6 +15912,10 @@
           {
             "id": 62510,
             "slot": "Weapon_1"
+          },
+          {
+            "id": 62560,
+            "slot": "Weapon_2"
           },
           {
             "id": 62560,
@@ -14971,6 +16134,10 @@
           {
             "id": 10334,
             "slot": "Weapon_2"
+          },
+          {
+            "id": 62568,
+            "slot": "Weapon_3"
           },
           {
             "id": 62568,
@@ -15328,6 +16495,71 @@
       {
         "id": 68273,
         "slot": "Profession_4",
+        "type": "Profession"
+      },
+      {
+        "id": 76695,
+        "slot": "Heal",
+        "type": "Heal"
+      },
+      {
+        "id": 76971,
+        "slot": "Elite",
+        "type": "Elite"
+      },
+      {
+        "id": 76850,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77066,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76611,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77178,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76552,
+        "slot": "Profession_1",
+        "type": "Profession"
+      },
+      {
+        "id": 76746,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 77079,
+        "slot": "Profession_3",
+        "type": "Profession"
+      },
+      {
+        "id": 77077,
+        "slot": "Profession_4",
+        "type": "Profession"
+      },
+      {
+        "id": 76931,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 76960,
+        "slot": "Profession_4",
+        "type": "Profession"
+      },
+      {
+        "id": 77306,
+        "slot": "Profession_1",
         "type": "Profession"
       }
     ],
@@ -16137,6 +17369,103 @@
             "skill_id": 24755
           }
         ]
+      },
+      {
+        "id": 522,
+        "category": "EliteSpecializations",
+        "name": "Troubadour",
+        "track": [
+          {
+            "cost": 40,
+            "type": "Trait",
+            "trait_id": 2386
+          },
+          {
+            "cost": 50,
+            "type": "Trait",
+            "trait_id": 2326
+          },
+          {
+            "cost": 60,
+            "type": "Trait",
+            "trait_id": 2424
+          },
+          {
+            "cost": 70,
+            "type": "Trait",
+            "trait_id": 2367
+          },
+          {
+            "cost": 80,
+            "type": "Trait",
+            "trait_id": 2374
+          },
+          {
+            "cost": 90,
+            "type": "Trait",
+            "trait_id": 2414
+          },
+          {
+            "cost": 105,
+            "type": "Skill",
+            "skill_id": 76695
+          },
+          {
+            "cost": 120,
+            "type": "Skill",
+            "skill_id": 76850
+          },
+          {
+            "cost": 130,
+            "type": "Trait",
+            "trait_id": 2427
+          },
+          {
+            "cost": 140,
+            "type": "Trait",
+            "trait_id": 2343
+          },
+          {
+            "cost": 150,
+            "type": "Trait",
+            "trait_id": 2353
+          },
+          {
+            "cost": 165,
+            "type": "Skill",
+            "skill_id": 77066
+          },
+          {
+            "cost": 180,
+            "type": "Skill",
+            "skill_id": 76611
+          },
+          {
+            "cost": 190,
+            "type": "Trait",
+            "trait_id": 2432
+          },
+          {
+            "cost": 200,
+            "type": "Trait",
+            "trait_id": 2422
+          },
+          {
+            "cost": 210,
+            "type": "Trait",
+            "trait_id": 2441
+          },
+          {
+            "cost": 225,
+            "type": "Skill",
+            "skill_id": 77178
+          },
+          {
+            "cost": 250,
+            "type": "Skill",
+            "skill_id": 76971
+          }
+        ]
       }
     ],
     "skills_by_palette": [
@@ -16234,7 +17563,7 @@
       ],
       [
         32,
-        5939
+        5813
       ],
       [
         33,
@@ -16474,7 +17803,7 @@
       ],
       [
         402,
-        6159
+        5929
       ],
       [
         410,
@@ -16879,6 +18208,34 @@
       [
         7420,
         74314
+      ],
+      [
+        7461,
+        75783
+      ],
+      [
+        7507,
+        76850
+      ],
+      [
+        7526,
+        77066
+      ],
+      [
+        7531,
+        77178
+      ],
+      [
+        7533,
+        76971
+      ],
+      [
+        7556,
+        76611
+      ],
+      [
+        7561,
+        76695
       ]
     ]
   },
@@ -16896,7 +18253,8 @@
       50,
       34,
       60,
-      64
+      64,
+      76
     ],
     "weapons": {
       "Axe": {
@@ -17557,6 +18915,36 @@
         "id": 10643,
         "slot": "Downed_4",
         "type": "Profession"
+      },
+      {
+        "id": 77259,
+        "slot": "Heal",
+        "type": "Heal"
+      },
+      {
+        "id": 76941,
+        "slot": "Elite",
+        "type": "Elite"
+      },
+      {
+        "id": 76975,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77022,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76739,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76752,
+        "slot": "Utility",
+        "type": "Utility"
       }
     ],
     "training": [
@@ -18365,6 +19753,103 @@
             "skill_id": 62655
           }
         ]
+      },
+      {
+        "id": 520,
+        "category": "EliteSpecializations",
+        "name": "Ritualist",
+        "track": [
+          {
+            "cost": 40,
+            "type": "Trait",
+            "trait_id": 2338
+          },
+          {
+            "cost": 50,
+            "type": "Trait",
+            "trait_id": 2378
+          },
+          {
+            "cost": 60,
+            "type": "Trait",
+            "trait_id": 2371
+          },
+          {
+            "cost": 70,
+            "type": "Trait",
+            "trait_id": 2405
+          },
+          {
+            "cost": 80,
+            "type": "Trait",
+            "trait_id": 2398
+          },
+          {
+            "cost": 90,
+            "type": "Trait",
+            "trait_id": 2333
+          },
+          {
+            "cost": 105,
+            "type": "Skill",
+            "skill_id": 77259
+          },
+          {
+            "cost": 120,
+            "type": "Skill",
+            "skill_id": 76975
+          },
+          {
+            "cost": 130,
+            "type": "Trait",
+            "trait_id": 2327
+          },
+          {
+            "cost": 140,
+            "type": "Trait",
+            "trait_id": 2384
+          },
+          {
+            "cost": 150,
+            "type": "Trait",
+            "trait_id": 2376
+          },
+          {
+            "cost": 165,
+            "type": "Skill",
+            "skill_id": 77022
+          },
+          {
+            "cost": 180,
+            "type": "Skill",
+            "skill_id": 76739
+          },
+          {
+            "cost": 190,
+            "type": "Trait",
+            "trait_id": 2339
+          },
+          {
+            "cost": 200,
+            "type": "Trait",
+            "trait_id": 2421
+          },
+          {
+            "cost": 210,
+            "type": "Trait",
+            "trait_id": 2392
+          },
+          {
+            "cost": 225,
+            "type": "Skill",
+            "skill_id": 76752
+          },
+          {
+            "cost": 250,
+            "type": "Skill",
+            "skill_id": 76941
+          }
+        ]
       }
     ],
     "skills_by_palette": [
@@ -18466,7 +19951,7 @@
       ],
       [
         32,
-        5939
+        5813
       ],
       [
         33,
@@ -18706,7 +20191,7 @@
       ],
       [
         402,
-        6159
+        5929
       ],
       [
         409,
@@ -19103,6 +20588,34 @@
       [
         7420,
         74314
+      ],
+      [
+        7461,
+        75783
+      ],
+      [
+        7509,
+        76975
+      ],
+      [
+        7524,
+        76752
+      ],
+      [
+        7549,
+        76941
+      ],
+      [
+        7559,
+        77259
+      ],
+      [
+        7565,
+        77022
+      ],
+      [
+        7566,
+        76739
       ]
     ]
   },
@@ -19120,7 +20633,8 @@
       15,
       52,
       63,
-      69
+      69,
+      79
     ],
     "weapons": {
       "Axe": {
@@ -19687,6 +21201,86 @@
       },
       {
         "id": 72058,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 77043,
+        "slot": "Heal",
+        "type": "Heal"
+      },
+      {
+        "id": 76968,
+        "slot": "Elite",
+        "type": "Elite"
+      },
+      {
+        "id": 77243,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 77291,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76805,
+        "slot": "Utility",
+        "type": "Utility"
+      },
+      {
+        "id": 76753,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 77371,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 77368,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76774,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 77246,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 77312,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76610,
+        "slot": "Profession_1",
+        "type": "Profession"
+      },
+      {
+        "id": 77251,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 77389,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76644,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76641,
         "slot": "Profession_2",
         "type": "Profession"
       }
@@ -20455,6 +22049,103 @@
             "skill_id": 62942
           }
         ]
+      },
+      {
+        "id": 524,
+        "category": "EliteSpecializations",
+        "name": "Conduit",
+        "track": [
+          {
+            "cost": 40,
+            "type": "Trait",
+            "trait_id": 2364
+          },
+          {
+            "cost": 50,
+            "type": "Trait",
+            "trait_id": 2355
+          },
+          {
+            "cost": 60,
+            "type": "Trait",
+            "trait_id": 2331
+          },
+          {
+            "cost": 70,
+            "type": "Trait",
+            "trait_id": 2358
+          },
+          {
+            "cost": 80,
+            "type": "Trait",
+            "trait_id": 2440
+          },
+          {
+            "cost": 90,
+            "type": "Trait",
+            "trait_id": 2379
+          },
+          {
+            "cost": 105,
+            "type": "Skill",
+            "skill_id": 77043
+          },
+          {
+            "cost": 120,
+            "type": "Skill",
+            "skill_id": 77243
+          },
+          {
+            "cost": 130,
+            "type": "Trait",
+            "trait_id": 2390
+          },
+          {
+            "cost": 140,
+            "type": "Trait",
+            "trait_id": 2411
+          },
+          {
+            "cost": 150,
+            "type": "Trait",
+            "trait_id": 2429
+          },
+          {
+            "cost": 165,
+            "type": "Skill",
+            "skill_id": 77291
+          },
+          {
+            "cost": 180,
+            "type": "Skill",
+            "skill_id": 76805
+          },
+          {
+            "cost": 190,
+            "type": "Trait",
+            "trait_id": 2407
+          },
+          {
+            "cost": 200,
+            "type": "Trait",
+            "trait_id": 2416
+          },
+          {
+            "cost": 210,
+            "type": "Trait",
+            "trait_id": 2352
+          },
+          {
+            "cost": 225,
+            "type": "Skill",
+            "skill_id": 76610
+          },
+          {
+            "cost": 250,
+            "type": "Skill",
+            "skill_id": 76968
+          }
+        ]
       }
     ],
     "skills_by_palette": [
@@ -20476,7 +22167,7 @@
       ],
       [
         32,
-        5939
+        5813
       ],
       [
         36,
@@ -20576,7 +22267,7 @@
       ],
       [
         402,
-        6159
+        5929
       ],
       [
         457,
@@ -20808,11 +22499,11 @@
       ],
       [
         4554,
-        62942
+        76968
       ],
       [
         4564,
-        62878
+        76805
       ],
       [
         4570,
@@ -20820,7 +22511,7 @@
       ],
       [
         4572,
-        62719
+        77043
       ],
       [
         4592,
@@ -20832,7 +22523,7 @@
       ],
       [
         4614,
-        62832
+        77243
       ],
       [
         4643,
@@ -20840,7 +22531,7 @@
       ],
       [
         4651,
-        62962
+        77291
       ],
       [
         4827,
@@ -20929,6 +22620,14 @@
       [
         7420,
         74314
+      ],
+      [
+        7461,
+        75783
+      ],
+      [
+        7523,
+        76610
       ]
     ]
   }
