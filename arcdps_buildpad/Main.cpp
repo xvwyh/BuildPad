@@ -1,6 +1,7 @@
 #include "Common.h"
 #include "ArcdpsDefines.h"
 #include "buildpad/Handler.h"
+#include "buildpad/KeyBind.h"
 #include "buildpad/Web.h"
 #include <d3d9.h>
 #include <Windows.h>
@@ -97,8 +98,7 @@ extern "C" __declspec(dllexport) void* get_release_addr()
 extern "C" __declspec(dllexport) wchar_t* get_update_url()
 {
     static std::wstring wurl;
-    bool loaded = false;
-    buildpad::Web::Instance().RequestAny({ URL_WITH_FALLBACK("/version.json") }, [&](std::string_view const data)
+    buildpad::Web::Instance().RequestAnySync({ URL_WITH_FALLBACK("/version.json") }, [&](std::string_view const data)
     {
         auto json = nlohmann::json::parse(data, nullptr, false);
         if (buildpad::BUILDPAD_VERSION < json["latest"])
@@ -107,15 +107,11 @@ extern "C" __declspec(dllexport) wchar_t* get_update_url()
             wurl.assign(MultiByteToWideChar(CP_UTF8, 0, url.c_str(), -1, nullptr, 0), L'\0');
             MultiByteToWideChar(CP_UTF8, 0, url.c_str(), -1, wurl.data(), (int)wurl.length());
         }
-        loaded = true;
-    }, [&](auto&&) { loaded = true; }, false);
-
-    while (!loaded)
-        std::this_thread::sleep_for(100ms);
-
+    });
     return !wurl.empty() ? wurl.data() : nullptr;
 }
 
+ImGuiKey ImGui_ImplWin32_KeyEventToImGuiKey(WPARAM wParam, LPARAM lParam);
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
 uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -126,25 +122,29 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case WM_KEYUP:
         case WM_SYSKEYUP:
         {
-            auto const key = (int)wParam;
-            bool const down = uMsg == WM_KEYDOWN || uMsg == WM_SYSKEYDOWN;
-            if (key >= 256)
+            if (wParam >= 256)
                 break;
 
-            auto& io = ImGui::GetIO();
-            io.KeysDown[key] = down;
-            io.KeysDownDuration[key] = down ? 0.0f : -1.0f;
-            switch (key)
+            bool const down = uMsg == WM_KEYDOWN || uMsg == WM_SYSKEYDOWN;
+            switch (wParam)
             {
-                case VK_CONTROL: io.KeyCtrl  = down; break;
-                case VK_MENU:    io.KeyAlt   = down; break;
-                case VK_SHIFT:   io.KeyShift = down; break;
+                case VK_CONTROL: buildpad::KeyBind::GlobalState.Control = down; break;
+                case VK_MENU:    buildpad::KeyBind::GlobalState.Alt     = down; break;
+                case VK_SHIFT:   buildpad::KeyBind::GlobalState.Shift   = down; break;
             }
+
+            auto const key = ImGui_ImplWin32_KeyEventToImGuiKey(wParam, lParam);
+            if (key == ImGuiKey_None)
+                break;
+
+            auto& data = ImGui::GetIO().KeysData[key - ImGuiKey_NamedKey_BEGIN];
+            auto restore = gsl::finally([backup = data, &data] { data = backup; });
+            data.Down = down;
+            data.DownDuration = down ? 0.0f : -1.0f;
 
             if (buildpad::Handler::Instance().HandleKeyBinds())
                 return 0;
 
-            io.KeysDownDuration[key] = -1;
             break;
         }
     }
@@ -196,7 +196,7 @@ arcdps::arcdps_exports* mod_init()
 }
 
 /* export -- arcdps looks for this exported function and calls the address it returns */
-extern "C" __declspec(dllexport) void* get_init_addr(char* arcversion, ImGuiContext* imguictx, void* id3dptr, HANDLE arcdll, void* mallocfn, void* freefn, uint32_t d3dversion)
+extern "C" __declspec(dllexport) void* get_init_addr(char* arcversion, ImGuiContext* imguictx, void* id3dptr, HANDLE arcdll, void* mallocfn, void* freefn, uint32_t imguiversion)
 {
     // Try to unload the old version if it got loaded and delete its DLL
     if (FARPROC freeExtension; (freeExtension = GetProcAddress((HMODULE)arcdll, "freeextension2")) || (freeExtension = GetProcAddress((HMODULE)arcdll, "removeextension2")))
@@ -209,26 +209,13 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversion, ImGuiCont
     arcvers = arcversion;
     ImGui::SetCurrentContext(imguictx);
     ImGui::SetAllocatorFunctions((void *(*)(size_t, void*))mallocfn, (void(*)(void*, void*))freefn);
-    switch (d3dversion)
-    {
-        case 9:
-        {
-            d3dDevice9 = static_cast<IDirect3DDevice9*>(id3dptr);
-            break;
-        }
-        case 11:
-        {
-            if (static_cast<IDXGISwapChain*>(id3dptr)->GetDevice(__uuidof(ID3D11Device), reinterpret_cast<void**>(&d3dDevice11)) != S_OK)
-                return nullptr;
-            break;
-        }
-        default: return nullptr;
-    }
+    if (static_cast<IDXGISwapChain*>(id3dptr)->GetDevice(__uuidof(ID3D11Device), reinterpret_cast<void**>(&d3dDevice11)) != S_OK)
+        return nullptr;
     return (void*)&mod_init;
 }
 
 #ifdef DLL
-LPDIRECT3DDEVICE9 GetDirect3DDevice9()
+IDirect3DDevice9* GetDirect3DDevice9()
 {
     return d3dDevice9;
 }

@@ -13,7 +13,8 @@ namespace buildpad
         ID3D11ShaderResourceView* D3D11;
         void* Raw = nullptr;
 
-        operator ImTextureID() const { return Raw; }
+        operator ImTextureRef() const { return Raw; }
+        operator bool() const { return Raw; }
     };
     struct TextureData
     {

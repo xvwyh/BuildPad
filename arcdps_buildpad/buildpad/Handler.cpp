@@ -17,7 +17,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2025-08-24";
+char const* const BUILDPAD_VERSION = "2026-05-07";
 
 namespace resources
 {
@@ -816,7 +816,7 @@ bool Handler::HandleKeyBinds()
     {
         m_shown ^= true;
         if (!m_keyBindToggleBuilds.PassThrough)
-            return ImGui::CaptureKeyboardFromApp(), true;
+            return ImGui::SetNextFrameWantCaptureKeyboard(true), true;
     }
     for (auto const& build : BuildStorage::Instance().GetBuilds())
     {
@@ -824,7 +824,7 @@ bool Handler::HandleKeyBinds()
         {
             ImGui::SetClipboardText(fmt::format("{}", build.GetLink()).c_str());
             if (!keyBind.PassThrough)
-                return ImGui::CaptureKeyboardFromApp(), true;
+                return ImGui::SetNextFrameWantCaptureKeyboard(true), true;
         }
     }
 
@@ -926,10 +926,10 @@ void Handler::Update()
         if (ImGui::BeginPopupModal("BuildPad##ArcDPSMigration", &m_arcdpsMigrationShown, ImGuiWindowFlags_NoScrollbar))
         {
             ImGui::SetWindowFontScale(UI_SCALE);
-            if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(VK_ESCAPE, false))
+            if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(ImGuiKey_Escape, false))
             {
                 m_arcdpsMigrationShown = false;
-                ImGui::CaptureKeyboardFromApp();
+                ImGui::SetNextFrameWantCaptureKeyboard(true);
             }
             auto const oldUseProfessionColors               = std::exchange(m_config.UseProfessionColors,               true);
             auto const oldProfessionColorsUnfilteredOnly    = std::exchange(m_config.ProfessionColorsUnfilteredOnly,    false);
@@ -954,10 +954,10 @@ void Handler::Update()
         ImGui::SetNextWindowPos(ImGui::GetIO().DisplaySize / 2, ImGuiCond_Appearing, { 0.5f, 0.5f });
         ImGui::Begin("BuildPad##ArcDPSGear", &m_arcdpsGearShown, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings);
         ImGui::SetWindowFontScale(UI_SCALE);
-        if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(VK_ESCAPE, false))
+        if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(ImGuiKey_Escape, false))
         {
             m_arcdpsGearShown = false;
-            ImGui::CaptureKeyboardFromApp();
+            ImGui::SetNextFrameWantCaptureKeyboard(true);
         }
         auto const oldUseProfessionColors               = std::exchange(m_config.UseProfessionColors,               true);
         auto const oldProfessionColorsUnfilteredOnly    = std::exchange(m_config.ProfessionColorsUnfilteredOnly,    false);
@@ -985,10 +985,10 @@ void Handler::Update()
     {
         ImGui::Begin("BuildPad Settings", &m_detachSettings, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
         ImGui::SetWindowFontScale(UI_SCALE);
-        if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(VK_ESCAPE, false))
+        if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(ImGuiKey_Escape, false))
         {
             m_detachSettings = false;
-            ImGui::CaptureKeyboardFromApp();
+            ImGui::SetNextFrameWantCaptureKeyboard(true);
         }
         RenderSettings(RenderSettingsType::Detached);
         ImGui::End();
@@ -1013,7 +1013,7 @@ void Handler::UpdateOptions()
     }
 
     if (TextureData const& icon = GetIcon(Icons::BuildPad);
-        ImGui::ImageButtonWithText(icon.Texture, "Toggle BuildPad ", { ImGui::GetContentRegionAvailWidth(), 0 }, icon.TrimmedSize() * 0.75f, icon.GetUV0(), icon.GetUV1(), ImDrawCornerFlags_All, 3))
+        ImGui::ImageButtonWithText(icon.Texture, "Toggle BuildPad ", { ImGui::GetContentRegionAvail().x, 0 }, icon.TrimmedSize() * 0.75f, icon.GetUV0(), icon.GetUV1(), ImDrawFlags_RoundCornersAll, 3))
         m_shown ^= true;
 
     BeginUI();
@@ -1108,10 +1108,10 @@ void Handler::RenderMainWindow(Time const& delta)
         ImGui::SetNextWindowSizeConstraints({ 150px, 0 }, ImGui::GetIO().DisplaySize);
         ImGui::Begin("BuildPad", &m_shown, flags);
         ImGui::SetWindowFontScale(UI_SCALE);
-        if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(VK_ESCAPE, false))
+        if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(ImGuiKey_Escape, false))
         {
             m_shown = false;
-            ImGui::CaptureKeyboardFromApp();
+            ImGui::SetNextFrameWantCaptureKeyboard(true);
         }
         if (m_config.KeepWindowInBounds)
         {
@@ -1154,16 +1154,16 @@ void Handler::RenderMainWindow(Time const& delta)
         ImGui::NewLine();
 
         ImVec2 const offset { 2px, 2px };
-        ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvailWidth(), ImGui::GetItemRectMax().y } +offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildRounding);
+        ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvail().x, ImGui::GetItemRectMax().y } +offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildRounding);
     }
 
     if ((m_arcdpsMigrationAvailable || m_arcdpsGearAvailable) && !m_config.ArcDPSMigrationHintHidden)
     {
         ImGui::BeginGroup();
         ImGui::TextWrapped("ArcDPS templates were detected on your drive");
-        if (m_arcdpsMigrationAvailable && ImGui::Button("Migrate Traits/Skills Templates", { std::max<float>(FRAME_PADDING.x + ImGui::CalcTextSize("Migrate Traits/Skills Templates").x + FRAME_PADDING.x, ImGui::GetContentRegionAvailWidth()), 0 }))
+        if (m_arcdpsMigrationAvailable && ImGui::Button("Migrate Traits/Skills Templates", { std::max<float>(FRAME_PADDING.x + ImGui::CalcTextSize("Migrate Traits/Skills Templates").x + FRAME_PADDING.x, ImGui::GetContentRegionAvail().x), 0 }))
             m_arcdpsMigrationShown = true;
-        if (m_arcdpsGearAvailable && ImGui::Button("View Equipment/Legendary Templates", { std::max<float>(FRAME_PADDING.x + ImGui::CalcTextSize("View Equipment/Legendary Templates").x + FRAME_PADDING.x, ImGui::GetContentRegionAvailWidth()), 0 }))
+        if (m_arcdpsGearAvailable && ImGui::Button("View Equipment/Legendary Templates", { std::max<float>(FRAME_PADDING.x + ImGui::CalcTextSize("View Equipment/Legendary Templates").x + FRAME_PADDING.x, ImGui::GetContentRegionAvail().x), 0 }))
             m_arcdpsGearShown = true;
         if (ImGui::Button("Dismiss##ArcDPSMigrationHint"))
             m_config.ArcDPSMigrationHintHidden = true;
@@ -1173,7 +1173,7 @@ void Handler::RenderMainWindow(Time const& delta)
         ImGui::NewLine();
 
         ImVec2 const offset { 2px, 2px };
-        ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvailWidth(), ImGui::GetItemRectMax().y } +offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildRounding);
+        ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvail().x, ImGui::GetItemRectMax().y } +offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildRounding);
     }
 
     #pragma region Hidden Filter Hint
@@ -1202,7 +1202,7 @@ void Handler::RenderMainWindow(Time const& delta)
             ImGui::NewLine();
 
             ImVec2 const offset { 2px, 2px };
-            ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvailWidth(), ImGui::GetItemRectMax().y } + offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildRounding);
+            ImGui::GetCurrentWindow()->DrawList->AddRect(ImGui::GetItemRectMin() - offset, ImVec2 { ImGui::GetItemRectMin().x + ImGui::GetContentRegionAvail().x, ImGui::GetItemRectMax().y } + offset, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().ChildRounding);
         }
     }
     #pragma endregion
@@ -1253,7 +1253,7 @@ void Handler::RenderMainWindow(Time const& delta)
             if (m_config.ShowSettingsButton && !m_config.ShowNameFilter && !m_config.ShowFlagsFilter)
             {
                 ImGui::SameLine(0, 0);
-                renderSettingsButton(ImGui::GetContentRegionAvailWidth() - WINDOW_PADDING.x - BUTTON_SIZE.x);
+                renderSettingsButton(ImGui::GetContentRegionAvail().x - WINDOW_PADDING.x - BUTTON_SIZE.x);
             }
             else
             {
@@ -1268,7 +1268,7 @@ void Handler::RenderMainWindow(Time const& delta)
         {
             float const x = ImGui::GetCursorPosX();
             auto buffer = util::to_buffer(storage.GetNameFilter());
-            if (ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() - WINDOW_PADDING.x - (storage.IsFilteringName() || m_config.ShowSettingsButton ? ITEM_INNER_SPACING.x + BUTTON_SIZE.x : 0)),
+            if (ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - WINDOW_PADDING.x - (storage.IsFilteringName() || m_config.ShowSettingsButton ? ITEM_INNER_SPACING.x + BUTTON_SIZE.x : 0)),
                 ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.25f));
                 ImGui::InputTextWithHint("##FilterName", "Search", buffer.data(), buffer.size()))
                 storage.SetNameFilter(buffer.data());
@@ -1299,7 +1299,7 @@ void Handler::RenderMainWindow(Time const& delta)
             ImGui::SameLine(0, 0);
             uint32_t inlineProfessionFiler = storage.CanFilterProfession() && m_config.ShowProfessionFilter && !m_config.ShowNameFilter ? 1 : 0;
             uint32_t inlineSettingsButton = m_config.ShowSettingsButton && !m_config.ShowNameFilter ? 1 : 0;
-            float separatorWidth = ImGui::GetContentRegionAvailWidth() - (m_config.ShowNameFilter || !inlineProfessionFiler ? WINDOW_PADDING.x : 0) - (inlineSettingsButton ? BUTTON_SIZE.x : 0) - WINDOW_PADDING.x;
+            float separatorWidth = ImGui::GetContentRegionAvail().x - (m_config.ShowNameFilter || !inlineProfessionFiler ? WINDOW_PADDING.x : 0) - (inlineSettingsButton ? BUTTON_SIZE.x : 0) - WINDOW_PADDING.x;
             uint32_t separatorCount = 0;
             bool hiddenSeparator = false;
             for (auto const& info : Build::GetFlagInfos())
@@ -1316,7 +1316,7 @@ void Handler::RenderMainWindow(Time const& delta)
                 separatorWidth -= BUTTON_SIZE.x;
             }
             separatorWidth /= (float)(inlineProfessionFiler + separatorCount + inlineSettingsButton);
-            //float separatorWidth = (ImGui::GetContentRegionAvailWidth() - (m_config.ShowNameFilter || !inlineProfessionFiler ? WINDOW_PADDING.x : 0) - Build::GetFlagInfos().size() * BUTTON_SIZE.x - WINDOW_PADDING.x)
+            //float separatorWidth = (ImGui::GetContentRegionAvail().x - (m_config.ShowNameFilter || !inlineProfessionFiler ? WINDOW_PADDING.x : 0) - Build::GetFlagInfos().size() * BUTTON_SIZE.x - WINDOW_PADDING.x)
             //                       / (inlineProfessionFiler + std::count_if(Build::GetFlagInfos().begin(), Build::GetFlagInfos().end(), [](auto const& info) { return info.Separator; }));
 
             hiddenSeparator = false;
@@ -1387,7 +1387,7 @@ void Handler::RenderMainWindow(Time const& delta)
             BeginRenderBuildList(build.GetParsedProfession(), firstVisibleBuild, firstSortedBuild, storage.IsFilteringProfession(), storage.IsEditingBuild(build) ? storage.GetEditedBuild().GetParsedProfession() : build.GetParsedProfession(), draggedBuild && draggedBuild != build.GetID() && draggedOverBuild ? 0.4f : 1.0f);
 
             ImVec2 const min = ImGui::GetWindowPos() + ImGui::GetCursorPos() - ImVec2 { ImGui::GetScrollX(), ImGui::GetScrollY() };
-            ImVec2 const max = min +  ImVec2 { ImGui::GetContentRegionAvailWidth(), BUTTON_SIZE.y };
+            ImVec2 const max = min +  ImVec2 { ImGui::GetContentRegionAvail().x, BUTTON_SIZE.y };
             bool hovered = ImGui::IsMouseHoveringRect(min, max) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
             #pragma region Build Dragging (Before)
@@ -1428,7 +1428,7 @@ void Handler::RenderMainWindow(Time const& delta)
                     auto buffer = util::to_buffer(edited.GetName());
                     if (ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_Button)),
                         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_Button)),
-                        ImGui::ImageButtonWithText(icon.Texture, "", BUTTON_SIZE, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, ImDrawCornerFlags_Left),
+                        ImGui::ImageButtonWithText(icon.Texture, fmt::format("##BuildIcon:{0}", build.GetID()).c_str(), BUTTON_SIZE, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, ImDrawFlags_RoundCornersLeft),
                         hovered = ImGui::IsItemHovered(),
                         ImGui::PopStyleColor(2),
                         ImGui::SameLine(0, 2px),
@@ -1447,7 +1447,7 @@ void Handler::RenderMainWindow(Time const& delta)
                 #pragma endregion
                 #pragma region Build Edit Accept Button
                 if (ImGui::SameLine(0, 2px);
-                    ImGui::ImageButtonWithText(GetIcon(Icons::AcceptBuildEdit), fmt::format("##AcceptBuildEdit:{0}", build.GetID()).c_str(), BUTTON_SIZE, ImDrawCornerFlags_None))
+                    ImGui::ImageButtonWithText(GetIcon(Icons::AcceptBuildEdit), fmt::format("##AcceptBuildEdit:{0}", build.GetID()).c_str(), BUTTON_SIZE, ImDrawFlags_RoundCornersNone))
                 {
                     if (auto const& context = util::find_if(m_editedBuilds, util::member_equals(&BuildEditContext::ID, edited.GetID())); context && context->BuildStorageEditedBuild)
                         CloseBuildEditor(edited);
@@ -1460,7 +1460,7 @@ void Handler::RenderMainWindow(Time const& delta)
                 #pragma endregion
                 #pragma region Build Edit Cancel Button
                 if (ImGui::SameLine(0, 2px);
-                    ImGui::ImageButtonWithText(GetIcon(Icons::CancelBuildEdit), fmt::format("##CancelBuildEdit:{0}", build.GetID()).c_str(), BUTTON_SIZE, ImDrawCornerFlags_Right))
+                    ImGui::ImageButtonWithText(GetIcon(Icons::CancelBuildEdit), fmt::format("##CancelBuildEdit:{0}", build.GetID()).c_str(), BUTTON_SIZE, ImDrawFlags_RoundCornersRight))
                 {
                     if (auto const& context = util::find_if(m_editedBuilds, util::member_equals(&BuildEditContext::ID, edited.GetID())); context && context->BuildStorageEditedBuild)
                         CloseBuildEditor(edited);
@@ -1525,6 +1525,7 @@ void Handler::RenderMainWindow(Time const& delta)
                     auto itr = util::find_if(m_editedBuilds, util::member_equals(&BuildEditContext::ID, edited.GetID()));
                     bool isEdited = itr && itr->BuildStorageEditedBuild;
                     if (ImGui::SameLine(0, 2px),
+                        ImGui::SetCursorPosY(ImGui::GetCursorPosY() - FRAME_PADDING.y), // Hack after upgrading ImGui from 1.80 to 1.92.7
                         ImGui::PushStyleColor(ImGuiCol_Button, isEdited ? BUTTON_COLOR_HOVERED : BUTTON_COLOR),
                         ImGui::PushStyleColor(ImGuiCol_ButtonActive, BUTTON_COLOR_ACTIVE),
                         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, BUTTON_COLOR_HOVERED);
@@ -1545,7 +1546,7 @@ void Handler::RenderMainWindow(Time const& delta)
                     ImGui::PopStyleColor();
                     ImVec2 const cursor = ImGui::GetCursorScreenPos();
                     ImVec2 const size = ImGui::CalcTextSize("Pasted from clipboard");
-                    float const space = ImGui::GetContentRegionAvailWidth();
+                    float const space = ImGui::GetContentRegionAvail().x;
                     ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 1 - *alpha));
                     ImGui::SetCursorScreenPos({ cursor.x + BUTTON_SIZE.x + (space - size.x - BUTTON_SIZE.x) / 2, cursor.y - ITEM_SPACING.y - BUTTON_SIZE.y + (BUTTON_SIZE.y - size.y) / 2 });
                     ImGui::PushClipRect({ cursor.x + BUTTON_SIZE.x, ImGui::GetCursorScreenPos().y }, { cursor.x + space, ImGui::GetCursorScreenPos().y + BUTTON_SIZE.y }, true);
@@ -1602,7 +1603,7 @@ void Handler::RenderMainWindow(Time const& delta)
                 ImGui::PopStyleColor(3);
 
                 #pragma region Build Flags Toggle
-                float separatorWidth = ImGui::GetContentRegionAvailWidth();
+                float separatorWidth = ImGui::GetContentRegionAvail().x;
                 uint32_t separatorCount = 0;
                 bool hiddenSeparator = false;
                 for (auto const& info : Build::GetFlagInfos())
@@ -1619,7 +1620,7 @@ void Handler::RenderMainWindow(Time const& delta)
                     separatorWidth -= BUTTON_SIZE.x;
                 }
                 separatorWidth /= separatorCount;
-                //float separatorWidth = (ImGui::GetContentRegionAvailWidth() - Build::GetFlagInfos().size() * BUTTON_SIZE.x)
+                //float separatorWidth = (ImGui::GetContentRegionAvail().x - Build::GetFlagInfos().size() * BUTTON_SIZE.x)
                 //                       / std::count_if(Build::GetFlagInfos().begin(), Build::GetFlagInfos().end(), [](auto const& info) { return info.Separator; });
 
                 hiddenSeparator = false;
@@ -1641,7 +1642,9 @@ void Handler::RenderMainWindow(Time const& delta)
                     if (edited.HasFlagIcon(info.Flag))
                     {
                         ImGui::StoreCursor();
-                        ImGui::ButtonEx("", BUTTON_SIZE, ImGuiButtonFlags_Disabled);
+                        ImGui::BeginDisabled();
+                        ImGui::Button(fmt::format("##PlaceholderFlag:{}", (int)info.Flag).c_str(), BUTTON_SIZE);
+                        ImGui::EndDisabled();
                         ImGui::RestoreCursor();
                     }
                     if (TextureData const& icon = GetIcon(info.Flag);
@@ -1677,7 +1680,7 @@ void Handler::RenderMainWindow(Time const& delta)
 
                 #pragma region Build Button
                 ImGui::BeginGroup();
-                ImGui::PushItemWidth(hovered ? ImGui::GetContentRegionAvailWidth() - 1 - BUTTON_SIZE.x : -1);
+                ImGui::PushItemWidth(hovered ? ImGui::GetContentRegionAvail().x - 1 - BUTTON_SIZE.x : -1);
                 std::string keyBindText;
                 if (KeyBind const& keyBind = build.GetKeyBind(); keyBind && storage.GetCurrentProfession() != GW2::Profession::None && build.GetParsedProfession() == storage.GetCurrentProfession())
                 {
@@ -1693,7 +1696,7 @@ void Handler::RenderMainWindow(Time const& delta)
                             additionalIcons.emplace_back(&GetIcon(info.Flag));
 
                 if (TextureData const& icon = build.GetParsedSpecialization() != GW2::Specialization::None ? GetIcon(build.GetParsedSpecialization()) : GetIcon(build.GetParsedProfession());
-                    ImGui::ImageButtonWithText(icon.Texture, fmt::format(build.IsSaveNeeded() ? "{}*##{}" : "{}##{}", build.GetName(), build.GetID()).c_str(), { -1, BUTTON_SIZE.y }, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, hovered ? ImDrawCornerFlags_Left : ImDrawCornerFlags_All, 0, { 0, 0, 0, 0 }, { 1, 1, 1, 1 }, false, keyBindText.c_str(), additionalIcons)
+                    ImGui::ImageButtonWithText(icon.Texture, fmt::format(build.IsSaveNeeded() ? "{}*##{}" : "{}##{}", build.GetName(), build.GetID()).c_str(), { -1, BUTTON_SIZE.y }, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, hovered ? ImDrawFlags_RoundCornersLeft : ImDrawFlags_RoundCornersAll, 0, { 0, 0, 0, 0 }, { 1, 1, 1, 1 }, false, keyBindText.c_str(), additionalIcons)
                     && !draggedOverBuild)
                 {
                     ImGui::SetClipboardText(fmt::format("{}", build.GetLink()).c_str());
@@ -1952,7 +1955,7 @@ void Handler::RenderMainWindow(Time const& delta)
                 if (hovered)
                 {
                     if (ImGui::SameLine(0, 0);
-                        ImGui::ImageButtonWithText(GetIcon(Icons::EditBuild), fmt::format("##EditBuild:{0}", build.GetID()).c_str(), BUTTON_SIZE, ImDrawCornerFlags_Right))
+                        ImGui::ImageButtonWithText(GetIcon(Icons::EditBuild), fmt::format("##EditBuild:{0}", build.GetID()).c_str(), BUTTON_SIZE, ImDrawFlags_RoundCornersRight))
                     {
                         if (storage.IsEditingBuild())
                             if (auto const& context = util::find_if(m_editedBuilds, util::member_equals(&BuildEditContext::ID, storage.GetEditedBuild().GetID())); context && context->BuildStorageEditedBuild)
@@ -1981,7 +1984,7 @@ void Handler::RenderMainWindow(Time const& delta)
                     ImGui::PopStyleColor();
                     ImVec2 const cursor = ImGui::GetCursorScreenPos();
                     ImVec2 const size = ImGui::CalcTextSize("Copied to clipboard");
-                    float const space = ImGui::GetContentRegionAvailWidth();
+                    float const space = ImGui::GetContentRegionAvail().x;
                     ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 1 - *alpha));
                     ImGui::SetCursorScreenPos({ cursor.x + (space - size.x) / 2, cursor.y - ITEM_SPACING.y - BUTTON_SIZE.y + (BUTTON_SIZE.y - size.y) / 2 });
                     ImGui::PushClipRect({ cursor.x, ImGui::GetCursorScreenPos().y }, { cursor.x + space, ImGui::GetCursorScreenPos().y + BUTTON_SIZE.y }, true);
@@ -2138,7 +2141,7 @@ void Handler::RenderMainWindow(Time const& delta)
                 bool on = true;
                 ImGui::CheckboxImage(GetIcon(build->GetParsedSpecialization()).Texture, fmt::format("{}", build->GetName()).c_str(), &on, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
                 ImGui::NewLine();
-                if (ImGui::SameLine(ImGui::GetContentRegionAvailWidth() + WINDOW_PADDING.x - 50px - ITEM_SPACING.x - 50px); ImGui::Button("Yes", { 50px, 0 }))
+                if (ImGui::SameLine(ImGui::GetContentRegionAvail().x + WINDOW_PADDING.x - 50px - ITEM_SPACING.x - 50px); ImGui::Button("Yes", { 50px, 0 }))
                 {
                     postAction = [this, &storage, removeBuild = removeBuildPrompt]
                     {
@@ -2299,7 +2302,7 @@ void Handler::RenderSettings(RenderSettingsType const type)
         ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch);
 
         ImGui::TableNextColumn();
-        categoryColumnWidth = ImGui::GetContentRegionAvailWidth();
+        categoryColumnWidth = ImGui::GetContentRegionAvail().x;
         ImGui::BeginGroup();
         for (auto const& category : categories)
         {
@@ -2312,7 +2315,9 @@ void Handler::RenderSettings(RenderSettingsType const type)
             }
         }
         ImGui::Spacing();
-        ImGui::InvisibleButton("BuildPadSettingsSaveLoadPlaceHolder", { FRAME_PADDING.x + ImGui::CalcTextSize("Save").x + FRAME_PADDING.x + CELL_PADDING.x + 1 + CELL_PADDING.x + FRAME_PADDING.x + ImGui::CalcTextSize("Load").x + FRAME_PADDING.x, FRAME_PADDING.y + ImGui::CalcTextSize(" ").y + FRAME_PADDING.y }, ImGuiButtonFlags_Disabled);
+        ImGui::BeginDisabled();
+        ImGui::InvisibleButton("BuildPadSettingsSaveLoadPlaceHolder", { FRAME_PADDING.x + ImGui::CalcTextSize("Save").x + FRAME_PADDING.x + CELL_PADDING.x + 1 + CELL_PADDING.x + FRAME_PADDING.x + ImGui::CalcTextSize("Load").x + FRAME_PADDING.x, FRAME_PADDING.y + ImGui::CalcTextSize(" ").y + FRAME_PADDING.y });
+        ImGui::EndDisabled();
         ImGui::EndGroup();
 
         ImGui::TableNextColumn();
@@ -2321,9 +2326,9 @@ void Handler::RenderSettings(RenderSettingsType const type)
         if (currentCategory == categoryImport)
         {
             ImGui::Text("ArcDPS Templates:");
-            if (m_arcdpsMigrationAvailable && ImGui::Button("Migrate Traits/Skills Templates", { std::max<float>(FRAME_PADDING.x + ImGui::CalcTextSize("Migrate Traits/Skills Templates").x + FRAME_PADDING.x, ImGui::GetContentRegionAvailWidth()), 0 }))
+            if (m_arcdpsMigrationAvailable && ImGui::Button("Migrate Traits/Skills Templates", { std::max<float>(FRAME_PADDING.x + ImGui::CalcTextSize("Migrate Traits/Skills Templates").x + FRAME_PADDING.x, ImGui::GetContentRegionAvail().x), 0 }))
                 m_arcdpsMigrationShown = true;
-            if (m_arcdpsGearAvailable && ImGui::Button("View Equipment/Legendary Templates", { std::max<float>(FRAME_PADDING.x + ImGui::CalcTextSize("View Equipment/Legendary Templates").x + FRAME_PADDING.x, ImGui::GetContentRegionAvailWidth()), 0 }))
+            if (m_arcdpsGearAvailable && ImGui::Button("View Equipment/Legendary Templates", { std::max<float>(FRAME_PADDING.x + ImGui::CalcTextSize("View Equipment/Legendary Templates").x + FRAME_PADDING.x, ImGui::GetContentRegionAvail().x), 0 }))
                 m_arcdpsGearShown = true;
         }
 
@@ -2336,7 +2341,7 @@ void Handler::RenderSettings(RenderSettingsType const type)
             ImGui::Spacing();
             ImGui::PushItemWidth(LINE_SIZE.y * 7);
             if (int lang = (int)util::distance_if(API::GetLanguageInfos(), util::member_equals(&API::LanguageInfo::Tag, API::Instance().GetLanguage()));
-                ImGui::Combo("API Language", &lang, [](void* data, int const index, char const** text) { return *text = API::GetLanguageInfos()[index].Name.c_str(), true; }, nullptr, (int)API::GetLanguageInfos().size()))
+                ImGui::Combo("API Language", &lang, [](void* data, int const index) { return API::GetLanguageInfos()[index].Name.c_str(); }, nullptr, (int)API::GetLanguageInfos().size()))
             {
                 auto itr = API::GetLanguageInfos().begin();
                 std::advance(itr, lang);
@@ -2405,7 +2410,7 @@ void Handler::RenderSettings(RenderSettingsType const type)
                     ImGui::Tooltip("Enable to use neutral colors when build list is filtered to only show the currently played profession");
                 if (ImGui::FixedCollapsingHeader("Customize Colors"))
                 {
-                    ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() - BUTTON_SIZE.x - ITEM_SPACING.x - BUTTON_SIZE.x);
+                    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - BUTTON_SIZE.x - ITEM_SPACING.x - BUTTON_SIZE.x);
                     for (auto const& info : GW2::GetProfessionInfos())
                     {
                         uint32_t& packed = m_config.ProfessionColors[(size_t)info.Profession];
@@ -2415,7 +2420,7 @@ void Handler::RenderSettings(RenderSettingsType const type)
                         {
                             TextureData const& icon = GetIcon(info.Profession);
                             bool on = true;
-                            ImGui::CheckboxImage(icon.Texture, "", &on, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+                            ImGui::CheckboxImage(icon.Texture, fmt::format("##ProfessionColor:{}", (int)info.Profession).c_str(), &on, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
                         }
 
                         if (ImGui::SameLine();
@@ -2445,7 +2450,7 @@ void Handler::RenderSettings(RenderSettingsType const type)
                 ImGui::Checkbox("Show Profession Icons", &m_config.SortBuildsByProfessionShowIcons);
                 ImGui::Checkbox("Show Profession Names", &m_config.SortBuildsByProfessionShowNames);
                 ImGui::PushItemWidth(LINE_SIZE.y * 5);
-                ImGui::DragInt("Profession Spacing", (int*)&m_config.SortBuildsByProfessionSpacing, 0.25f, 0, 50, "%.0f px");
+                ImGui::DragInt("Profession Spacing", (int*)&m_config.SortBuildsByProfessionSpacing, 0.25f, 0, 50, "%u px");
                 ImGui::PopItemWidth();
                 ImGui::Unindent(INDENT_SPACING);
             }
@@ -2458,7 +2463,7 @@ void Handler::RenderSettings(RenderSettingsType const type)
 
             ImGui::Spacing();
             ImGui::PushItemWidth(LINE_SIZE.y * 5);
-            ImGui::DragInt("Tooltip Delay", (int*)&m_config.TooltipDelay, 10, 0, 5000, "%.0f ms");
+            ImGui::DragInt("Tooltip Delay", (int*)&m_config.TooltipDelay, 10, 0, 5000, "%u ms");
             ImGui::PopItemWidth();
         }
 
@@ -2485,7 +2490,7 @@ void Handler::RenderSettings(RenderSettingsType const type)
         if (currentCategory == categoryWindow)
         {
             ImGui::PushItemWidth(LINE_SIZE.y * 5);
-            if (ImGui::DragInt("UI Scale", (int*)&m_config.UIScale, 1, 20, 500, "%.0f%%"))
+            if (ImGui::DragInt("UI Scale", (int*)&m_config.UIScale, 1, 20, 500, "%u%%"))
                 m_config.UIScale = (m_config.UIScale + 5) / 10 * 10; // Some manual rounding to the nearest 10% step
             if (ImGui::IsItemHovered())
                 ImGui::Tooltip("Try changing ArcDPS font size first before touching this");
@@ -2544,13 +2549,19 @@ void Handler::RenderSettings(RenderSettingsType const type)
         ImGui::TableNextColumn();
         bool const disabled = !IsSaveNeeded() && !BuildStorage::Instance().IsSaveNeeded();
         if (disabled)
+        {
             ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4Grayscale(ImGuiCol_Button));
-        if (ImGui::ButtonEx("Save", { -1, 0 }, disabled ? ImGuiButtonFlags_Disabled : 0))
+            ImGui::BeginDisabled();
+        }
+        if (ImGui::Button("Save", { -1, 0 }))
             SaveConfig();
         if (ImGui::IsItemHovered())
             ImGui::TooltipWithHeader("Saves builds and settings", "Everything is saved automatically when you close Guild Wars 2.");
         if (disabled)
+        {
+            ImGui::EndDisabled();
             ImGui::PopStyleColor();
+        }
 
         ImGui::TableNextColumn();
         if (ImGui::Button("Load", { -1, 0 }))
@@ -2578,17 +2589,9 @@ void Handler::RenderKeyBindEditor()
     if (ImGui::BeginPopupModal("BuildPad##KeyBindEditor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
         ImGui::SetWindowFontScale(UI_SCALE);
-        ImGui::CaptureKeyboardFromApp();
+        ImGui::SetNextFrameWantCaptureKeyboard(true);
 
-        KeyBind::key_t foundKey = 0;
-
-        for (KeyBind::key_t key = '0'; !foundKey && key <= '9'; ++key)
-            if (ImGui::IsKeyPressed(key, false))
-                foundKey = key;
-
-        for (KeyBind::key_t key = 'A'; !foundKey && key <= 'Z'; ++key)
-            if (ImGui::IsKeyPressed(key, false))
-                foundKey = key;
+        KeyBind::key_t foundKey { };
 
         for (auto&& [key, _] : KeyBind::GetKeyMap())
             if (ImGui::IsKeyPressed(key, false))
@@ -2627,7 +2630,7 @@ void Handler::RenderKeyBindEditor()
             auto buffer = util::to_buffer<20>(KeyBind::KeyToString(m_keyBindEdited.Key).value_or(""));
             ImGui::PushItemWidth(-1);
             ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImGui::GetStyleColorVec4ModAlpha(ImGuiCol_Text, 0.25f));
-            ImGui::InputTextEx("", "Key", buffer.data(), (int)buffer.size(), { -1, 0 }, ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_AutoSelectAll);
+            ImGui::InputTextEx("##Input", "Key", buffer.data(), (int)buffer.size(), { -1, 0 }, ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_AutoSelectAll);
             ImGui::PopStyleColor();
             ImGui::PopItemWidth();
         }
@@ -2638,7 +2641,7 @@ void Handler::RenderKeyBindEditor()
 
         if (ImGui::Button("Clear", { 60px, 0 }))
             m_keyBindEdited = { };
-        if (ImGui::SameLine(ImGui::GetContentRegionAvailWidth() + WINDOW_PADDING.x - 60px - ITEM_SPACING.x - 60px); ImGui::Button("OK", { 60px, 0 }))
+        if (ImGui::SameLine(ImGui::GetContentRegionAvail().x + WINDOW_PADDING.x - 60px - ITEM_SPACING.x - 60px); ImGui::Button("OK", { 60px, 0 }))
         {
             if (m_keyBindCallback)
                 m_keyBindCallback(m_keyBindEdited);
@@ -2677,7 +2680,7 @@ void Handler::BeginRenderBuildList(GW2::Profession profession, bool& firstVisibl
                 if (name.empty())
                     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + FRAME_PADDING.y);
                 ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 0, 0 });
-                ImGui::CheckboxImage(icon.Texture, name.c_str(), &on, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+                ImGui::CheckboxImage(icon.Texture, fmt::format("{}##ProfessionHeader", name).c_str(), &on, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
                 ImGui::PopStyleVar();
                 if (name.empty())
                 {
@@ -2737,13 +2740,15 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
         if (context.Water)
         {
             if (context.BarVertical || !water)
-                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + std::max<float>(0, std::ceil((ImGui::GetContentRegionAvailWidth() - width) / 2)));
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + std::max<float>(0, std::ceil((ImGui::GetContentRegionAvail().x - width) / 2)));
 
             float const offset = (context.ButtonSize.y - typeSize.y) / 2 + (context.EditTarget ? GetIcon(Icons::SelectionChevron).TrimmedSize().y * UI_SCALE : 0);
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offset);
             ImGui::Image(GetIcon(water ? Icons::WaterSkills : Icons::LandSkills).Texture, typeSize);
             ImGui::SameLine(0, 0);
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - offset);
+            if (context.BarVertical || !water) // Hack after upgrading ImGui from 1.80 to 1.92.7
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - offset);
+            ImGui::GetCurrentWindow()->DC.CursorPosPrevLine = ImGui::GetCurrentWindow()->DC.CursorPos; // Hack after upgrading ImGui from 1.80 to 1.92.7
         }
         for (uint8_t index = 0; index < context.BarButtonCount; ++index)
         {
@@ -2767,7 +2772,7 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
                 color.z *= multiplier;
                 if (!context.PaletteSourceLoaded)
                     color.x = color.y = color.z = 0.0f;
-                ImGui::Image(icon.Texture, icon.TrimmedSize() * UI_SCALE, icon.GetUV0(), icon.GetUV1(), color);
+                ImGui::Image(icon.Texture, icon.TrimmedSize() * UI_SCALE, icon.GetUV0(), icon.GetUV1(), color, { });
             }
             {
                 auto const& data = context.Getter(water, index);
@@ -2780,7 +2785,7 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
                 color.x *= multiplier;
                 color.y *= multiplier;
                 color.z *= multiplier;
-                ImGui::Image(icon.Texture, context.ButtonSize, icon.GetUV0(), icon.GetUV1(), color);
+                ImGui::Image(icon.Texture, context.ButtonSize, icon.GetUV0(), icon.GetUV1(), color, { });
                 if (ImGui::IsItemHovered())
                     ImGui::TooltipWithHeader(api ? (api.*context.APIName).c_str() : nullptr, context.ButtonTooltip.c_str());
             }
@@ -2844,7 +2849,7 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
                             color.z *= multiplier;
                             if (!usable)
                                 color = { 0.5f, 0.0f, 0.0f, color.w };
-                            ImGui::Image(icon.Texture, context.PaletteSize, icon.GetUV0(), icon.GetUV1(), color);
+                            ImGui::Image(icon.Texture, context.PaletteSize, icon.GetUV0(), icon.GetUV1(), color, { });
                             if (ImGui::IsItemHovered() && api)
                                 ImGui::TooltipWithHeader((api.*context.APIName).c_str(), !usable ? "Unavailable" : nullptr);
                             if (ImGui::IsItemClicked() && usable)
@@ -2891,7 +2896,7 @@ void Handler::RenderPaletteBar(PaletteContext<DataType, InfoType, InfoSourceType
             if (!((index + 1) % buttonPerRow) && index + 1 != context.BarButtonCount)
             {
                 if (context.BarVertical || !water)
-                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + std::max<float>(0, std::ceil((ImGui::GetContentRegionAvailWidth() - width) / 2)));
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + std::max<float>(0, std::ceil((ImGui::GetContentRegionAvail().x - width) / 2)));
                 ImGui::ItemSize(typeSize);
             }
             ImGui::SameLine(0, context.ButtonSpacing);
@@ -2999,7 +3004,7 @@ void Handler::RenderBuildEditor(BuildEditContext& context) const
     if (context.IsChanged())
     {
         ImGui::SameLine(0, 0);
-        ImGui::SameLine(0, ImGui::GetContentRegionAvailWidth() - BUTTON_SIZE.x);
+        ImGui::SameLine(0, ImGui::GetContentRegionAvail().x - BUTTON_SIZE.x);
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (BUTTON_SIZE.y - LINE_SIZE.y) + ITEM_SPACING.y);
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, { 0, 0 });
         bool on = true;
@@ -3017,7 +3022,7 @@ void Handler::RenderBuildEditor(BuildEditContext& context) const
     ImGui::EndChild();
 
     ImGui::NewLine();
-    if (ImGui::SameLine(ImGui::GetContentRegionAvailWidth() + WINDOW_PADDING.x - 60px - ITEM_SPACING.x - 60px); ImGui::Button("OK", { 60, 0 }))
+    if (ImGui::SameLine(ImGui::GetContentRegionAvail().x + WINDOW_PADDING.x - 60px - ITEM_SPACING.x - 60px); ImGui::Button("OK", { 60, 0 }))
     {
         BuildStorage& storage = BuildStorage::Instance();
         if (Build* build = BuildStorage::Instance().FindBuild(context.ID))
@@ -3056,7 +3061,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
 
     auto const& parsed = build.GetParsedInfo();
 
-    ImGui::PushTextWrapPos(std::max<float>(ImGui::GetContentRegionAvailWidth(), ImGui::GetCurrentWindow()->Flags & ImGuiWindowFlags_AlwaysAutoResize ? 400px : 50px));
+    ImGui::PushTextWrapPos(std::max<float>(ImGui::GetContentRegionAvail().x, ImGui::GetCurrentWindow()->Flags & ImGuiWindowFlags_AlwaysAutoResize ? 400px : 50px));
     ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(0xFF44BBEE), "%s", fmt::format("{}", build.GetName()).c_str());
     ImGui::PopTextWrapPos();
     if (parsed.SkillsLand || parsed.SkillsWater || parsed.TraitLines)
@@ -3134,6 +3139,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
         else
             ImGui::Image((parsed.Specialization != GW2::Specialization::None ? GetIcon(parsed.Specialization) : GetIcon(parsed.Profession)).Texture, { 32px, 32px });
 
+        ImGui::StoreCursor();
         ImGui::SameLine(0, 3px);
 
         auto const& info = GW2::GetSpecializationInfo(parsed.Specialization);
@@ -3143,6 +3149,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
         ImGui::TextColored({ 1.0f, 1.0f, 1.0f, 0.5f }, "%s", text.c_str());
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() - offset);
         ImGui::PopStyleVar();
+        ImGui::RestoreCursor();
     }
 
     if (parsed.Profession == GW2::Profession::Revenant && (parsed.SkillsLand || parsed.SkillsWater) && !parsed.TraitLines)
@@ -3416,7 +3423,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
 
             {
                 float const height = 48px + (parsed.SkillsLand && parsed.SkillsWater && editTarget ? GetIcon(Icons::SelectionChevron).TrimmedSize().y * UI_SCALE * 2 : 0);
-                ImGui::SameLine(0, std::max<float>(0, std::ceil((ImGui::GetContentRegionAvailWidth() - (48px + 5px + 24px + 5px + 24px + 5px + 24px)) / 2)));
+                ImGui::SameLine(0, std::max<float>(0, std::ceil((ImGui::GetContentRegionAvail().x - (48px + 5px + 24px + 5px + 24px + 5px + 24px)) / 2)));
                 ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (24px * 3 - height) / 2);
 
                 PaletteContext<GW2::Specialization, GW2::Specialization, decltype(API::Profession::Specializations), API::Specialization> context { fmt::format("Specialization{0}", lineIndex), API::Profession::Get((uint32_t)parsed.Profession).Specializations, &API::Specialization::Name, &API::Specialization::Icon };
@@ -3488,7 +3495,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                 ImGui::EndChild();
 
                 ImGui::SameLine();
-                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (24px * 3 - height) / 2);
+                //ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (24px * 3 - height) / 2); // Removed after upgrading ImGui from 1.80 to 1.92.7
             }
 
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, { 0, 0 });
@@ -3520,7 +3527,7 @@ void Handler::RenderBuildTooltip(Build const& build, bool footer, bool errorMiss
                     color.x *= multiplier;
                     color.y *= multiplier;
                     color.z *= multiplier;
-                    ImGui::Image(icon.Texture, { 24px, 24px }, icon.GetUV0(), icon.GetUV1(), color);
+                    ImGui::Image(icon.Texture, { 24px, 24px }, icon.GetUV0(), icon.GetUV1(), color, { });
                     if (ImGui::IsItemHovered())
                     {
                         if (editTarget)
@@ -3808,7 +3815,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0, 0, 0, 0 });
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0, 0, 0, 0 });
         ImGui::PushStyleColor(ImGuiCol_Text, color);
-        ImGui::ImageButtonWithText(GetIcon(Icons::AcceptBuildEdit), fmt::format("{} Build{} Converted!", convertedBuildsSuccessCount, convertedBuildsSuccessCount != 1 ? "s" : "").c_str(), { 0, 0 }, ImDrawCornerFlags_None, -1, { 0, 0, 0, 0 }, { 1.0f, 1.0f, 1.0f, color.w });
+        ImGui::ImageButtonWithText(GetIcon(Icons::AcceptBuildEdit), fmt::format("{} Build{} Converted!", convertedBuildsSuccessCount, convertedBuildsSuccessCount != 1 ? "s" : "").c_str(), { 0, 0 }, ImDrawFlags_RoundCornersNone, -1, { 0, 0, 0, 0 }, { 1.0f, 1.0f, 1.0f, color.w });
         ImGui::PopStyleColor(4);
         if (util::find_if(m_arcdpsTraits, util::method_equals(&Build::GetParsedProfession, GW2::Profession::Ranger)) ||
             util::find_if(m_arcdpsSkills, util::method_equals(&Build::GetParsedProfession, GW2::Profession::Ranger)))
@@ -3879,7 +3886,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
 
                 ImGui::PushItemWidth(-1);
                 if (TextureData const& icon = build.GetParsedSpecialization() != GW2::Specialization::None ? GetIcon(build.GetParsedSpecialization()) : GetIcon(build.GetParsedProfession());
-                    ImGui::ImageButtonWithText(icon.Texture, fmt::format("{}##{}", build.GetName(), build.GetID()).c_str(), { -1, BUTTON_SIZE.y }, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, ImDrawCornerFlags_All, 0, { 0, 0, 0, 0 }, exists ? ImVec4 { 0, 0, 0, 1.0f } : incompatible ? ImVec4 { 0.75f, 0, 0, 1.0f } : ImVec4 { 1.0f, 1.0f, 1.0f, 1.0f }, selected)
+                    ImGui::ImageButtonWithText(icon.Texture, fmt::format("{}##{}", build.GetName(), build.GetID()).c_str(), { -1, BUTTON_SIZE.y }, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, ImDrawFlags_RoundCornersAll, 0, { 0, 0, 0, 0 }, exists ? ImVec4 { 0, 0, 0, 1.0f } : incompatible ? ImVec4 { 0.75f, 0, 0, 1.0f } : ImVec4 { 1.0f, 1.0f, 1.0f, 1.0f }, selected)
                     && !exists && !incompatible)
                 {
                     if (selected)
@@ -3951,7 +3958,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
         selectionChanged = true;
     }
 
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (ImGui::GetContentRegionAvailWidth() - ImGui::CalcTextSize("Traits").x) / 2);
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize("Traits").x) / 2);
     ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(0xFF44BBEE), "Traits");
     ImGui::BeginChild("Traits##ArcDPSMigration", { 0, 0 }, false, ImGuiWindowFlags_NoMove);
     ImGui::SetWindowFontScale(UI_SCALE);
@@ -3959,7 +3966,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
     ImGui::EndChild();
     ImGui::NextColumn();
 
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (ImGui::GetContentRegionAvailWidth() - ImGui::CalcTextSize("Skills").x) / 2);
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize("Skills").x) / 2);
     ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(0xFF44BBEE), "Skills");
     ImGui::BeginChild("Skills##ArcDPSMigration", { 0, 0 }, false, ImGuiWindowFlags_NoMove);
     ImGui::SetWindowFontScale(UI_SCALE);
@@ -3969,7 +3976,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
 
     ImGui::BeginChild("PreviewHeader##ArcDPSMigration", { 0, -1 }, false, ImGuiWindowFlags_NoMove);
     ImGui::SetWindowFontScale(UI_SCALE);
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (ImGui::GetContentRegionAvailWidth() - ImGui::CalcTextSize("Combined Build").x) / 2);
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize("Combined Build").x) / 2);
     ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(0xFF44BBEE), "Combined Build");
     if (selectionChanged)
     {
@@ -4062,7 +4069,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0, 0, 0, 0 });
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0, 0, 0, 0 });
         ImGui::PushStyleColor(ImGuiCol_Text, color);
-        ImGui::ImageButtonWithText(GetIcon(Icons::AcceptBuildEdit), "Build Saved!", { 0, 0 }, ImDrawCornerFlags_None, -1, { 0, 0, 0, 0 }, { 1.0f, 1.0f, 1.0f, color.w });
+        ImGui::ImageButtonWithText(GetIcon(Icons::AcceptBuildEdit), "Build Saved!", { 0, 0 }, ImDrawFlags_RoundCornersNone, -1, { 0, 0, 0, 0 }, { 1.0f, 1.0f, 1.0f, color.w });
         ImGui::PopStyleColor(4);
     }
 
@@ -4072,10 +4079,11 @@ void Handler::RenderArcDPSMigration(Time const& delta)
         ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4Grayscale(ImGuiCol_Button));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_Button));
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_Button));
+        ImGui::BeginDisabled();
     }
 
-    if (ImGui::SameLine(ImGui::GetContentRegionAvailWidth() - 1 - FRAME_PADDING.x - ImGui::CalcTextSize("Save").x - FRAME_PADDING.x, 0);
-        ImGui::ButtonEx("Save##ArcDPSMigrationEditName", { 0, 0 }, disabled ? ImGuiButtonFlags_Disabled : 0))
+    if (ImGui::SameLine(ImGui::GetContentRegionAvail().x - 1 - FRAME_PADDING.x - ImGui::CalcTextSize("Save").x - FRAME_PADDING.x, 0);
+        ImGui::Button("Save##ArcDPSMigrationEditName"))
     {
         Build& build = BuildStorage::Instance().AddBuild();
         build.SetName(previewBuild.GetName());
@@ -4091,13 +4099,16 @@ void Handler::RenderArcDPSMigration(Time const& delta)
     }
 
     if (disabled)
+    {
+        ImGui::EndDisabled();
         ImGui::PopStyleColor(3);
+    }
 
     ImGui::TextColored(ImGui::GetStyleColorVec4(ImGuiCol_Border), "Preview:");
     if (previewBuild.IsSaveNeeded())
     {
         ImGui::SameLine(0, 0);
-        ImGui::SameLine(0, ImGui::GetContentRegionAvailWidth() - BUTTON_SIZE.x);
+        ImGui::SameLine(0, ImGui::GetContentRegionAvail().x - BUTTON_SIZE.x);
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (BUTTON_SIZE.y - LINE_SIZE.y) + ITEM_SPACING.y);
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, { 0, 0 });
         bool on = true;
@@ -4131,7 +4142,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
             ImGui::CheckboxImage(GetIcon(build.GetParsedSpecialization()).Texture, fmt::format("{}", build.GetName()).c_str(), &on, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
         }
         ImGui::NewLine();
-        if (ImGui::SameLine(ImGui::GetContentRegionAvailWidth() + WINDOW_PADDING.x - 60px - ITEM_SPACING.x - 60px); ImGui::Button("OK", { 60, 0 }))
+        if (ImGui::SameLine(ImGui::GetContentRegionAvail().x + WINDOW_PADDING.x - 60px - ITEM_SPACING.x - 60px); ImGui::Button("OK", { 60, 0 }))
         {
             for (Build const& converted : convertedBuilds)
             {
@@ -4153,7 +4164,7 @@ void Handler::RenderArcDPSMigration(Time const& delta)
         ImGui::Text("No new builds were found that aren't already saved.");
 
         ImGui::NewLine();
-        if (ImGui::SameLine(ImGui::GetContentRegionAvailWidth() + WINDOW_PADDING.x - 60px); ImGui::Button("Close", { 60px, 0 }))
+        if (ImGui::SameLine(ImGui::GetContentRegionAvail().x + WINDOW_PADDING.x - 60px); ImGui::Button("Close", { 60px, 0 }))
             ImGui::CloseCurrentPopup();
         ImGui::EndPopup();
     }
@@ -4287,7 +4298,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
 
             ImGui::PushItemWidth(-1);
             if (TextureData const& icon = GetIcon((GW2::Profession)base.Profession);
-                ImGui::ImageButtonWithText(icon.Texture, name.c_str(), { -1, BUTTON_SIZE.y }, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, ImDrawCornerFlags_All, 0, { 0, 0, 0, 0 }, legendary ? ImGui::ColorConvertU32ToFloat4(0xFFFF3399) : ImVec4 { 1.0f, 1.0f, 1.0f, 1.0f }, selected))
+                ImGui::ImageButtonWithText(icon.Texture, name.c_str(), { -1, BUTTON_SIZE.y }, BUTTON_SIZE, { 0.0625f, 0.0625f }, { 0.9375f, 0.9375f }, ImDrawFlags_RoundCornersAll, 0, { 0, 0, 0, 0 }, legendary ? ImGui::ColorConvertU32ToFloat4(0xFFFF3399) : ImVec4 { 1.0f, 1.0f, 1.0f, 1.0f }, selected))
             {
                 if (selected)
                     selection = { };
@@ -4433,7 +4444,7 @@ void Handler::RenderArcDPSGear(Time const& delta)
         ImGui::SameLine();
         ImGui::PushItemWidth(FRAME_PADDING.x + width + FRAME_PADDING.x + (FRAME_PADDING.x + ImGui::GetFontSize() + FRAME_PADDING.x));
         if (int iconSet = (int)util::distance_if(iconSets, util::member_equals(&ItemStatsIconsInfo::Name, m_config.GearIconSet));
-            ImGui::Combo("", &iconSet, [](void* data, int const index, char const** text) { auto itr = iconSets.begin(); std::advance(itr, index); return *text = (!itr->Name.empty() ? itr->Name : DEFAULT_NAME).c_str(), true; }, nullptr, (int)iconSets.size()))
+            ImGui::Combo("##IconSet", &iconSet, [](void* data, int const index) { auto itr = iconSets.begin(); std::advance(itr, index); return (!itr->Name.empty() ? itr->Name : DEFAULT_NAME).c_str(); }, nullptr, (int)iconSets.size()))
         {
             auto itr = iconSets.begin();
             std::advance(itr, iconSet);
@@ -4488,10 +4499,10 @@ void Handler::RenderVersionHistory(bool all)
     ImGui::SetNextWindowPos(ImGui::GetIO().DisplaySize / 2, ImGuiCond_Appearing, { 0.5f, 0.5f });
     ImGui::Begin("BuildPad##VersionHistory", &m_versionHistoryShown, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings);
     ImGui::SetWindowFontScale(UI_SCALE);
-    if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(VK_ESCAPE, false))
+    if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(ImGuiKey_Escape, false))
     {
         m_versionHistoryShown = false;
-        ImGui::CaptureKeyboardFromApp();
+        ImGui::SetNextFrameWantCaptureKeyboard(true);
     }
     ImGui::BeginChild("Version History", { 0, -ITEM_SPACING.y - LINE_SIZE.y - FRAME_PADDING.y * 2 });
     ImGui::SetWindowFontScale(UI_SCALE);
@@ -4530,10 +4541,10 @@ void Handler::RenderAbout()
     ImGui::SetNextWindowPos(ImGui::GetIO().DisplaySize / 2, ImGuiCond_Appearing, { 0.5f, 0.5f });
     ImGui::Begin("BuildPad##About", &m_aboutShown, ImGuiWindowFlags_NoSavedSettings);
     ImGui::SetWindowFontScale(UI_SCALE);
-    if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(VK_ESCAPE, false))
+    if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(ImGuiKey_Escape, false))
     {
         m_aboutShown = false;
-        ImGui::CaptureKeyboardFromApp();
+        ImGui::SetNextFrameWantCaptureKeyboard(true);
     }
 
     ImGui::BeginGroup();
@@ -4548,7 +4559,7 @@ void Handler::RenderAbout()
     ImGui::EndGroup();
 
     ImGui::SameLine(0, 0);
-    ImGui::SameLine(0, ImGui::GetContentRegionAvailWidth() - FRAME_PADDING.x - ImGui::CalcTextSize("View Version History").x - FRAME_PADDING.x);
+    ImGui::SameLine(0, ImGui::GetContentRegionAvail().x - FRAME_PADDING.x - ImGui::CalcTextSize("View Version History").x - FRAME_PADDING.x);
     if (ImGui::Button("View Version History"))
     {
         m_versionHistoryShownAll = true;

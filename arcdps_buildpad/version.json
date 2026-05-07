@@ -1,7 +1,17 @@
 {
-  "latest": "2025-08-24",
+  "latest": "2026-05-07",
   "url": "https://raw.githubusercontent.com/xvwyh/BuildPad/refs/heads/master/arcdps_buildpad.dll",
   "history": [
+    {
+      "version": "2026-05-07",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2026-05-07.dll",
+      "changes": [
+        { "type": "feature", "text": "Updated icons for Luminary and Antiquary" },
+        { "type": "feature", "text": "Updated ranger pets" },
+        { "type": "bug", "text": "Attempt to fix BuildPad preventing Guild Wars 2 process from exiting if the client was closed before BuildPad finished checking for updates" },
+        { "type": "misc", "text": "Transitioned to ImGui v1.92.7. Some things may potentially be broken, primarily regarding UI layout, input and keybinds, please report any issues you encounter" }
+      ]
+    },
     {
       "version": "2025-08-24",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2025-08-24.dll",

@@ -13,12 +13,20 @@ Web::Web()
     catch (...) { m_renderCache = ""; }
 }
 
-void Web::Request(std::string_view url, std::function<void(std::string_view data)>&& onSuccess, std::function<void(std::exception const& e)>&& onError, bool mainThreadCallback)
+void Web::Request(std::string_view url, SuccessCallback onSuccess, ErrorCallback onError, bool mainThreadCallback)
 {
     //if (m_requests.find(url) != m_requests.end())
     //    return;
 
     m_requests.emplace_back(/*url, */std::async(std::launch::async, [this, url = std::string { url }, onSuccess = std::move(onSuccess), onError = std::move(onError), mainThreadCallback]() mutable
+    {
+        RequestSync(url, std::move(onSuccess), std::move(onError), mainThreadCallback);
+    }));
+}
+
+bool Web::RequestSync(std::string_view url, SuccessCallback onSuccess, ErrorCallback onError, bool mainThreadCallback)
+{
+    if (!url.empty()) // Silly condition, added only to preserve indentation because I'm weirdly obsessed about blame
     {
         try
         {
@@ -45,7 +53,7 @@ void Web::Request(std::string_view url, std::function<void(std::string_view data
             {
                 curlpp::Cleanup clean;
                 curlpp::Easy request;
-                request.setOpt(curlpp::options::Url(url));
+                request.setOpt(curlpp::options::Url(std::string(url)));
                 request.setOpt(curlpp::options::WriteStream(&response));
                 request.setOpt(curlpp::options::Timeout(10));
 
@@ -74,6 +82,7 @@ void Web::Request(std::string_view url, std::function<void(std::string_view data
                 else
                     onSuccess(data);
             }
+            return true;
         }
         catch (std::exception const& e)
         {
@@ -85,10 +94,11 @@ void Web::Request(std::string_view url, std::function<void(std::string_view data
                     onError(e);
             }
         }
-    }));
+    }
+    return false;
 }
 
-void Web::RequestAny(std::vector<std::string> urls, std::function<void(std::string_view data)>&& onSuccess, std::function<void(std::exception const& e)>&& onError, bool mainThreadCallback)
+void Web::RequestAny(std::vector<std::string> urls, SuccessCallback onSuccess, ErrorCallback onError, bool mainThreadCallback)
 {
     if (urls.empty())
     {
@@ -102,11 +112,32 @@ void Web::RequestAny(std::vector<std::string> urls, std::function<void(std::stri
         return;
     }
 
-    Request(urls.front(), std::move(onSuccess), [=](std::exception const&) mutable
+    Request(urls.front(), std::move(onSuccess), [=, onError = std::move(onError)](std::exception const&) mutable
     {
         if (!urls.empty())
             Instance().RequestAny({ urls.begin() + 1, urls.end() }, std::move(onSuccess), std::move(onError), mainThreadCallback);
     }, mainThreadCallback);
+}
+
+bool Web::RequestAnySync(std::vector<std::string> urls, SuccessCallback const& onSuccess, ErrorCallback onError, bool mainThreadCallback)
+{
+    std::span remaining = urls;
+    while (!remaining.empty())
+    {
+        if (RequestSync(remaining.front(), onSuccess, nullptr, mainThreadCallback))
+            return true;
+
+        remaining = remaining.subspan(1);
+    }
+
+    if (onError)
+    {
+        if (mainThreadCallback)
+            Handler::Instance().OnMainThread([onError = std::move(onError)] { onError(std::exception()); });
+        else
+            onError(std::exception());
+    }
+    return false;
 }
 
 void Web::ResetRenderCache() const

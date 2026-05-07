@@ -5,7 +5,7 @@ namespace buildpad
 {
 struct KeyBind
 {
-    using key_t = uint8_t;
+    using key_t = ImGuiKey;
 
     bool Control = false;
     bool Alt = false;
@@ -30,6 +30,7 @@ struct KeyBind
             && PassThrough == other.PassThrough;
     }
 
+    static KeyBind GlobalState;
     static std::optional<std::string> KeyToString(key_t key);
     static std::map<key_t, std::string_view> const& GetKeyMap();
 };

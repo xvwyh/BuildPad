@@ -10,8 +10,13 @@ namespace buildpad
 class Web : public Singleton<Web>
 {
 public:
-    void Request(std::string_view url, std::function<void(std::string_view data)>&& onSuccess, std::function<void(std::exception const& e)>&& onError = { }, bool mainThreadCallback = true);
-    void RequestAny(std::vector<std::string> urls, std::function<void(std::string_view data)>&& onSuccess, std::function<void(std::exception const& e)>&& onError = { }, bool mainThreadCallback = true);
+    using SuccessCallback = std::function<void(std::string_view data)>;
+    using ErrorCallback = std::function<void(std::exception const& e)>;
+
+    void Request(std::string_view url, SuccessCallback onSuccess, ErrorCallback onError = { }, bool mainThreadCallback = true);
+    bool RequestSync(std::string_view url, SuccessCallback onSuccess, ErrorCallback onError = { }, bool mainThreadCallback = false);
+    void RequestAny(std::vector<std::string> urls, SuccessCallback onSuccess, ErrorCallback onError = { }, bool mainThreadCallback = true);
+    bool RequestAnySync(std::vector<std::string> urls, SuccessCallback const& onSuccess, ErrorCallback onError = { }, bool mainThreadCallback = false);
     void ResetRenderCache() const;
 
 private:

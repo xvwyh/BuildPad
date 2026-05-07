@@ -1,21 +1,22 @@
 ﻿#include "KeyBind.h"
-#include <Windows.h>
 
 namespace buildpad
 {
+KeyBind KeyBind::GlobalState { };
+
 bool KeyBind::IsPressed() const
 {
     return *this
-        && Control == ImGui::GetIO().KeyCtrl
-        && Alt == ImGui::GetIO().KeyAlt
-        && Shift == ImGui::GetIO().KeyShift
+        && Control == GlobalState.Control
+        && Alt == GlobalState.Alt
+        && Shift == GlobalState.Shift
         && ImGui::IsKeyPressed(Key, false);
 }
 
 bool KeyBind::FromString(std::string_view str)
 {
     Control = Alt = Shift = false;
-    Key = 0;
+    Key = { };
     for (auto&& part : util::split(str, "+ "))
     {
         if (part.empty())
@@ -31,8 +32,6 @@ bool KeyBind::FromString(std::string_view str)
             PassThrough = true;
         else if (auto const itr = util::find_if(GetKeyMap(), util::second_equals(part)))
             Key = itr->first;
-        else if (part[0] >= '0' && part[0] <= '9' || part[0] >= 'A' && part[0] <= 'Z')
-            Key = part[0];
         else
             return false;
     }
@@ -57,9 +56,6 @@ std::optional<std::string> KeyBind::KeyToString(key_t key)
     if (!key)
         return { };
 
-    if (key >= '0' && key <= '9' || key >= 'A' && key <= 'Z')
-        return std::string(1, key);
-
     if (auto const itr = GetKeyMap().find(key); itr != GetKeyMap().end())
         return std::string(itr->second);
 
@@ -70,80 +66,117 @@ std::map<KeyBind::key_t, std::string_view> const& KeyBind::GetKeyMap()
 {
     static std::map<key_t, std::string_view> const instance
     {
-        { VK_BACK,          "BACK"      },
-        { VK_TAB,           "TAB"       },
-        { VK_CLEAR,         "CLEAR"     },
-        { VK_RETURN,        "RETURN"    },
-        { VK_ESCAPE,        "ESCAPE"    },
-        { VK_SPACE,         "SPACE"     },
-        { VK_PRIOR,         "PGUP"      },
-        { VK_NEXT,          "PGDN"      },
-        { VK_END,           "END"       },
-        { VK_HOME,          "HOME"      },
-        { VK_LEFT,          "LEFT"      },
-        { VK_UP,            "UP"        },
-        { VK_RIGHT,         "RIGHT"     },
-        { VK_DOWN,          "DOWN"      },
-        { VK_SELECT,        "SELECT"    },
-        { VK_PRINT,         "PRINT"     },
-        { VK_EXECUTE,       "EXECUTE"   },
-        { VK_SNAPSHOT,      "SNAPSHOT"  },
-        { VK_INSERT,        "INSERT"    },
-        { VK_DELETE,        "DELETE"    },
-        { VK_HELP,          "HELP"      },
-        { VK_NUMPAD0,       "NUMPAD0"   },
-        { VK_NUMPAD1,       "NUMPAD1"   },
-        { VK_NUMPAD2,       "NUMPAD2"   },
-        { VK_NUMPAD3,       "NUMPAD3"   },
-        { VK_NUMPAD4,       "NUMPAD4"   },
-        { VK_NUMPAD5,       "NUMPAD5"   },
-        { VK_NUMPAD6,       "NUMPAD6"   },
-        { VK_NUMPAD7,       "NUMPAD7"   },
-        { VK_NUMPAD8,       "NUMPAD8"   },
-        { VK_NUMPAD9,       "NUMPAD9"   },
-        { VK_MULTIPLY,      "MULTIPLY"  },
-        { VK_ADD,           "ADD"       },
-        { VK_SEPARATOR,     "SEPARATOR" },
-        { VK_SUBTRACT,      "SUBTRACT"  },
-        { VK_DECIMAL,       "DECIMAL"   },
-        { VK_DIVIDE,        "DIVIDE"    },
-        { VK_F1,            "F1"        },
-        { VK_F2,            "F2"        },
-        { VK_F3,            "F3"        },
-        { VK_F4,            "F4"        },
-        { VK_F5,            "F5"        },
-        { VK_F6,            "F6"        },
-        { VK_F7,            "F7"        },
-        { VK_F8,            "F8"        },
-        { VK_F9,            "F9"        },
-        { VK_F10,           "F10"       },
-        { VK_F11,           "F11"       },
-        { VK_F12,           "F12"       },
-        { VK_F13,           "F13"       },
-        { VK_F14,           "F14"       },
-        { VK_F15,           "F15"       },
-        { VK_F16,           "F16"       },
-        { VK_F17,           "F17"       },
-        { VK_F18,           "F18"       },
-        { VK_F19,           "F19"       },
-        { VK_F20,           "F20"       },
-        { VK_F21,           "F21"       },
-        { VK_F22,           "F22"       },
-        { VK_F23,           "F23"       },
-        { VK_F24,           "F24"       },
-        { VK_NUMLOCK,       "NUMLOCK"   },
-        { VK_SCROLL,        "SCROLL"    },
-        { VK_OEM_1,         ";"         },
-        { VK_OEM_PLUS,      "="         },
-        { VK_OEM_COMMA,     ","         },
-        { VK_OEM_MINUS,     "-"         },
-        { VK_OEM_PERIOD,    "."         },
-        { VK_OEM_2,         "/"         },
-        { VK_OEM_3,         "`"         },
-        { VK_OEM_4,         "["         },
-        { VK_OEM_5,         "\\"        },
-        { VK_OEM_6,         "]"         },
-        { VK_OEM_7,         "'"        },
+        { ImGuiKey_Tab,             "TAB"       },
+        { ImGuiKey_LeftArrow,       "LEFT"      },
+        { ImGuiKey_RightArrow,      "RIGHT"     },
+        { ImGuiKey_UpArrow,         "UP"        },
+        { ImGuiKey_DownArrow,       "DOWN"      },
+        { ImGuiKey_PageUp,          "PGUP"      },
+        { ImGuiKey_PageDown,        "PGDN"      },
+        { ImGuiKey_Home,            "HOME"      },
+        { ImGuiKey_End,             "END"       },
+        { ImGuiKey_Insert,          "INSERT"    },
+        { ImGuiKey_Delete,          "DELETE"    },
+        { ImGuiKey_Backspace,       "BACK"      },
+        { ImGuiKey_Space,           "SPACE"     },
+        { ImGuiKey_Enter,           "RETURN"    },
+        { ImGuiKey_Escape,          "ESCAPE"    },
+        { ImGuiKey_0,               "0"         },
+        { ImGuiKey_1,               "1"         },
+        { ImGuiKey_2,               "2"         },
+        { ImGuiKey_3,               "3"         },
+        { ImGuiKey_4,               "4"         },
+        { ImGuiKey_5,               "5"         },
+        { ImGuiKey_6,               "6"         },
+        { ImGuiKey_7,               "7"         },
+        { ImGuiKey_8,               "8"         },
+        { ImGuiKey_9,               "9"         },
+        { ImGuiKey_A,               "A"         },
+        { ImGuiKey_B,               "B"         },
+        { ImGuiKey_C,               "C"         },
+        { ImGuiKey_D,               "D"         },
+        { ImGuiKey_E,               "E"         },
+        { ImGuiKey_F,               "F"         },
+        { ImGuiKey_G,               "G"         },
+        { ImGuiKey_H,               "H"         },
+        { ImGuiKey_I,               "I"         },
+        { ImGuiKey_J,               "J"         },
+        { ImGuiKey_K,               "K"         },
+        { ImGuiKey_L,               "L"         },
+        { ImGuiKey_M,               "M"         },
+        { ImGuiKey_N,               "N"         },
+        { ImGuiKey_O,               "O"         },
+        { ImGuiKey_P,               "P"         },
+        { ImGuiKey_Q,               "Q"         },
+        { ImGuiKey_R,               "R"         },
+        { ImGuiKey_S,               "S"         },
+        { ImGuiKey_T,               "T"         },
+        { ImGuiKey_U,               "U"         },
+        { ImGuiKey_V,               "V"         },
+        { ImGuiKey_W,               "W"         },
+        { ImGuiKey_X,               "X"         },
+        { ImGuiKey_Y,               "Y"         },
+        { ImGuiKey_Z,               "Z"         },
+        { ImGuiKey_F1,              "F1"        },
+        { ImGuiKey_F2,              "F2"        },
+        { ImGuiKey_F3,              "F3"        },
+        { ImGuiKey_F4,              "F4"        },
+        { ImGuiKey_F5,              "F5"        },
+        { ImGuiKey_F6,              "F6"        },
+        { ImGuiKey_F7,              "F7"        },
+        { ImGuiKey_F8,              "F8"        },
+        { ImGuiKey_F9,              "F9"        },
+        { ImGuiKey_F10,             "F10"       },
+        { ImGuiKey_F11,             "F11"       },
+        { ImGuiKey_F12,             "F12"       },
+        { ImGuiKey_F13,             "F13"       },
+        { ImGuiKey_F14,             "F14"       },
+        { ImGuiKey_F15,             "F15"       },
+        { ImGuiKey_F16,             "F16"       },
+        { ImGuiKey_F17,             "F17"       },
+        { ImGuiKey_F18,             "F18"       },
+        { ImGuiKey_F19,             "F19"       },
+        { ImGuiKey_F20,             "F20"       },
+        { ImGuiKey_F21,             "F21"       },
+        { ImGuiKey_F22,             "F22"       },
+        { ImGuiKey_F23,             "F23"       },
+        { ImGuiKey_F24,             "F24"       },
+        { ImGuiKey_Apostrophe,      "'"         },
+        { ImGuiKey_Comma,           ","         },
+        { ImGuiKey_Minus,           "-"         },
+        { ImGuiKey_Period,          "."         },
+        { ImGuiKey_Slash,           "/"         },
+        { ImGuiKey_Semicolon,       ";"         },
+        { ImGuiKey_Equal,           "="         },
+        { ImGuiKey_LeftBracket,     "["         },
+        { ImGuiKey_Backslash,       "\\"        },
+        { ImGuiKey_RightBracket,    "]"         },
+        { ImGuiKey_GraveAccent,     "`"         },
+        { ImGuiKey_CapsLock,        "CAPSLOCK"  },
+        { ImGuiKey_ScrollLock,      "SCROLL"    },
+        { ImGuiKey_NumLock,         "NUMLOCK"   },
+        { ImGuiKey_PrintScreen,     "PRINT"     },
+        { ImGuiKey_Pause,           "PAUSE"     },
+        { ImGuiKey_Keypad0,         "NUMPAD0"   },
+        { ImGuiKey_Keypad1,         "NUMPAD1"   },
+        { ImGuiKey_Keypad2,         "NUMPAD2"   },
+        { ImGuiKey_Keypad3,         "NUMPAD3"   },
+        { ImGuiKey_Keypad4,         "NUMPAD4"   },
+        { ImGuiKey_Keypad5,         "NUMPAD5"   },
+        { ImGuiKey_Keypad6,         "NUMPAD6"   },
+        { ImGuiKey_Keypad7,         "NUMPAD7"   },
+        { ImGuiKey_Keypad8,         "NUMPAD8"   },
+        { ImGuiKey_Keypad9,         "NUMPAD9"   },
+        { ImGuiKey_KeypadDecimal,   "DECIMAL"   },
+        { ImGuiKey_KeypadDivide,    "DIVIDE"    },
+        { ImGuiKey_KeypadMultiply,  "MULTIPLY"  },
+        { ImGuiKey_KeypadSubtract,  "SUBTRACT"  },
+        { ImGuiKey_KeypadAdd,       "ADD"       },
+        { ImGuiKey_KeypadEnter,     "ENTER"     },
+        { ImGuiKey_KeypadEqual,     "EQUAL"     },
+        { ImGuiKey_AppBack,         "APPBACK"   },
+        { ImGuiKey_AppForward,      "APPFWD"    },
+        { ImGuiKey_Oem102,          "OEM102"    },
     };
     return instance;
 }
