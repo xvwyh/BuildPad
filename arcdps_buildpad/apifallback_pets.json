@@ -741,5 +741,27 @@
         "id": 75783
       }
     ]
+  },
+  {
+    "id": 72,
+    "name": "Juvenile Raptor Swiftwing",
+    "description": "Only recently discovered on the island of Castora, the swiftwing raptor is covered in a thick layer of jewel-toned feathers that blend in with the island's vivid vegetation. Researchers have noted its ear-shattering shriek and razor-edged talons, urging members of the Tyrian Alliance to approach the saurian with caution. —Acht",
+    "icon": "https://render.guildwars2.com/file/7DFEA0B69A935295F938F1BC043A3BAAAF506A1B/3713047.png",
+    "skills": [
+      {
+        "id": 78873
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "name": "Juvenile River Otter",
+    "description": "While the river otters found in the Castoran inland appear paradisiacal, don't let their charm disarm you! I suspect that they've adapted to the richly magical ecosystem and have become adept at maneuvering the numerous predators found across the island. They tend to linger near the riverside in broods, giving them quick access to the complex channel system. One swipe from their tail and you may find yourself debilitated and vulnerable. —Acht",
+    "icon": "https://render.guildwars2.com/file/4821BEE8B3346E020F982650A22548801C082352/3772540.png",
+    "skills": [
+      {
+        "id": 79766
+      }
+    ]
   }
 ]

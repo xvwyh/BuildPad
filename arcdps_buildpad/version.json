@@ -1,7 +1,16 @@
 {
-  "latest": "2026-05-07",
+  "latest": "2026-06-01",
   "url": "https://raw.githubusercontent.com/xvwyh/BuildPad/refs/heads/master/arcdps_buildpad.dll",
   "history": [
+    {
+      "version": "2026-06-01",
+      "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2026-06-01.dll",
+      "changes": [
+        { "type": "feature", "text": "Updated ranger pets" },
+        { "type": "bug", "text": "Fixed keybinds acting as if modifier keys are being held down if Guild Wars 2 window lost focus while they were pressed" },
+        { "type": "bug", "text": "Fixed broken word wrapping in long texts" }
+      ]
+    },
     {
       "version": "2026-05-07",
       "url": "https://buildpad.gw2archive.eu/versions/d3d9_arcdps_buildpad_2026-05-07.dll",

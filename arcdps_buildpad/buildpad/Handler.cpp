@@ -17,7 +17,7 @@
 
 namespace buildpad
 {
-char const* const BUILDPAD_VERSION = "2026-05-07";
+char const* const BUILDPAD_VERSION = "2026-06-01";
 
 namespace resources
 {
@@ -167,6 +167,7 @@ Handler::~Handler()
 
 void Handler::LoadTextures()
 {
+    ImTextInitClassifiers();
     if (auto device = GetDirect3DDevice9())
         m_d3dDevice = device;
     if (auto device = GetDirect3DDevice11())

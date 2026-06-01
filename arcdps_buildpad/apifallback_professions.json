@@ -677,6 +677,26 @@
         "id": 77300,
         "slot": "Utility",
         "type": "Utility"
+      },
+      {
+        "id": 78837,
+        "slot": "Profession_1",
+        "type": "Profession"
+      },
+      {
+        "id": 78604,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 78358,
+        "slot": "Profession_3",
+        "type": "Profession"
+      },
+      {
+        "id": 77073,
+        "slot": "Profession_4",
+        "type": "Profession"
       }
     ],
     "training": [
@@ -2360,6 +2380,14 @@
       [
         7544,
         77300
+      ],
+      [
+        7650,
+        78873
+      ],
+      [
+        7700,
+        79766
       ]
     ]
   },
@@ -2703,7 +2731,7 @@
             "slot": "Weapon_4"
           },
           {
-            "id": 71975,
+            "id": 71889,
             "slot": "Weapon_5"
           }
         ]
@@ -4362,7 +4390,7 @@
       ],
       [
         89,
-        71975
+        71889
       ],
       [
         90,
@@ -4987,6 +5015,14 @@
       [
         7558,
         77040
+      ],
+      [
+        7650,
+        78873
+      ],
+      [
+        7700,
+        79766
       ]
     ]
   },
@@ -5553,6 +5589,11 @@
       },
       {
         "id": 76642,
+        "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 76651,
         "slot": "Profession_5",
         "type": "Profession"
       }
@@ -7271,6 +7312,14 @@
       [
         7557,
         77069
+      ],
+      [
+        7650,
+        78873
+      ],
+      [
+        7700,
+        79766
       ]
     ]
   },
@@ -8235,6 +8284,26 @@
       {
         "id": 77213,
         "slot": "Profession_5",
+        "type": "Profession"
+      },
+      {
+        "id": 79203,
+        "slot": "Profession_1",
+        "type": "Profession"
+      },
+      {
+        "id": 78091,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 80035,
+        "slot": "Profession_1",
+        "type": "Profession"
+      },
+      {
+        "id": 80031,
+        "slot": "Profession_2",
         "type": "Profession"
       }
     ],
@@ -10167,6 +10236,22 @@
       [
         7555,
         77264
+      ],
+      [
+        7628,
+        43375
+      ],
+      [
+        7650,
+        78873
+      ],
+      [
+        7700,
+        79766
+      ],
+      [
+        7730,
+        44626
       ]
     ]
   },
@@ -10788,12 +10873,12 @@
         "type": "Profession"
       },
       {
-        "id": 76601,
+        "id": 76702,
         "slot": "Profession_2",
         "type": "Profession"
       },
       {
-        "id": 76633,
+        "id": 76601,
         "slot": "Profession_2",
         "type": "Profession"
       },
@@ -10808,12 +10893,12 @@
         "type": "Profession"
       },
       {
-        "id": 77192,
+        "id": 76900,
         "slot": "Profession_2",
         "type": "Profession"
       },
       {
-        "id": 76900,
+        "id": 76582,
         "slot": "Profession_2",
         "type": "Profession"
       },
@@ -10825,6 +10910,16 @@
       {
         "id": 77288,
         "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76895,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 78309,
+        "slot": "Profession_3",
         "type": "Profession"
       },
       {
@@ -12614,10 +12709,6 @@
         76879
       ],
       [
-        7532,
-        76674
-      ],
-      [
         7535,
         76886
       ],
@@ -12628,6 +12719,14 @@
       [
         7564,
         76808
+      ],
+      [
+        7650,
+        78873
+      ],
+      [
+        7700,
+        79766
       ]
     ]
   },
@@ -15846,6 +15945,14 @@
       [
         7563,
         77190
+      ],
+      [
+        7650,
+        78873
+      ],
+      [
+        7700,
+        79766
       ]
     ]
   },
@@ -18236,6 +18343,14 @@
       [
         7561,
         76695
+      ],
+      [
+        7650,
+        78873
+      ],
+      [
+        7700,
+        79766
       ]
     ]
   },
@@ -18945,6 +19060,36 @@
         "id": 76752,
         "slot": "Utility",
         "type": "Utility"
+      },
+      {
+        "id": 77238,
+        "slot": "Profession_1",
+        "type": "Profession"
+      },
+      {
+        "id": 77061,
+        "slot": "Downed_1",
+        "type": "Profession"
+      },
+      {
+        "id": 76864,
+        "slot": "Downed_2",
+        "type": "Profession"
+      },
+      {
+        "id": 76961,
+        "slot": "Downed_3",
+        "type": "Profession"
+      },
+      {
+        "id": 76684,
+        "slot": "Downed_4",
+        "type": "Profession"
+      },
+      {
+        "id": 76607,
+        "slot": "Weapon_5",
+        "type": "Profession"
       }
     ],
     "training": [
@@ -20616,6 +20761,14 @@
       [
         7566,
         76739
+      ],
+      [
+        7650,
+        78873
+      ],
+      [
+        7700,
+        79766
       ]
     ]
   },
@@ -21225,38 +21378,13 @@
         "type": "Utility"
       },
       {
-        "id": 76805,
+        "id": 77141,
         "slot": "Utility",
         "type": "Utility"
       },
       {
-        "id": 76753,
-        "slot": "Profession_2",
-        "type": "Profession"
-      },
-      {
         "id": 77371,
-        "slot": "Profession_2",
-        "type": "Profession"
-      },
-      {
-        "id": 77368,
-        "slot": "Profession_2",
-        "type": "Profession"
-      },
-      {
-        "id": 76774,
-        "slot": "Profession_2",
-        "type": "Profession"
-      },
-      {
-        "id": 77246,
-        "slot": "Profession_2",
-        "type": "Profession"
-      },
-      {
-        "id": 77312,
-        "slot": "Profession_2",
+        "slot": "Profession_3",
         "type": "Profession"
       },
       {
@@ -21265,22 +21393,27 @@
         "type": "Profession"
       },
       {
-        "id": 77251,
+        "id": 78845,
         "slot": "Profession_2",
         "type": "Profession"
       },
       {
-        "id": 77389,
+        "id": 78501,
         "slot": "Profession_2",
         "type": "Profession"
       },
       {
-        "id": 76644,
+        "id": 78661,
         "slot": "Profession_2",
         "type": "Profession"
       },
       {
-        "id": 76641,
+        "id": 78615,
+        "slot": "Profession_2",
+        "type": "Profession"
+      },
+      {
+        "id": 78895,
         "slot": "Profession_2",
         "type": "Profession"
       }
@@ -22118,7 +22251,7 @@
           {
             "cost": 180,
             "type": "Skill",
-            "skill_id": 76805
+            "skill_id": 77141
           },
           {
             "cost": 190,
@@ -22134,11 +22267,6 @@
             "cost": 210,
             "type": "Trait",
             "trait_id": 2352
-          },
-          {
-            "cost": 225,
-            "type": "Skill",
-            "skill_id": 76610
           },
           {
             "cost": 250,
@@ -22628,6 +22756,14 @@
       [
         7523,
         76610
+      ],
+      [
+        7650,
+        78873
+      ],
+      [
+        7700,
+        79766
       ]
     ]
   }

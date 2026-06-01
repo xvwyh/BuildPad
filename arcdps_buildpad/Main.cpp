@@ -147,6 +147,14 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
             break;
         }
+        case WM_ACTIVATEAPP:
+            if (!wParam)
+            {
+                buildpad::KeyBind::GlobalState.Control = false;
+                buildpad::KeyBind::GlobalState.Alt     = false;
+                buildpad::KeyBind::GlobalState.Shift   = false;
+            }
+            break;
     }
 
     return uMsg;
